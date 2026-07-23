@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- APlayer & MetingJS (网易云音乐) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -27,7 +31,6 @@
             <div class="nav-actions">
                 <button class="music-toggle" id="musicToggle" title="打开音乐播放器">
                     <i class="fas fa-music"></i>
-                    <span class="music-toggle-bar"></span>
                 </button>
                 <button class="theme-toggle" id="themeToggle" title="切换主题">
                     <i class="fas fa-sun"></i>
@@ -487,94 +490,109 @@
         </div>
     </section>
 
-    <!-- 音乐播放器 -->
+    <!-- 音乐播放器 (网易云 + MetingJS) -->
     <div class="music-player" id="musicPlayer">
         <div class="music-player-header">
             <div class="music-player-title">
                 <i class="fas fa-music"></i>
-                <span>正在播放</span>
+                <span>网易云音乐</span>
             </div>
-            <button class="music-close" id="musicClose" title="收起播放器">
-                <i class="fas fa-chevron-down"></i>
-            </button>
-        </div>
-
-        <!-- 唱片动画 -->
-        <div class="music-disc-container">
-            <div class="music-disc" id="musicDisc">
-                <div class="music-disc-center">
-                    <i class="fas fa-music"></i>
-                </div>
-                <div class="music-disc-ring"></div>
+            <div class="music-header-actions">
+                <button class="music-config-btn" id="musicConfigBtn" title="歌单设置">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="music-close" id="musicClose" title="收起播放器">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
             </div>
         </div>
 
-        <!-- 歌曲信息 -->
-        <div class="music-info">
-            <div class="music-song-title" id="musicSongTitle">选择一首歌曲</div>
-            <div class="music-song-artist" id="musicSongArtist">--</div>
-        </div>
-
-        <!-- 进度条 -->
-        <div class="music-progress-container">
-            <span class="music-time" id="musicCurrentTime">0:00</span>
-            <div class="music-progress-bar" id="musicProgressBar">
-                <div class="music-progress-fill" id="musicProgressFill"></div>
-                <div class="music-progress-thumb" id="musicProgressThumb"></div>
+        <!-- 歌单配置面板 -->
+        <div class="music-config-panel" id="musicConfigPanel">
+            <div class="config-row">
+                <label>音乐平台</label>
+                <select id="configServer" class="config-select">
+                    <option value="netease" selected>网易云音乐</option>
+                    <option value="tencent">QQ音乐</option>
+                    <option value="kugou">酷狗音乐</option>
+                    <option value="xiami">虾米音乐</option>
+                </select>
             </div>
-            <span class="music-time" id="musicDuration">0:00</span>
-        </div>
-
-        <!-- 控制按钮 -->
-        <div class="music-controls">
-            <button class="music-btn music-btn-small" id="musicShuffle" title="随机播放">
-                <i class="fas fa-random"></i>
+            <div class="config-row">
+                <label>类型</label>
+                <select id="configType" class="config-select">
+                    <option value="playlist" selected>歌单</option>
+                    <option value="song">单曲</option>
+                    <option value="album">专辑</option>
+                    <option value="artist">歌手</option>
+                </select>
+            </div>
+            <div class="config-row">
+                <label>ID</label>
+                <input type="text" id="configId" class="config-input" placeholder="粘贴歌单/专辑/歌曲ID" value="7627381372">
+            </div>
+            <div class="config-row">
+                <label>API</label>
+                <select id="configApi" class="config-select">
+                    <option value="https://meting.imsyy.top/api" selected>API 1 (imsyy)</option>
+                    <option value="https://api.meting.imsyy.top/api">API 2 (备用)</option>
+                    <option value="https://meting-api.vercel.app/api">API 3 (Vercel)</option>
+                    <option value="https://meting-yq-vercel.vercel.app/api">API 4 (Vercel)</option>
+                </select>
+            </div>
+            <button class="config-apply" id="configApply">
+                <i class="fas fa-check"></i> 应用并加载
             </button>
-            <button class="music-btn" id="musicPrev" title="上一首">
-                <i class="fas fa-step-backward"></i>
-            </button>
-            <button class="music-btn music-btn-play" id="musicPlay" title="播放/暂停">
-                <i class="fas fa-play" id="musicPlayIcon"></i>
-            </button>
-            <button class="music-btn" id="musicNext" title="下一首">
-                <i class="fas fa-step-forward"></i>
-            </button>
-            <button class="music-btn music-btn-small" id="musicRepeat" title="循环播放">
-                <i class="fas fa-redo"></i>
-            </button>
-        </div>
-
-        <!-- 音量控制 -->
-        <div class="music-volume">
-            <i class="fas fa-volume-up" id="musicVolumeIcon"></i>
-            <div class="music-volume-bar" id="musicVolumeBar">
-                <div class="music-volume-fill" id="musicVolumeFill"></div>
+            <div class="config-hint">
+                💡 打开网易云网页版歌单，地址栏 <code>playlist?id=</code> 后面的数字即歌单ID<br>
+                💡 如果某个API不可用，切换其他选项再试
             </div>
         </div>
 
-        <!-- 播放列表 -->
-        <div class="music-playlist-toggle" id="musicPlaylistToggle">
-            <span>播放列表</span>
-            <i class="fas fa-chevron-up" id="playlistChevron"></i>
-        </div>
-        <div class="music-playlist" id="musicPlaylist">
-            <!-- 播放列表由JS动态生成 -->
+        <!-- APlayer 容器 (由 MetingJS 自动接管) -->
+        <div class="aplayer-container" id="aplayerContainer">
+            <meting-js
+              id="metingMain"
+              server="netease"
+              type="playlist"
+              mid="7627381372"
+              api="https://meting.imsyy.top/api"
+              fixed="false"
+              mini="false"
+              autoplay="false"
+              theme="#7c5cff"
+              loop="all"
+              order="random"
+              preload="auto"
+              volume="0.7"
+              list-folded="false"
+              list-max-height="200px"
+              lrc-type="1"
+            ></meting-js>
         </div>
 
-        <!-- 音频可视化 -->
-        <div class="music-visualizer" id="musicVisualizer">
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
-            <div class="music-bar"></div>
+        <!-- 加载状态 -->
+        <div class="music-loading" id="musicLoading">
+            <div class="loading-spinner"></div>
+            <span>正在加载歌单...</span>
+        </div>
+
+        <!-- 错误提示 -->
+        <div class="music-error" id="musicError">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>歌单加载失败，请尝试切换API或检查ID</span>
+        </div>
+
+        <!-- 快捷歌单 -->
+        <div class="quick-playlists">
+            <div class="quick-playlists-title">⚡ 快捷歌单</div>
+            <div class="quick-playlists-list">
+                <button class="quick-tag active" data-server="netease" data-type="playlist" data-id="7627381372">华语流行</button>
+                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="2829887734">轻音乐</button>
+                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="2397260014">编程专注</button>
+                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="2181880401">深夜电台</button>
+                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="5052880109">Lo-fi</button>
+            </div>
         </div>
     </div>
 

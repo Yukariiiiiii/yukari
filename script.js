@@ -259,354 +259,224 @@ if (gradientText) {
 }
 
 // ============================
-// Music Player
+// Music Player (MetingJS + APlayer)
 // ============================
 (function () {
-    // 播放列表 - 使用免费音乐CDN链接
-    const playlist = [
-        {
-            title: "Lo-fi Study Beats",
-            artist: "Chillhop Music",
-            url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
-            duration: "3:45"
-        },
-        {
-            title: "Ambient Piano",
-            artist: "Kevin MacLeod",
-            url: "https://cdn.pixabay.com/download/audio/2022/10/30/audio_3477aef8e2.mp3?filename=sleepy-cat-13181.mp3",
-            duration: "2:30"
-        },
-        {
-            title: "Coding Focus",
-            artist: "Deep Think",
-            url: "https://cdn.pixabay.com/download/audio/2023/03/16/audio_c8e9b22b16.mp3?filename=the-curious-cat-13550.mp3",
-            duration: "4:12"
-        },
-        {
-            title: "Night Drive",
-            artist: "Synthwave",
-            url: "https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3?filename=neon-lights-13826.mp3",
-            duration: "3:28"
-        },
-        {
-            title: "Morning Coffee",
-            artist: "Acoustic Vibes",
-            url: "https://cdn.pixabay.com/download/audio/2022/04/27/audio_27b6e0e35f.mp3?filename=acoustic-breeze-14366.mp3",
-            duration: "3:15"
-        }
-    ];
-
-    // 备用播放列表（如果Pixabay链接失效）
-    const fallbackPlaylist = [
-        {
-            title: "Demo Track 1",
-            artist: "Unknown",
-            url: "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=",
-            duration: "0:05"
-        }
-    ];
-
-    let currentIndex = 0;
-    let isPlaying = false;
-    let isShuffle = false;
-    let isRepeat = false;
-    let currentTime = 0;
-    let duration = 0;
-    let progressInterval = null;
-
-    // 创建 audio 元素
-    const audio = new Audio();
-    audio.volume = 0.7;
-    audio.preload = 'metadata';
-
-    // DOM 元素
     const musicToggle = document.getElementById('musicToggle');
     const musicPlayer = document.getElementById('musicPlayer');
     const musicClose = document.getElementById('musicClose');
-    const musicPlay = document.getElementById('musicPlay');
-    const musicPlayIcon = document.getElementById('musicPlayIcon');
-    const musicPrev = document.getElementById('musicPrev');
-    const musicNext = document.getElementById('musicNext');
-    const musicShuffle = document.getElementById('musicShuffle');
-    const musicRepeat = document.getElementById('musicRepeat');
-    const musicDisc = document.getElementById('musicDisc');
-    const musicSongTitle = document.getElementById('musicSongTitle');
-    const musicSongArtist = document.getElementById('musicSongArtist');
-    const musicProgressBar = document.getElementById('musicProgressBar');
-    const musicProgressFill = document.getElementById('musicProgressFill');
-    const musicProgressThumb = document.getElementById('musicProgressThumb');
-    const musicCurrentTime = document.getElementById('musicCurrentTime');
-    const musicDuration = document.getElementById('musicDuration');
-    const musicVolumeBar = document.getElementById('musicVolumeBar');
-    const musicVolumeFill = document.getElementById('musicVolumeFill');
-    const musicVolumeIcon = document.getElementById('musicVolumeIcon');
-    const musicPlaylistToggle = document.getElementById('musicPlaylistToggle');
-    const musicPlaylist = document.getElementById('musicPlaylist');
-    const visualizerBars = document.querySelectorAll('.music-bar');
+    const musicConfigBtn = document.getElementById('musicConfigBtn');
+    const musicConfigPanel = document.getElementById('musicConfigPanel');
+    const configServer = document.getElementById('configServer');
+    const configType = document.getElementById('configType');
+    const configId = document.getElementById('configId');
+    const configApi = document.getElementById('configApi');
+    const configApply = document.getElementById('configApply');
+    const aplayerContainer = document.getElementById('aplayerContainer');
+    const quickTags = document.querySelectorAll('.quick-tag');
+    const musicLoading = document.getElementById('musicLoading');
+    const musicError = document.getElementById('musicError');
 
-    // 渲染播放列表
-    function renderPlaylist() {
-        musicPlaylist.innerHTML = playlist.map((song, index) => `
-            <div class="playlist-item ${index === currentIndex ? 'active' : ''}" data-index="${index}">
-                <div class="playlist-item-num">${index === currentIndex && isPlaying ? '<i class="fas fa-volume-up"></i>' : String(index + 1).padStart(2, '0')}</div>
-                <div class="playlist-item-info">
-                    <div class="playlist-item-title">${song.title}</div>
-                    <div class="playlist-item-artist">${song.artist}</div>
-                </div>
-                <div class="playlist-item-duration">${song.duration}</div>
-            </div>
-        `).join('');
+    // 从 localStorage 读取保存的配置
+    const saved = localStorage.getItem('musicConfig');
+    let currentConfig = saved ? JSON.parse(saved) : {
+        server: 'netease',
+        type: 'playlist',
+        id: '7627381372',
+        api: 'https://meting.imsyy.top/api'
+    };
 
-        // 绑定点击事件
-        musicPlaylist.querySelectorAll('.playlist-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const idx = parseInt(item.dataset.index);
-                loadSong(idx);
-                playAudio();
-            });
-        });
-    }
+    // 初始化表单值
+    configServer.value = currentConfig.server;
+    configType.value = currentConfig.type;
+    configId.value = currentConfig.id;
+    configApi.value = currentConfig.api;
 
-    // 加载歌曲
-    function loadSong(index) {
-        currentIndex = index;
-        const song = playlist[index];
-        audio.src = song.url;
-        musicSongTitle.textContent = song.title;
-        musicSongArtist.textContent = song.artist;
-        musicDuration.textContent = song.duration;
-
-        // 更新播放列表高亮
-        renderPlaylist();
-    }
-
-    // 播放
-    function playAudio() {
-        audio.play().then(() => {
-            isPlaying = true;
-            musicPlayIcon.className = 'fas fa-pause';
-            musicToggle.classList.add('playing');
-            musicDisc.classList.add('playing');
-            startVisualizer();
-            startProgressTracking();
-        }).catch(err => {
-            console.warn('播放失败，尝试下一首:', err);
-            // 自动尝试下一首
-            if (currentIndex < playlist.length - 1) {
-                loadSong(currentIndex + 1);
-                playAudio();
-            }
-        });
-    }
-
-    // 暂停
-    function pauseAudio() {
-        audio.pause();
-        isPlaying = false;
-        musicPlayIcon.className = 'fas fa-play';
-        musicToggle.classList.remove('playing');
-        musicDisc.classList.remove('playing');
-        stopVisualizer();
-        stopProgressTracking();
-    }
-
-    // 进度跟踪
-    function startProgressTracking() {
-        stopProgressTracking();
-        progressInterval = setInterval(() => {
-            if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                musicProgressFill.style.width = percent + '%';
-                musicProgressThumb.style.left = percent + '%';
-                musicCurrentTime.textContent = formatTime(audio.currentTime);
-            }
-        }, 500);
-    }
-
-    function stopProgressTracking() {
-        if (progressInterval) {
-            clearInterval(progressInterval);
-            progressInterval = null;
-        }
-    }
-
-    // 可视化动画
-    function startVisualizer() {
-        visualizerBars.forEach(bar => bar.classList.add('active'));
-    }
-
-    function stopVisualizer() {
-        visualizerBars.forEach(bar => bar.classList.remove('active'));
-    }
-
-    // 格式化时间
-    function formatTime(seconds) {
-        if (isNaN(seconds)) return '0:00';
-        const m = Math.floor(seconds / 60);
-        const s = Math.floor(seconds % 60);
-        return `${m}:${s.toString().padStart(2, '0')}`;
-    }
-
-    // 下一首
-    function nextSong() {
-        let nextIdx;
-        if (isShuffle) {
-            nextIdx = Math.floor(Math.random() * playlist.length);
-        } else {
-            nextIdx = (currentIndex + 1) % playlist.length;
-        }
-        loadSong(nextIdx);
-        if (isPlaying) playAudio();
-    }
-
-    // 上一首
-    function prevSong() {
-        let prevIdx;
-        if (isShuffle) {
-            prevIdx = Math.floor(Math.random() * playlist.length);
-        } else {
-            prevIdx = (currentIndex - 1 + playlist.length) % playlist.length;
-        }
-        loadSong(prevIdx);
-        if (isPlaying) playAudio();
-    }
-
-    // 事件监听
+    // 打开/关闭播放器
     musicToggle.addEventListener('click', () => {
         musicPlayer.classList.toggle('active');
-        // 第一次打开时加载歌曲
-        if (!audio.src && playlist.length > 0) {
-            loadSong(0);
-        }
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 400);
     });
 
     musicClose.addEventListener('click', () => {
         musicPlayer.classList.remove('active');
     });
 
-    musicPlay.addEventListener('click', () => {
-        if (!audio.src) loadSong(0);
-        if (isPlaying) {
-            pauseAudio();
-        } else {
-            playAudio();
-        }
+    // 配置面板
+    musicConfigBtn.addEventListener('click', () => {
+        musicConfigPanel.classList.toggle('open');
     });
 
-    musicNext.addEventListener('click', nextSong);
-    musicPrev.addEventListener('click', prevSong);
-
-    musicShuffle.addEventListener('click', () => {
-        isShuffle = !isShuffle;
-        musicShuffle.classList.toggle('active', isShuffle);
-    });
-
-    musicRepeat.addEventListener('click', () => {
-        isRepeat = !isRepeat;
-        musicRepeat.classList.toggle('active', isRepeat);
-        audio.loop = isRepeat;
-    });
-
-    // 进度条点击
-    musicProgressBar.addEventListener('click', (e) => {
-        const rect = musicProgressBar.getBoundingClientRect();
-        const percent = (e.clientX - rect.left) / rect.width;
-        if (audio.duration) {
-            audio.currentTime = percent * audio.duration;
-        }
-    });
-
-    // 音量控制
-    musicVolumeBar.addEventListener('click', (e) => {
-        const rect = musicVolumeBar.getBoundingClientRect();
-        const percent = (e.clientX - rect.left) / rect.width;
-        const vol = Math.max(0, Math.min(1, percent));
-        audio.volume = vol;
-        musicVolumeFill.style.width = (vol * 100) + '%';
-        updateVolumeIcon(vol);
-    });
-
-    function updateVolumeIcon(vol) {
-        if (vol === 0) {
-            musicVolumeIcon.className = 'fas fa-volume-mute';
-        } else if (vol < 0.5) {
-            musicVolumeIcon.className = 'fas fa-volume-down';
-        } else {
-            musicVolumeIcon.className = 'fas fa-volume-up';
-        }
+    // 保存配置到 localStorage
+    function saveConfig() {
+        localStorage.setItem('musicConfig', JSON.stringify(currentConfig));
     }
 
-    // 播放列表展开/收起
-    musicPlaylistToggle.addEventListener('click', () => {
-        musicPlaylist.classList.toggle('open');
-        musicPlaylistToggle.classList.toggle('open');
-    });
+    // 应用配置
+    configApply.addEventListener('click', () => {
+        const server = configServer.value;
+        const type = configType.value;
+        const id = configId.value.trim();
+        const api = configApi.value.trim();
 
-    // 歌曲结束
-    audio.addEventListener('ended', () => {
-        if (!isRepeat) {
-            nextSong();
+        if (!id) {
+            showError('请输入歌单/专辑/歌曲 ID');
+            return;
         }
+
+        currentConfig = { server, type, id, api };
+        saveConfig();
+        rebuildMeting();
+        musicConfigPanel.classList.remove('open');
+        quickTags.forEach(tag => tag.classList.remove('active'));
     });
 
-    // 音频元数据加载
-    audio.addEventListener('loadedmetadata', () => {
-        duration = audio.duration;
-        musicDuration.textContent = formatTime(duration);
+    // 快捷歌单
+    quickTags.forEach(tag => {
+        tag.addEventListener('click', () => {
+            const server = tag.dataset.server;
+            const type = tag.dataset.type;
+            const id = tag.dataset.id;
+
+            configServer.value = server;
+            configType.value = type;
+            configId.value = id;
+            currentConfig = { server, type, id, api: currentConfig.api };
+            saveConfig();
+            rebuildMeting();
+
+            quickTags.forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+        });
     });
 
-    // 音频错误
-    audio.addEventListener('error', () => {
-        console.warn('音频加载失败:', playlist[currentIndex].title);
-        musicSongTitle.textContent = '播放失败';
-        musicSongArtist.textContent = '请检查网络或选择其他歌曲';
-        isPlaying = false;
-        musicPlayIcon.className = 'fas fa-play';
-        musicToggle.classList.remove('playing');
-        musicDisc.classList.remove('playing');
-    });
+    // 显示错误
+    function showError(msg) {
+        musicError.querySelector('span').textContent = msg;
+        musicError.classList.add('show');
+        musicLoading.classList.remove('show');
+        setTimeout(() => musicError.classList.remove('show'), 5000);
+    }
+
+    // 显示加载
+    function showLoading() {
+        musicLoading.classList.add('show');
+        musicError.classList.remove('show');
+    }
+
+    // 隐藏加载
+    function hideLoading() {
+        musicLoading.classList.remove('show');
+    }
+
+    // 重建 MetingJS 组件
+    function rebuildMeting() {
+        const { server, type, id, api } = currentConfig;
+        showLoading();
+
+        // 销毁旧 APlayer 实例
+        if (window.aplayers && window.aplayers.length) {
+            window.aplayers.forEach(p => {
+                try { p.destroy(); } catch (e) {}
+            });
+            window.aplayers = [];
+        }
+
+        // 重建 meting-js 元素
+        aplayerContainer.innerHTML = `
+            <meting-js
+              id="metingMain"
+              server="${server}"
+              type="${type}"
+              mid="${id}"
+              api="${api}"
+              fixed="false"
+              mini="false"
+              autoplay="false"
+              theme="#7c5cff"
+              loop="all"
+              order="random"
+              preload="auto"
+              volume="0.7"
+              list-folded="false"
+              list-max-height="200px"
+              lrc-type="1"
+            ></meting-js>
+        `;
+
+        // 通知 MetingJS 重新解析
+        document.dispatchEvent(new CustomEvent('meting:reload'));
+        if (window.MetingJSEvent) {
+            window.MetingJSEvent.emit('reload');
+        }
+
+        setTimeout(() => {
+            hideLoading();
+            window.dispatchEvent(new Event('resize'));
+        }, 1500);
+    }
+
+    // 等待 APlayer 就绪并绑定事件
+    function bindAPlayer() {
+        const check = setInterval(() => {
+            if (window.aplayers && window.aplayers.length > 0) {
+                clearInterval(check);
+                const ap = window.aplayers[0];
+
+                ap.on('play', () => musicToggle.classList.add('playing'));
+                ap.on('pause', () => musicToggle.classList.remove('playing'));
+                ap.on('error', () => {
+                    console.warn('歌曲加载失败');
+                    musicToggle.classList.remove('playing');
+                });
+                ap.on('loadstart', () => showLoading());
+                ap.on('canplay', () => hideLoading());
+
+                hideLoading();
+            }
+        }, 500);
+
+        // 10秒超时
+        setTimeout(() => {
+            clearInterval(check);
+            if (!window.aplayers || !window.aplayers.length) {
+                showError('加载超时，请尝试切换API地址');
+            }
+        }, 10000);
+    }
+
+    // 初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindAPlayer);
+    } else {
+        bindAPlayer();
+    }
 
     // 键盘快捷键
     document.addEventListener('keydown', (e) => {
-        // 只在播放器打开时响应
         if (!musicPlayer.classList.contains('active')) return;
+        if (!window.aplayers || !window.aplayers.length) return;
+        const ap = window.aplayers[0];
 
         switch (e.key) {
             case ' ':
                 e.preventDefault();
-                musicPlay.click();
+                ap.toggle();
                 break;
             case 'ArrowRight':
-                nextSong();
+                ap.skipForward();
                 break;
             case 'ArrowLeft':
-                prevSong();
+                ap.skipBack();
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                audio.volume = Math.min(1, audio.volume + 0.1);
-                musicVolumeFill.style.width = (audio.volume * 100) + '%';
-                updateVolumeIcon(audio.volume);
+                ap.volume(Math.min(1, ap.volume() + 0.1));
                 break;
             case 'ArrowDown':
                 e.preventDefault();
-                audio.volume = Math.max(0, audio.volume - 0.1);
-                musicVolumeFill.style.width = (audio.volume * 100) + '%';
-                updateVolumeIcon(audio.volume);
+                ap.volume(Math.max(0, ap.volume() - 0.1));
                 break;
         }
     });
-
-    // 初始化
-    renderPlaylist();
-    musicVolumeFill.style.width = '70%';
-
-    // 保存播放器状态到全局
-    window.__musicPlayer = {
-        play: playAudio,
-        pause: pauseAudio,
-        next: nextSong,
-        prev: prevSong,
-        loadSong: loadSong
-    };
 })();
