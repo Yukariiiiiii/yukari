@@ -25,6 +25,10 @@
                 <a href="#contact" class="nav-link">联系</a>
             </div>
             <div class="nav-actions">
+                <button class="music-toggle" id="musicToggle" title="打开音乐播放器">
+                    <i class="fas fa-music"></i>
+                    <span class="music-toggle-bar"></span>
+                </button>
                 <button class="theme-toggle" id="themeToggle" title="切换主题">
                     <i class="fas fa-sun"></i>
                 </button>
@@ -52,7 +56,7 @@
                     欢迎来到我的博客
                 </div>
                 <h1 class="hero-title">
-                    你好，我是<span class="gradient-text">Yukari</span>
+                    你好，我是<span class="gradient-text">你的名字</span>
                 </h1>
                 <p class="hero-subtitle">
                     一名全栈开发者 / 技术博主 / 终身学习者<br>
@@ -482,6 +486,97 @@
             </div>
         </div>
     </section>
+
+    <!-- 音乐播放器 -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-player-header">
+            <div class="music-player-title">
+                <i class="fas fa-music"></i>
+                <span>正在播放</span>
+            </div>
+            <button class="music-close" id="musicClose" title="收起播放器">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+
+        <!-- 唱片动画 -->
+        <div class="music-disc-container">
+            <div class="music-disc" id="musicDisc">
+                <div class="music-disc-center">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="music-disc-ring"></div>
+            </div>
+        </div>
+
+        <!-- 歌曲信息 -->
+        <div class="music-info">
+            <div class="music-song-title" id="musicSongTitle">选择一首歌曲</div>
+            <div class="music-song-artist" id="musicSongArtist">--</div>
+        </div>
+
+        <!-- 进度条 -->
+        <div class="music-progress-container">
+            <span class="music-time" id="musicCurrentTime">0:00</span>
+            <div class="music-progress-bar" id="musicProgressBar">
+                <div class="music-progress-fill" id="musicProgressFill"></div>
+                <div class="music-progress-thumb" id="musicProgressThumb"></div>
+            </div>
+            <span class="music-time" id="musicDuration">0:00</span>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="music-controls">
+            <button class="music-btn music-btn-small" id="musicShuffle" title="随机播放">
+                <i class="fas fa-random"></i>
+            </button>
+            <button class="music-btn" id="musicPrev" title="上一首">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="music-btn music-btn-play" id="musicPlay" title="播放/暂停">
+                <i class="fas fa-play" id="musicPlayIcon"></i>
+            </button>
+            <button class="music-btn" id="musicNext" title="下一首">
+                <i class="fas fa-step-forward"></i>
+            </button>
+            <button class="music-btn music-btn-small" id="musicRepeat" title="循环播放">
+                <i class="fas fa-redo"></i>
+            </button>
+        </div>
+
+        <!-- 音量控制 -->
+        <div class="music-volume">
+            <i class="fas fa-volume-up" id="musicVolumeIcon"></i>
+            <div class="music-volume-bar" id="musicVolumeBar">
+                <div class="music-volume-fill" id="musicVolumeFill"></div>
+            </div>
+        </div>
+
+        <!-- 播放列表 -->
+        <div class="music-playlist-toggle" id="musicPlaylistToggle">
+            <span>播放列表</span>
+            <i class="fas fa-chevron-up" id="playlistChevron"></i>
+        </div>
+        <div class="music-playlist" id="musicPlaylist">
+            <!-- 播放列表由JS动态生成 -->
+        </div>
+
+        <!-- 音频可视化 -->
+        <div class="music-visualizer" id="musicVisualizer">
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+            <div class="music-bar"></div>
+        </div>
+    </div>
 
     <!-- 页脚 -->
     <footer class="footer">
