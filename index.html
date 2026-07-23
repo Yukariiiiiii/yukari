@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人博客</title>
+    <title>MyGO!!!!! - 个人博客</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <!-- ヨルシカ 播放器 (B站音源，国内直连) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- 星空/星屑背景 -->
+    <div class="starry-bg" id="starryBg"></div>
+    <div class="aurora-bg"></div>
+
     <!-- 导航栏 -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">
-                <i class="fas fa-code"></i>
-                <span>DevBlog</span>
+                <span class="logo-mark">✦</span>
+                <span class="logo-text">My<span class="accent">GO</span>!!!!!</span>
             </a>
             <div class="nav-menu" id="navMenu">
                 <a href="#home" class="nav-link active">首页</a>
-                <a href="#about" class="nav-link">关于我</a>
-                <a href="#skills" class="nav-link">技能</a>
-                <a href="#articles" class="nav-link">文章</a>
-                <a href="#projects" class="nav-link">项目</a>
+                <a href="#about" class="nav-link">迷子</a>
+                <a href="#lyrics" class="nav-link">歌词</a>
+                <a href="#articles" class="nav-link">记录</a>
                 <a href="#links" class="nav-link">友链</a>
-                <a href="#contact" class="nav-link">联系</a>
+                <a href="#contact" class="nav-link">信号</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle" title="切换主题">
+                <button class="theme-toggle" id="themeToggle" title="切换世界線">
                     <i class="fas fa-sun"></i>
                 </button>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -37,75 +39,64 @@
         </div>
     </nav>
 
-    <!-- 首页 Hero 区域 -->
+    <!-- Hero 区域 -->
     <section class="hero" id="home">
-        <div class="hero-bg">
-            <div class="floating-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <div class="shape shape-3"></div>
-                <div class="shape shape-4"></div>
-            </div>
+        <div class="hero-bg-elements">
+            <div class="compass-logo"></div>
+            <div class="starfield"></div>
         </div>
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
                     <span class="status-dot"></span>
-                    欢迎来到我的博客
+                    <span>迷子でもいい、前へ進め</span>
                 </div>
                 <h1 class="hero-title">
-                    你好，我是<span class="gradient-text">你的名字</span>
+                    <span class="line1">即使<span class="gradient-text">迷茫</span></span>
+                    <span class="line2">也要<span class="gradient-text">前行</span></span>
                 </h1>
                 <p class="hero-subtitle">
-                    一名全栈开发者 / 技术博主 / 终身学习者<br>
-                    专注于 Web 开发、人工智能与开源技术
+                    这里是我的个人空间<br>
+                    记录迷茫、思考、和那些说不出口的话
                 </p>
                 <div class="hero-actions">
-                    <a href="#articles" class="btn btn-primary">
-                        <i class="fas fa-book-open"></i>
-                        阅读博客
+                    <a href="#lyrics" class="btn btn-primary">
+                        <i class="fas fa-microphone"></i>
+                        迷星叫
                     </a>
-                    <a href="#contact" class="btn btn-outline">
-                        <i class="fas fa-paper-plane"></i>
-                        联系我
+                    <a href="#articles" class="btn btn-outline">
+                        <i class="fas fa-book-open"></i>
+                        読んでください
                     </a>
                 </div>
-                <div class="hero-social">
-                    <a href="#" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="social-link" title="邮箱"><i class="fas fa-envelope"></i></a>
+                <div class="hero-meta">
+                    <span><i class="fas fa-map-pin"></i> 池袋 / 丰岛区</span>
+                    <span><i class="fas fa-star"></i> 5人組バンド</span>
+                    <span><i class="fas fa-compass"></i> 北极星のように</span>
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="code-window">
-                    <div class="code-header">
-                        <div class="code-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+                <div class="vinyl-record" id="vinylRecord">
+                    <div class="vinyl-inner">
+                        <div class="vinyl-label">
+                            <span class="vinyl-title">迷星叫</span>
+                            <span class="vinyl-sub">MyGO!!!!!</span>
                         </div>
-                        <span class="code-title">about_me.js</span>
+                        <div class="vinyl-grooves">
+                            <div class="groove g1"></div>
+                            <div class="groove g2"></div>
+                            <div class="groove g3"></div>
+                            <div class="groove g4"></div>
+                        </div>
                     </div>
-                    <div class="code-body">
-                        <pre><code><span class="code-keyword">const</span> <span class="code-variable">developer</span> = {
-  <span class="code-property">name</span>: <span class="code-string">"你的名字"</span>,
-  <span class="code-property">role</span>: <span class="code-string">"Full Stack Developer"</span>,
-  <span class="code-property">skills</span>: [
-    <span class="code-string">"JavaScript"</span>,
-    <span class="code-string">"Python"</span>,
-    <span class="code-string">"React"</span>,
-    <span class="code-string">"Node.js"</span>
-  ],
-  <span class="code-property">passion</span>: <span class="code-string">"Building amazing things"</span>,
-  <span class="code-property">coffee</span>: <span class="code-keyword">true</span>,
-  <span class="code-property">sleep</span>: <span class="code-string">"sometimes"</span>
-};
-
-<span class="code-keyword">function</span> <span class="code-function">sayHi</span>() {
-  console.<span class="code-function">log</span>(<span class="code-string">`你好，世界! ☕`</span>);
-}</code></pre>
-                    </div>
+                    <div class="vinyl-shine"></div>
+                </div>
+                <div class="hero-deco">
+                    <span class="deco-text">"壱雫空"</span>
+                    <span class="deco-text">"碧天伴走"</span>
+                    <span class="deco-text">"影色舞"</span>
+                    <span class="deco-text">"潜在表明"</span>
+                    <span class="deco-text">"音一会"</span>
                 </div>
             </div>
         </div>
@@ -113,135 +104,213 @@
             <div class="mouse">
                 <div class="wheel"></div>
             </div>
-            <span>向下滚动</span>
+            <span>下へ進む</span>
         </div>
     </section>
 
-    <!-- 关于我 -->
+    <!-- 关于我（迷子セクション） -->
     <section class="section about" id="about">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">关于我</span>
-                <h2 class="section-title">了解我的故事</h2>
+                <span class="section-tag"><i class="fas fa-compass"></i> 迷子について</span>
+                <h2 class="section-title">关于这个迷茫的人</h2>
+                <p class="section-desc">迷子でもいい、迷子でも進め</p>
             </div>
             <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-user-astronaut"></i>
+                <div class="about-card member-card" style="--member-color: #3388BB;">
+                    <div class="member-avatar" style="background: linear-gradient(135deg, #3388BB, #5BAFD9);">
+                        <span>灯</span>
                     </div>
-                    <h3>我是谁</h3>
-                    <p>
-                        我是一名热爱技术的全栈开发者，拥有多年的软件开发经验。
-                        从后端架构到前端交互，从数据库设计到 DevOps 部署，
-                        我享受每一个解决问题的过程。
-                    </p>
+                    <h3>高松灯</h3>
+                    <p class="member-role">Vo. 主唱</p>
+                    <p>内向而敏感，却在笔记本上写下不绝的话语。喜欢观察星空，把心情化成诗句。即使在迷茫中，也会抓紧那颗跳动的心。</p>
+                    <div class="member-trait">
+                        <span>✏️ 写诗</span>
+                        <span>🌌 观星</span>
+                        <span>📓 笔记本</span>
+                    </div>
                 </div>
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-rocket"></i>
+                <div class="about-card member-card" style="--member-color: #FF6B9D;">
+                    <div class="member-avatar" style="background: linear-gradient(135deg, #FF6B9D, #FF8FB1);">
+                        <span>音</span>
                     </div>
-                    <h3>我的目标</h3>
-                    <p>
-                        致力于用代码创造价值，通过技术博客分享知识，
-                        帮助更多开发者成长。同时持续学习新技术，
-                        探索人工智能、云计算等前沿领域。
-                    </p>
+                    <h3>千早爱音</h3>
+                    <p class="member-role">Gt. 吉他</p>
+                    <p>充满活力的吉他手，虽然有时候爱出风头，但正是她的存在让灯能够向前走。相信「迷子でもいい、前へ進め」。</p>
+                    <div class="member-trait">
+                        <span>🎸 吉他</span>
+                        <span>✨ 活力</span>
+                        <span>🏫 交友</span>
+                    </div>
                 </div>
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-heart"></i>
+                <div class="about-card member-card" style="--member-color: #FFD93D;">
+                    <div class="member-avatar" style="background: linear-gradient(135deg, #FFD93D, #FFE889);">
+                        <span>奈</span>
                     </div>
-                    <h3>我的兴趣</h3>
-                    <p>
-                        除了编码之外，我还喜欢摄影、阅读和旅行。
-                        相信跨领域的兴趣能够激发创造力，
-                        让技术方案更有温度和人文关怀。
-                    </p>
+                    <h3>要乐奈</h3>
+                    <p class="member-role">Gt. 吉他</p>
+                    <p>随心所欲的吉他手，一下「有趣」一下「无趣」。除了抹茶和荞麦面，对什么都能保持若即若离。但音乐响起时，她比谁都认真。</p>
+                    <div class="member-trait">
+                        <span>🐱 猫</span>
+                        <span>🍵 抹茶</span>
+                        <span>🎵 即兴</span>
+                    </div>
+                </div>
+                <div class="about-card member-card" style="--member-color: #F5A623;">
+                    <div class="member-avatar" style="background: linear-gradient(135deg, #F5A623, #F7C56E);">
+                        <span>世</span>
+                    </div>
+                    <h3>长崎素世</h3>
+                    <p class="member-role">Ba. 贝斯</p>
+                    <p>曾经属于 CRYCHIC 的贝斯手，温柔的外表下有着不为人知的执念。池袋塔楼里的少女，用自己的方式守护着重要的东西。</p>
+                    <div class="member-trait">
+                        <span>🐚 贝斯</span>
+                        <span>🌊 深海</span>
+                        <span>🎻 CRYCHIC</span>
+                    </div>
+                </div>
+                <div class="about-card member-card" style="--member-color: #9B59B6;">
+                    <div class="member-avatar" style="background: linear-gradient(135deg, #9B59B6, #C39BD3);">
+                        <span>希</span>
+                    </div>
+                    <h3>椎名立希</h3>
+                    <p class="member-role">Dr. 鼓手</p>
+                    <p>最像「普通人」的鼓手，却背负着最重的责任感。她对乐队既严格又珍惜，是推动所有人前进的引擎。最想听「春日影」的人。</p>
+                    <div class="member-trait">
+                        <span>🥁 鼓</span>
+                        <span>💪 热血</span>
+                        <span>📋 认真</span>
+                    </div>
+                </div>
+                <div class="about-card member-card" style="--member-color: #00D4AA;">
+                    <div class="member-avatar" style="background: linear-gradient(135deg, #00D4AA, #5EF0C8);">
+                        <span>私</span>
+                    </div>
+                    <h3>关于我自己</h3>
+                    <p class="member-role">???</p>
+                    <p>一个还在寻找方向的人。写代码、写文字、弹吉他（偶尔）。在这个 blog 里记录下那些说不出口的心情，就像灯在笔记本上写下的诗句。</p>
+                    <div class="member-trait">
+                        <span>💻 开发</span>
+                        <span>📝 写作</span>
+                        <span>🎧 聆听</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 技能展示 -->
+    <!-- 歌词/语录区域 -->
+    <section class="section lyrics" id="lyrics">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fas fa-quote-left"></i> 迷跡波</span>
+                <h2 class="section-title">一些说不出口的话</h2>
+                <p class="section-desc">潜在表明 — 那些藏在心里的词句</p>
+            </div>
+            <div class="lyrics-grid">
+                <div class="lyric-card">
+                    <div class="lyric-mark">"</div>
+                    <p class="lyric-text">即使迷茫也没关系<br>即使迷茫着也要前进</p>
+                    <p class="lyric-source">— 迷星叫</p>
+                </div>
+                <div class="lyric-card">
+                    <div class="lyric-mark">"</div>
+                    <p class="lyric-text">一瞬の積み重ねが<br>一生になる</p>
+                    <p class="lyric-source">— 碧天伴走</p>
+                </div>
+                <div class="lyric-card">
+                    <div class="lyric-mark">"</div>
+                    <p class="lyric-text">誰かのために<br>歌いたいわけじゃない<br>歌わずにはいられない</p>
+                    <p class="lyric-source">— 歌いましょう鳴らしましょう</p>
+                </div>
+                <div class="lyric-card">
+                    <div class="lyric-mark">"</div>
+                    <p class="lyric-text">春の陽だまり<br>迷い猫</p>
+                    <p class="lyric-source">— 影色舞</p>
+                </div>
+                <div class="lyric-card">
+                    <div class="lyric-mark">"</div>
+                    <p class="lyric-text">音一会<br>今、ここにいる</p>
+                    <p class="lyric-source">— 音一会</p>
+                </div>
+                <div class="lyric-card personal">
+                    <div class="lyric-mark">"</div>
+                    <p class="lyric-text">写代码的深夜<br>耳机里循环着 MyGO<br>觉得世界也没那么糟</p>
+                    <p class="lyric-source">— 某人的深夜独白</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能 -->
     <section class="section skills" id="skills">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">技能栈</span>
-                <h2 class="section-title">我的技术工具箱</h2>
+                <span class="section-tag"><i class="fas fa-bolt"></i> 技術スタック</span>
+                <h2 class="section-title">我的工具箱</h2>
+                <p class="section-desc">就像乐队需要每种乐器，开发也需要每种技能</p>
             </div>
             <div class="skills-container">
                 <div class="skill-category">
-                    <h3><i class="fas fa-laptop-code"></i> 前端开发</h3>
+                    <h3><i class="fas fa-code"></i> 前端 — 旋律</h3>
                     <div class="skill-items">
                         <div class="skill-item" data-level="90">
-                            <div class="skill-icon"><i class="fab fa-js"></i></div>
-                            <span>JavaScript</span>
+                            <span>JavaScript / TypeScript</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 90%"></div></div>
                         </div>
                         <div class="skill-item" data-level="85">
-                            <div class="skill-icon"><i class="fab fa-react"></i></div>
-                            <span>React</span>
+                            <span>React / Next.js</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 85%"></div></div>
                         </div>
                         <div class="skill-item" data-level="88">
-                            <div class="skill-icon"><i class="fab fa-html5"></i></div>
-                            <span>HTML/CSS</span>
+                            <span>HTML / CSS / SCSS</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 88%"></div></div>
                         </div>
                         <div class="skill-item" data-level="80">
-                            <div class="skill-icon"><i class="fab fa-vuejs"></i></div>
-                            <span>Vue.js</span>
+                            <span>Vue / Nuxt</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 80%"></div></div>
                         </div>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-server"></i> 后端开发</h3>
+                    <h3><i class="fas fa-server"></i> 后端 — 节奏</h3>
                     <div class="skill-items">
                         <div class="skill-item" data-level="87">
-                            <div class="skill-icon"><i class="fab fa-python"></i></div>
-                            <span>Python</span>
+                            <span>Python / FastAPI</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 87%"></div></div>
                         </div>
                         <div class="skill-item" data-level="83">
-                            <div class="skill-icon"><i class="fab fa-node-js"></i></div>
-                            <span>Node.js</span>
+                            <span>Node.js / Express</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 83%"></div></div>
                         </div>
                         <div class="skill-item" data-level="78">
-                            <div class="skill-icon"><i class="fas fa-database"></i></div>
-                            <span>PostgreSQL</span>
+                            <span>PostgreSQL / Redis</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 78%"></div></div>
                         </div>
                         <div class="skill-item" data-level="75">
-                            <div class="skill-icon"><i class="fas fa-database"></i></div>
-                            <span>MongoDB</span>
+                            <span>Docker / K8s</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 75%"></div></div>
                         </div>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-tools"></i> 工具 & 其他</h3>
+                    <h3><i class="fas fa-heart"></i> 兴趣 — 歌词</h3>
                     <div class="skill-items">
                         <div class="skill-item" data-level="85">
-                            <div class="skill-icon"><i class="fab fa-docker"></i></div>
-                            <span>Docker</span>
+                            <span>吉他</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 85%"></div></div>
                         </div>
-                        <div class="skill-item" data-level="80">
-                            <div class="skill-icon"><i class="fab fa-git-alt"></i></div>
-                            <span>Git</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 80%"></div></div>
-                        </div>
                         <div class="skill-item" data-level="70">
-                            <div class="skill-icon"><i class="fab fa-aws"></i></div>
-                            <span>AWS</span>
+                            <span>作词 / 写诗</span>
                             <div class="skill-bar"><div class="skill-progress" style="--level: 70%"></div></div>
                         </div>
-                        <div class="skill-item" data-level="82">
-                            <div class="skill-icon"><i class="fas fa-brain"></i></div>
-                            <span>AI/ML</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 82%"></div></div>
+                        <div class="skill-item" data-level="80">
+                            <span>摄影</span>
+                            <div class="skill-bar"><div class="skill-progress" style="--level: 80%"></div></div>
+                        </div>
+                        <div class="skill-item" data-level="65">
+                            <span>动画鉴赏</span>
+                            <div class="skill-bar"><div class="skill-progress" style="--level: 65%"></div></div>
                         </div>
                     </div>
                 </div>
@@ -249,161 +318,98 @@
         </div>
     </section>
 
-    <!-- 文章列表 -->
+    <!-- 文章 -->
     <section class="section articles" id="articles">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">最新文章</span>
-                <h2 class="section-title">技术分享与思考</h2>
+                <span class="section-tag"><i class="fas fa-pen"></i> 記録</span>
+                <h2 class="section-title">记录与思考</h2>
             </div>
             <div class="articles-grid">
                 <article class="article-card">
-                    <div class="article-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <div class="article-category">前端</div>
+                    <div class="article-cover" style="background: linear-gradient(135deg, #3388BB, #5BAFD9);">
+                        <span class="article-emoji">🌌</span>
                     </div>
-                    <div class="article-content">
+                    <div class="article-body">
+                        <span class="article-tag">随笔</span>
+                        <h3>迷子でもいい — 关于迷茫这件事</h3>
+                        <p>看完 MyGO 之后，我不再害怕「不知道自己要什么」这件事了。迷茫本身就是前进的一部分。</p>
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-07-20</span>
+                            <span><i class="far fa-clock"></i> 5 min</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="article-card">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #FF6B9D, #FF8FB1);">
+                        <span class="article-emoji">🎸</span>
+                    </div>
+                    <div class="article-body">
+                        <span class="article-tag">技术</span>
+                        <h3>用 React 做一个吉他效果器界面</h3>
+                        <p>把 Web Audio API 和 React 结合起来，做一个可以实时调参的吉他效果器面板。虽然弹得不好，但界面很帅。</p>
                         <div class="article-meta">
                             <span><i class="far fa-calendar"></i> 2026-07-15</span>
-                            <span><i class="far fa-clock"></i> 8 分钟阅读</span>
+                            <span><i class="far fa-clock"></i> 12 min</span>
                         </div>
-                        <h3>React 19 新特性深度解析</h3>
-                        <p>探索 React 19 带来的革命性更新，包括 Server Components、Actions API 以及性能优化的全新方案。</p>
-                        <a href="#" class="article-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="article-card">
-                    <div class="article-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <div class="article-category">后端</div>
+                    <div class="article-cover" style="background: linear-gradient(135deg, #FFD93D, #FFE889);">
+                        <span class="article-emoji">✨</span>
                     </div>
-                    <div class="article-content">
+                    <div class="article-body">
+                        <span class="article-tag">灵感</span>
+                        <h3>从「春日影」到代码注释 — 诗意编程</h3>
+                        <p>代码不一定非要冰冷。好的变量名、好的注释，就像一首歌的歌词，能让读代码的人感受到温度。</p>
                         <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-07-10</span>
-                            <span><i class="far fa-clock"></i> 12 分钟阅读</span>
+                            <span><i class="far fa-calendar"></i> 2026-07-08</span>
+                            <span><i class="far fa-clock"></i> 7 min</span>
                         </div>
-                        <h3>从零搭建高性能微服务架构</h3>
-                        <p>使用 Python FastAPI 和 Docker 构建可扩展的微服务系统，包含服务发现、负载均衡和监控方案。</p>
-                        <a href="#" class="article-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="article-card">
-                    <div class="article-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <div class="article-category">AI</div>
+                    <div class="article-cover" style="background: linear-gradient(135deg, #9B59B6, #C39BD3);">
+                        <span class="article-emoji">🐈</span>
                     </div>
-                    <div class="article-content">
+                    <div class="article-body">
+                        <span class="article-tag">日常</span>
+                        <h3>要乐奈式生活哲学 — 有趣和无聊之间</h3>
+                        <p>「有趣」的时候就全力投入，「无趣」的时候就坦然放手。不需要每件事都有意义，活着本身就是意义。</p>
                         <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-07-05</span>
-                            <span><i class="far fa-clock"></i> 15 分钟阅读</span>
+                            <span><i class="far fa-calendar"></i> 2026-07-01</span>
+                            <span><i class="far fa-clock"></i> 4 min</span>
                         </div>
-                        <h3>大语言模型实战：RAG 应用开发</h3>
-                        <p>手把手教你构建基于检索增强生成的智能问答系统，从向量数据库到 LangChain 的完整实现。</p>
-                        <a href="#" class="article-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="article-card">
-                    <div class="article-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                        <div class="article-category">DevOps</div>
+                    <div class="article-cover" style="background: linear-gradient(135deg, #00D4AA, #5EF0C8);">
+                        <span class="article-emoji">🌊</span>
                     </div>
-                    <div class="article-content">
+                    <div class="article-body">
+                        <span class="article-tag">深度</span>
+                        <h3>池袋漫步 — 一个人的城市探险</h3>
+                        <p>沿着太阳城的大阶梯走上去，在星象馆前面坐一会儿，假装自己也是 MyGO 里的某个角色。城市在黄昏时最美。</p>
                         <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-06-28</span>
-                            <span><i class="far fa-clock"></i> 10 分钟阅读</span>
+                            <span><i class="far fa-calendar"></i> 2026-06-25</span>
+                            <span><i class="far fa-clock"></i> 8 min</span>
                         </div>
-                        <h3>CI/CD 最佳实践：GitHub Actions</h3>
-                        <p>自动化部署不再是难题，学习如何配置高效的 GitHub Actions 工作流，实现从代码提交到生产部署的全自动化。</p>
-                        <a href="#" class="article-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
                 <article class="article-card">
-                    <div class="article-image" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
-                        <div class="article-category">算法</div>
+                    <div class="article-cover" style="background: linear-gradient(135deg, #F5A623, #F7C56E);">
+                        <span class="article-emoji">🔥</span>
                     </div>
-                    <div class="article-content">
+                    <div class="article-body">
+                        <span class="article-tag">成长</span>
+                        <h3>做一支乐队的后端工程师</h3>
+                        <p>就像立希在乐队里承担的角色一样，后端工程师是那个默默保证一切运转的人。没有掌声，但不可或缺。</p>
                         <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-06-20</span>
-                            <span><i class="far fa-clock"></i> 6 分钟阅读</span>
+                            <span><i class="far fa-calendar"></i> 2026-06-18</span>
+                            <span><i class="far fa-clock"></i> 6 min</span>
                         </div>
-                        <h3>图解动态规划：从入门到精通</h3>
-                        <p>通过经典案例和可视化图表，彻底理解动态规划的核心思想，告别「看懂题解写不出代码」的困境。</p>
-                        <a href="#" class="article-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
-                <article class="article-card">
-                    <div class="article-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                        <div class="article-category">工具</div>
-                    </div>
-                    <div class="article-content">
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-06-15</span>
-                            <span><i class="far fa-clock"></i> 5 分钟阅读</span>
-                        </div>
-                        <h3>2026 年开发者必备工具清单</h3>
-                        <p>整理了我日常开发中离不开的效率工具，从终端美化到 AI 辅助编程，让你的开发体验起飞。</p>
-                        <a href="#" class="article-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- 项目展示 -->
-    <section class="section projects" id="projects">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">精选项目</span>
-                <h2 class="section-title">我做过的东西</h2>
-            </div>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon"><i class="fas fa-robot"></i></div>
-                        <div class="project-links">
-                            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="#" title="演示"><i class="fas fa-external-link-alt"></i></a>
-                        </div>
-                    </div>
-                    <h3>AI 智能助手</h3>
-                    <p>基于大语言模型的个人知识管理助手，支持文档检索、智能摘要和多轮对话，提升信息处理效率。</p>
-                    <div class="project-tech">
-                        <span>Python</span>
-                        <span>LangChain</span>
-                        <span>FastAPI</span>
-                        <span>ChromaDB</span>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon"><i class="fas fa-chart-line"></i></div>
-                        <div class="project-links">
-                            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="#" title="演示"><i class="fas fa-external-link-alt"></i></a>
-                        </div>
-                    </div>
-                    <h3>数据可视化平台</h3>
-                    <p>企业级数据看板系统，支持实时数据流处理和交互式图表展示，帮助团队快速洞察业务趋势。</p>
-                    <div class="project-tech">
-                        <span>React</span>
-                        <span>D3.js</span>
-                        <span>WebSocket</span>
-                        <span>Node.js</span>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon"><i class="fas fa-shield-alt"></i></div>
-                        <div class="project-links">
-                            <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="#" title="演示"><i class="fas fa-external-link-alt"></i></a>
-                        </div>
-                    </div>
-                    <h3>安全审计工具</h3>
-                    <p>自动化 Web 应用安全扫描工具，集成常见漏洞检测规则，生成详细的安全报告和修复建议。</p>
-                    <div class="project-tech">
-                        <span>Go</span>
-                        <span>Docker</span>
-                        <span>PostgreSQL</span>
-                        <span>Redis</span>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -414,20 +420,93 @@
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-number" data-target="128">0</div>
-                    <div class="stat-label">技术文章</div>
+                    <div class="stat-label">迷いの記録</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" data-target="42">0</div>
-                    <div class="stat-label">开源项目</div>
+                    <div class="stat-number" data-target="5">0</div>
+                    <div class="stat-label">バンドメンバー</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" data-target="8560">0</div>
-                    <div class="stat-label">GitHub Stars</div>
+                    <div class="stat-number" data-target="13">0</div>
+                    <div class="stat-label">楽曲 (アルバム)</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" data-target="3200">0</div>
-                    <div class="stat-label">博客访客</div>
+                    <div class="stat-number" data-target="365">0</div>
+                    <div class="stat-label">Days Survived</div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 友情链接 -->
+    <section class="section links" id="links">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fas fa-link"></i> 友達</span>
+                <h2 class="section-title">迷子同士、繋がろう</h2>
+                <p class="section-desc">一些同样在迷茫中前进的朋友们</p>
+            </div>
+            <div class="links-grid">
+                <a href="https://bang-dream.com" target="_blank" rel="noopener" class="link-card">
+                    <div class="link-avatar" style="background: linear-gradient(135deg, #3388BB, #5BAFD9);">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="link-info">
+                        <h3>BanG Dream! 官网</h3>
+                        <p>MyGO!!!!! 的官方首页</p>
+                    </div>
+                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener" class="link-card">
+                    <div class="link-avatar" style="background: linear-gradient(135deg, #24292e, #586069);">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <div class="link-info">
+                        <h3>GitHub</h3>
+                        <p>コードの交差点</p>
+                    </div>
+                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
+                </a>
+                <a href="https://www.bilibili.com" target="_blank" rel="noopener" class="link-card">
+                    <div class="link-avatar" style="background: linear-gradient(135deg, #00A1D6, #00C6FF);">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <div class="link-info">
+                        <h3>bilibili</h3>
+                        <p>弹幕里都是同频的人</p>
+                    </div>
+                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
+                </a>
+                <a href="https://music.163.com" target="_blank" rel="noopener" class="link-card">
+                    <div class="link-avatar" style="background: linear-gradient(135deg, #C20C0C, #E83C3C);">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="link-info">
+                        <h3>网易云音乐</h3>
+                        <p>「迷星叫」循环了 100 遍</p>
+                    </div>
+                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
+                </a>
+                <a href="https://www.pixiv.net" target="_blank" rel="noopener" class="link-card">
+                    <div class="link-avatar" style="background: linear-gradient(135deg, #0096DB, #00BCD4);">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="link-info">
+                        <h3>pixiv</h3>
+                        <p>同人イラスト天国</p>
+                    </div>
+                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
+                </a>
+                <a href="https://twitter.com" target="_blank" rel="noopener" class="link-card">
+                    <div class="link-avatar" style="background: linear-gradient(135deg, #1DA1F2, #5DB4F5);">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="link-info">
+                        <h3>Twitter / X</h3>
+                        <p>140文字の迷い</p>
+                    </div>
+                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
+                </a>
             </div>
         </div>
     </section>
@@ -436,8 +515,9 @@
     <section class="section contact" id="contact">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">取得联系</span>
-                <h2 class="section-title">让我们一起做点什么</h2>
+                <span class="section-tag"><i class="fas fa-signal"></i> 信号</span>
+                <h2 class="section-title">送ってください</h2>
+                <p class="section-desc">即使微弱的信号，也会有人收到</p>
             </div>
             <div class="contact-grid">
                 <div class="contact-info">
@@ -454,118 +534,33 @@
                     <div class="contact-card">
                         <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                         <h3>位置</h3>
-                        <p>中国 · 黄冈</p>
+                        <p>中国 · 黄冈 → 池袋（心の地図）</p>
                     </div>
                 </div>
                 <form class="contact-form" id="contactForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="name">姓名</label>
+                            <label for="name">名前</label>
                             <input type="text" id="name" placeholder="你的名字" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">邮箱</label>
-                            <input type="email" id="email" placeholder="your@email.com" required>
+                            <label for="email">連絡先</label>
+                            <input type="email" id="email" placeholder="邮箱地址" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="subject">主题</label>
-                        <input type="text" id="subject" placeholder="合作/交流/其他" required>
+                        <label for="subject">件名</label>
+                        <input type="text" id="subject" placeholder="合作 / 交流 / 或者只是想说声你好" required>
                     </div>
                     <div class="form-group">
-                        <label for="message">消息</label>
-                        <textarea id="message" rows="5" placeholder="想对我说什么？" required></textarea>
+                        <label for="message">本文</label>
+                        <textarea id="message" rows="5" placeholder="就像灯在笔记本上写下的那些话..." required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">
                         <i class="fas fa-paper-plane"></i>
-                        发送消息
+                        送信する
                     </button>
                 </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- 友情链接 -->
-    <section class="section links" id="links">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-link"></i> 友情链接</span>
-                <h2 class="section-title">一些有趣的朋友与站点</h2>
-            </div>
-            <div class="links-grid">
-                <a href="https://github.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #24292e, #586069);">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>GitHub</h3>
-                        <p>全球最大的代码托管与协作平台。</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://stackoverflow.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #f48024, #bcbbbb);">
-                        <i class="fab fa-stack-overflow"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>Stack Overflow</h3>
-                        <p>程序员问答社区，解决编码难题。</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://developer.mozilla.org" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #83d0f2, #006fb6);">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>MDN Web Docs</h3>
-                        <p>Web 技术权威文档与学习资源。</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://www.zhihu.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #0084ff, #44b0ff);">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>知乎</h3>
-                        <p>中文互联网高质量问答社区。</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://juejin.cn" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #1e80ff, #37c7d6);">
-                        <i class="fas fa-pen-nib"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>掘金</h3>
-                        <p>面向开发者的技术内容分享平台。</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-
-                <a href="https://css-tricks.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">
-                        <i class="fab fa-css3-alt"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>CSS-Tricks</h3>
-                        <p>前端技巧与 CSS 艺术灵感源泉。</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-
-            <div class="links-apply">
-                <p>想和我交换友链？</p>
-                <a href="mailto:your.email@example.com?subject=友链申请" class="btn btn-outline btn-sm">
-                    <i class="fas fa-handshake"></i>
-                    申请友链
-                </a>
             </div>
         </div>
     </section>
@@ -575,17 +570,18 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <i class="fas fa-code"></i>
-                    <span>DevBlog</span>
+                    <span class="logo-mark">✦</span>
+                    <span>My<span class="accent">GO</span>!!!!!</span>
                 </div>
-                <p class="footer-text">用代码改变世界，一行一行来 🚀</p>
+                <p class="footer-text">迷子でもいい、前へ進め 🌟</p>
                 <div class="footer-social">
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Bilibili"><i class="fas fa-tv"></i></a>
+                    <a href="#" title="网易云"><i class="fas fa-music"></i></a>
                 </div>
-                <p class="footer-copy">© 2026 你的名字. All rights reserved.</p>
+                <p class="footer-copy">© 2026 MyGO!!!!! Blog — It's My Blog!!!!!</p>
+                <p class="footer-credit">Inspired by BanG Dream! MyGO!!!!! — 非官方同人风格</p>
             </div>
         </div>
     </footer>
