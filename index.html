@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <!-- APlayer & MetingJS (网易云音乐) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <!-- YouTube IFrame API (ヨルシカ 播放器) -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -29,8 +27,8 @@
                 <a href="#contact" class="nav-link">联系</a>
             </div>
             <div class="nav-actions">
-                <button class="music-toggle" id="musicToggle" title="打开音乐播放器">
-                    <i class="fas fa-music"></i>
+                <button class="music-toggle" id="musicToggle" title="打开ヨルシカ播放器">
+                    <span class="music-toggle-icon">🦌</span>
                 </button>
                 <button class="theme-toggle" id="themeToggle" title="切换主题">
                     <i class="fas fa-sun"></i>
@@ -490,16 +488,19 @@
         </div>
     </section>
 
-    <!-- 音乐播放器 (网易云 + MetingJS) -->
-    <div class="music-player" id="musicPlayer">
+    <!-- ヨルシカ 全曲播放器 (YouTube) -->
+    <div class="music-player yorushika-player" id="musicPlayer">
         <div class="music-player-header">
             <div class="music-player-title">
-                <i class="fas fa-music"></i>
-                <span>网易云音乐</span>
+                <span class="yrk-logo">🦌</span>
+                <span>ヨルシカ 全曲</span>
             </div>
             <div class="music-header-actions">
-                <button class="music-config-btn" id="musicConfigBtn" title="歌单设置">
-                    <i class="fas fa-cog"></i>
+                <button class="music-config-btn" id="musicShuffleBtn" title="随机播放">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="music-config-btn" id="musicLoopBtn" title="循环播放">
+                    <i class="fas fa-redo"></i>
                 </button>
                 <button class="music-close" id="musicClose" title="收起播放器">
                     <i class="fas fa-chevron-down"></i>
@@ -507,92 +508,61 @@
             </div>
         </div>
 
-        <!-- 歌单配置面板 -->
-        <div class="music-config-panel" id="musicConfigPanel">
-            <div class="config-row">
-                <label>音乐平台</label>
-                <select id="configServer" class="config-select">
-                    <option value="netease" selected>网易云音乐</option>
-                    <option value="tencent">QQ音乐</option>
-                    <option value="kugou">酷狗音乐</option>
-                    <option value="xiami">虾米音乐</option>
-                </select>
+        <!-- 搜索栏 -->
+        <div class="yrk-search">
+            <input type="text" id="yrkSearchInput" placeholder="🔍 搜索歌曲 (如: 晴る / 春泥棒 / Night Journey)">
+            <button id="yrkSearchBtn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <!-- 当前播放信息 -->
+        <div class="yrk-now-playing">
+            <div class="yrk-cover" id="yrkCover">
+                <span>🦌</span>
             </div>
-            <div class="config-row">
-                <label>类型</label>
-                <select id="configType" class="config-select">
-                    <option value="playlist" selected>歌单</option>
-                    <option value="song">单曲</option>
-                    <option value="album">专辑</option>
-                    <option value="artist">歌手</option>
-                </select>
-            </div>
-            <div class="config-row">
-                <label>ID</label>
-                <input type="text" id="configId" class="config-input" placeholder="粘贴歌单/专辑/歌曲ID" value="7627381372">
-            </div>
-            <div class="config-row">
-                <label>API</label>
-                <select id="configApi" class="config-select">
-                    <option value="https://music.mcseekeri.com" selected>API 1 (imsyy)</option>
-                    <option value="https://zm.wwoyun.cn">API 2 (备用)</option>
-                    <option value="https://music.mcseekeri.com">API 3 (Vercel)</option>
-                    <option value="https://ncme.zhenxin.me">API 4 (Vercel)</option>
-                </select>
-            </div>
-            <button class="config-apply" id="configApply">
-                <i class="fas fa-check"></i> 应用并加载
-            </button>
-            <div class="config-hint">
-                💡 打开网易云网页版歌单，地址栏 <code>playlist?id=</code> 后面的数字即歌单ID<br>
-                💡 如果某个API不可用，切换其他选项再试
+            <div class="yrk-track-info">
+                <div class="yrk-track-title" id="yrkTrackTitle">点击播放列表开始</div>
+                <div class="yrk-track-meta" id="yrkTrackMeta">—</div>
             </div>
         </div>
 
-        <!-- APlayer 容器 (由 MetingJS 自动接管) -->
-        <div class="aplayer-container" id="aplayerContainer">
-            <meting-js
-              id="metingMain"
-              server="netease"
-              type="playlist"
-              mid="7627381372"
-              api="https://meting.imsyy.top/api"
-              fixed="false"
-              mini="false"
-              autoplay="false"
-              theme="#7c5cff"
-              loop="all"
-              order="random"
-              preload="auto"
-              volume="0.7"
-              list-folded="false"
-              list-max-height="200px"
-              lrc-type="1"
-            ></meting-js>
-        </div>
-
-        <!-- 加载状态 -->
-        <div class="music-loading" id="musicLoading">
-            <div class="loading-spinner"></div>
-            <span>正在加载歌单...</span>
-        </div>
-
-        <!-- 错误提示 -->
-        <div class="music-error" id="musicError">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>歌单加载失败，请尝试切换API或检查ID</span>
-        </div>
-
-        <!-- 快捷歌单 -->
-        <div class="quick-playlists">
-            <div class="quick-playlists-title">⚡ 快捷歌单</div>
-            <div class="quick-playlists-list">
-                <button class="quick-tag active" data-server="netease" data-type="playlist" data-id="7627381372">华语流行</button>
-                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="2829887734">轻音乐</button>
-                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="2397260014">编程专注</button>
-                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="2181880401">深夜电台</button>
-                <button class="quick-tag" data-server="netease" data-type="playlist" data-id="5052880109">Lo-fi</button>
+        <!-- 进度条 -->
+        <div class="yrk-progress-row">
+            <span class="yrk-time" id="yrkTimeCurrent">0:00</span>
+            <div class="yrk-progress-bar" id="yrkProgressBar">
+                <div class="yrk-progress-fill" id="yrkProgressFill"></div>
             </div>
+            <span class="yrk-time" id="yrkTimeTotal">0:00</span>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="yrk-controls">
+            <button class="yrk-btn" id="yrkPrevBtn" title="上一首"><i class="fas fa-step-backward"></i></button>
+            <button class="yrk-btn yrk-btn-play" id="yrkPlayBtn" title="播放/暂停"><i class="fas fa-play" id="yrkPlayIcon"></i></button>
+            <button class="yrk-btn" id="yrkNextBtn" title="下一首"><i class="fas fa-step-forward"></i></button>
+        </div>
+
+        <!-- 音量 -->
+        <div class="yrk-volume">
+            <i class="fas fa-volume-up"></i>
+            <div class="yrk-vol-bar" id="yrkVolBar">
+                <div class="yrk-vol-fill" id="yrkVolFill"></div>
+            </div>
+        </div>
+
+        <!-- YouTube 容器 -->
+        <div class="yrk-yt-wrap" id="yrkYtWrap">
+            <iframe id="yrkYtFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <!-- 专辑筛选 -->
+        <div class="yrk-album-filter" id="yrkAlbumFilter"></div>
+
+        <!-- 播放列表 -->
+        <div class="yrk-playlist" id="yrkPlaylist"></div>
+
+        <!-- 底部提示 -->
+        <div class="yrk-footer">
+            音源来自 <a href="https://www.youtube.com/@yorushika-nbuna" target="_blank">ヨルシカ Official</a>
         </div>
     </div>
 
