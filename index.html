@@ -26,9 +26,6 @@
                 <a href="#contact" class="nav-link">联系</a>
             </div>
             <div class="nav-actions">
-                <button class="music-toggle" id="musicToggle" title="打开ヨルシカ播放器">
-                    <span class="music-toggle-icon">🦌</span>
-                </button>
                 <button class="theme-toggle" id="themeToggle" title="切换主题">
                     <i class="fas fa-sun"></i>
                 </button>
@@ -487,90 +484,7 @@
         </div>
     </section>
 
-    <!-- ヨルシカ 全曲播放器 (B站纯音频) -->
-    <div class="music-player yorushika-player" id="musicPlayer">
-        <div class="music-player-header">
-            <div class="music-player-title">
-                <span class="yrk-logo">🦌</span>
-                <span>ヨルシカ 全曲</span>
-            </div>
-            <div class="music-header-actions">
-                <button class="music-config-btn" id="musicShuffleBtn" title="随机播放">
-                    <i class="fas fa-random"></i>
-                </button>
-                <button class="music-config-btn" id="musicLoopBtn" title="循环播放">
-                    <i class="fas fa-redo"></i>
-                </button>
-                <button class="music-close" id="musicClose" title="收起播放器">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- 搜索栏 -->
-        <div class="yrk-search">
-            <input type="text" id="yrkSearchInput" placeholder="🔍 搜索歌曲 (如: 晴る / 春泥棒 / Night Journey)">
-            <button id="yrkSearchBtn"><i class="fas fa-search"></i></button>
-        </div>
-
-        <!-- 当前播放信息 -->
-        <div class="yrk-now-playing">
-            <div class="yrk-cover" id="yrkCover">
-                <span>🦌</span>
-            </div>
-            <div class="yrk-track-info">
-                <div class="yrk-track-title" id="yrkTrackTitle">点击播放列表开始</div>
-                <div class="yrk-track-meta" id="yrkTrackMeta">—</div>
-            </div>
-        </div>
-
-        <!-- 纯音频可视化器 (替代视频画面) -->
-        <div class="yrk-audio-viz" id="yrkAudioViz">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        </div>
-
-        <!-- 进度条 -->
-        <div class="yrk-progress-row">
-            <span class="yrk-time" id="yrkTimeCurrent">0:00</span>
-            <div class="yrk-progress-bar" id="yrkProgressBar">
-                <div class="yrk-progress-fill" id="yrkProgressFill"></div>
-            </div>
-            <span class="yrk-time" id="yrkTimeTotal">0:00</span>
-        </div>
-
-        <!-- 控制按钮 -->
-        <div class="yrk-controls">
-            <button class="yrk-btn" id="yrkPrevBtn" title="上一首"><i class="fas fa-step-backward"></i></button>
-            <button class="yrk-btn yrk-btn-play" id="yrkPlayBtn" title="播放/暂停"><i class="fas fa-play" id="yrkPlayIcon"></i></button>
-            <button class="yrk-btn" id="yrkNextBtn" title="下一首"><i class="fas fa-step-forward"></i></button>
-        </div>
-
-        <!-- 音量 -->
-        <div class="yrk-volume">
-            <i class="fas fa-volume-up"></i>
-            <div class="yrk-vol-bar" id="yrkVolBar">
-                <div class="yrk-vol-fill" id="yrkVolFill"></div>
-            </div>
-        </div>
-
-        <!-- 纯音频模式: 隐藏的HTML5 audio元素 (无视频画面) -->
-        <audio id="yrkAudioEl" preload="auto" crossorigin="anonymous" style="display:none;"></audio>
-
-        <!-- 专辑筛选 -->
-        <div class="yrk-album-filter" id="yrkAlbumFilter"></div>
-
-        <!-- 播放列表 -->
-        <div class="yrk-playlist" id="yrkPlaylist"></div>
-
-        <!-- 底部提示 -->
-        <div class="yrk-footer">
-            🎵 纯音频模式 · 音源来自 <a href="https://space.bilibili.com/3493092202122065" target="_blank">Bilibili</a> · 国内直连 🇨🇳
-        </div>
-    </div>
-
+    <!-- ヨルシカ 全曲播放器 (本地音频 + CDN) -->
     <!-- 页脚 -->
     <footer class="footer">
         <div class="container">

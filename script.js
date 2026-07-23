@@ -56,13 +56,8 @@ document.querySelectorAll('.nav-link').forEach(link => {
 // Navbar Scroll Effect
 // ============================
 const navbar = document.getElementById('navbar');
-
 window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.style.boxShadow = 'var(--shadow-sm)';
-    } else {
-        navbar.style.boxShadow = 'none';
-    }
+    navbar.style.boxShadow = window.scrollY > 50 ? 'var(--shadow-sm)' : 'none';
 });
 
 // ============================
@@ -74,38 +69,23 @@ const navLinks = document.querySelectorAll('.nav-link');
 window.addEventListener('scroll', () => {
     let current = '';
     const scrollY = window.scrollY + 100;
-
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+        if (scrollY >= section.offsetTop && scrollY < section.offsetTop + section.offsetHeight) {
             current = section.getAttribute('id');
         }
     });
-
     navLinks.forEach(link => {
         link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) {
-            link.classList.add('active');
-        }
+        if (link.getAttribute('href') === '#' + current) link.classList.add('active');
     });
 });
 
 // ============================
 // Intersection Observer - Fade In
 // ============================
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, observerOptions);
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
 document.querySelectorAll('.about-card, .article-card, .project-card, .skill-category, .contact-card').forEach((el, index) => {
     el.classList.add('fade-in');
@@ -122,19 +102,13 @@ let statsAnimated = false;
 function animateStats() {
     if (statsAnimated) return;
     statsAnimated = true;
-
     statNumbers.forEach(stat => {
         const target = parseInt(stat.getAttribute('data-target'));
-        const duration = 2000;
-        const increment = target / (duration / 16);
+        const increment = target / 125;
         let current = 0;
-
         const timer = setInterval(() => {
             current += increment;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
+            if (current >= target) { current = target; clearInterval(timer); }
             stat.textContent = Math.floor(current).toLocaleString();
         }, 16);
     });
@@ -142,37 +116,26 @@ function animateStats() {
 
 const statsSection = document.querySelector('.stats');
 if (statsSection) {
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateStats();
-            }
-        });
-    }, { threshold: 0.5 });
-    statsObserver.observe(statsSection);
+    new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) animateStats(); });
+    }, { threshold: 0.5 }).observe(statsSection);
 }
 
 // ============================
 // Skill Progress Bars
 // ============================
 const skillItems = document.querySelectorAll('.skill-item');
-
-function animateSkills() {
-    skillItems.forEach((item, index) => {
-        const progress = item.querySelector('.skill-progress');
-        const level = progress.style.getPropertyValue('--level');
-        setTimeout(() => {
-            progress.style.width = level;
-        }, index * 150);
-    });
-}
-
 const skillsSection = document.getElementById('skills');
+
 if (skillsSection) {
-    const skillsObserver = new IntersectionObserver((entries) => {
+    let skillsObserver;
+    skillsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                animateSkills();
+                skillItems.forEach((item, index) => {
+                    const progress = item.querySelector('.skill-progress');
+                    setTimeout(() => { progress.style.width = progress.style.getPropertyValue('--level'); }, index * 150);
+                });
                 skillsObserver.unobserve(entry.target);
             }
         });
@@ -184,26 +147,16 @@ if (skillsSection) {
 // Contact Form
 // ============================
 const contactForm = document.getElementById('contactForm');
-
 contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
     const btn = contactForm.querySelector('button[type="submit"]');
-    const originalText = btn.innerHTML;
-
+    const original = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 发送中...';
     btn.disabled = true;
-
     setTimeout(() => {
         btn.innerHTML = '<i class="fas fa-check"></i> 发送成功!';
         btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            btn.style.background = '';
-            contactForm.reset();
-        }, 3000);
+        setTimeout(() => { btn.innerHTML = original; btn.disabled = false; btn.style.background = ''; contactForm.reset(); }, 3000);
     }, 1500);
 });
 
@@ -218,14 +171,11 @@ document.querySelector('.scroll-indicator')?.addEventListener('click', () => {
 // Parallax Effect
 // ============================
 const shapes = document.querySelectorAll('.shape');
-
 window.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth - 0.5) * 20;
     const y = (e.clientY / window.innerHeight - 0.5) * 20;
-
     shapes.forEach((shape, index) => {
-        const factor = (index + 1) * 0.5;
-        shape.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+        shape.style.transform = `translate(${x * (index + 1) * 0.5}px, ${y * (index + 1) * 0.5}px)`;
     });
 });
 
@@ -236,500 +186,9 @@ const gradientText = document.querySelector('.gradient-text');
 if (gradientText) {
     const text = gradientText.textContent;
     gradientText.textContent = '';
-    let charIndex = 0;
-
+    let ci = 0;
     function typeChar() {
-        if (charIndex < text.length) {
-            gradientText.textContent += text.charAt(charIndex);
-            charIndex++;
-            setTimeout(typeChar, 100);
-        }
+        if (ci < text.length) { gradientText.textContent += text.charAt(ci++); setTimeout(typeChar, 100); }
     }
-
-    window.addEventListener('load', () => {
-        setTimeout(typeChar, 500);
-    });
+    window.addEventListener('load', () => setTimeout(typeChar, 500));
 }
-
-// ============================
-// 🦌 ヨルシカ 纯音频播放器 (Bilibili Audio)
-// ============================
-(function () {
-    // ---- 歌曲数据库 ----
-    // bvid: B站视频ID | page: 分P号 | cid: 可选，音频流ID
-    // 已验证可播的BV号已填入，其余为空(点播时自动搜索)
-    const SONGS = [
-        // 二人称 (2026)
-        {t:"千鳥",a:"二人称",d:"4:11",bvid:"BV1Fp42197QY",page:1,cid:""},
-        {t:"櫂",a:"二人称",d:"3:59",bvid:"BV1Fp42197QY",page:2,cid:""},
-        {t:"あぶく",a:"二人称",d:"3:54",bvid:"",page:0,cid:""},
-        {t:"茜",a:"二人称",d:"3:46",bvid:"",page:0,cid:""},
-        {t:"Magic",a:"二人称",d:"4:20",bvid:"",page:0,cid:""},
-        {t:"Plover",a:"二人称",d:"4:08",bvid:"",page:0,cid:""},
-        // Singles
-        {t:"Play Sick",a:"Single",d:"3:55",bvid:"",page:0,cid:""},
-        {t:"DARMA GRAND PRIX",a:"Single",d:"4:19",bvid:"",page:0,cid:""},
-        {t:"火星人",a:"Single",d:"3:54",bvid:"",page:0,cid:""},
-        {t:"へび",a:"Single",d:"4:15",bvid:"",page:0,cid:""},
-        {t:"太陽",a:"Single",d:"4:26",bvid:"",page:0,cid:""},
-        {t:"忘れてください",a:"Single",d:"3:38",bvid:"",page:0,cid:""},
-        {t:"ルバート",a:"Single",d:"3:51",bvid:"",page:0,cid:""},
-        {t:"晴る",a:"Single",d:"4:30",bvid:"BV13Z4y1A78S",page:1,cid:""},
-        {t:"月光浴",a:"Single",d:"4:08",bvid:"BV1SB4y1Z7mn",page:1,cid:""},
-        {t:"斜陽",a:"Single",d:"3:20",bvid:"",page:0,cid:""},
-        {t:"アポリア",a:"Single",d:"4:00",bvid:"",page:0,cid:""},
-        {t:"憂、燦々",a:"Single",d:"4:09",bvid:"",page:0,cid:""},
-        {t:"修羅",a:"Single",d:"3:59",bvid:"",page:0,cid:""},
-        {t:"八月、某、月明かり",a:"Single",d:"4:36",bvid:"",page:0,cid:""},
-        {t:"第一夜",a:"Single",d:"4:20",bvid:"",page:0,cid:""},
-        {t:"都落ち",a:"Single",d:"4:10",bvid:"BV1PP411W7BT",page:1,cid:""},
-        {t:"テレパス",a:"Single",d:"4:54",bvid:"",page:0,cid:""},
-        // 幻燈 (2023)
-        {t:"夏の肖像",a:"幻燈",d:"5:25",bvid:"",page:0,cid:""},
-        {t:"ブレーメン",a:"幻燈",d:"4:32",bvid:"",page:0,cid:""},
-        {t:"チノカテ",a:"幻燈",d:"4:07",bvid:"",page:0,cid:""},
-        {t:"雪国",a:"幻燈",d:"4:47",bvid:"",page:0,cid:""},
-        {t:"月に吠える",a:"幻燈",d:"4:26",bvid:"",page:0,cid:""},
-        {t:"451",a:"幻燈",d:"3:29",bvid:"",page:0,cid:""},
-        {t:"左右盲",a:"幻燈",d:"4:27",bvid:"",page:0,cid:""},
-        {t:"アルジャーノン",a:"幻燈",d:"4:14",bvid:"",page:0,cid:""},
-        {t:"又三郎",a:"幻燈",d:"3:47",bvid:"BV1Fp42197QY",page:6,cid:""},
-        // 創作 (2021)
-        {t:"嘘月",a:"創作",d:"4:50",bvid:"BV1P3411x7ru",page:1,cid:""},
-        {t:"風を食む",a:"創作",d:"4:26",bvid:"",page:0,cid:""},
-        {t:"春泥棒",a:"創作",d:"4:50",bvid:"BV13Z4y1A78S",page:1,cid:""},
-        {t:"Creation",a:"創作",d:"1:34",bvid:"",page:0,cid:""},
-        // 盗作 (2020)
-        {t:"思想犯",a:"盗作",d:"4:11",bvid:"",page:0,cid:""},
-        {t:"盗作",a:"盗作",d:"3:59",bvid:"",page:0,cid:""},
-        {t:"売春",a:"盗作",d:"3:38",bvid:"",page:0,cid:""},
-        {t:"花人局",a:"盗作",d:"5:32",bvid:"",page:0,cid:""},
-        {t:"逃亡",a:"盗作",d:"4:47",bvid:"",page:0,cid:""},
-        {t:"夜行",a:"盗作",d:"3:23",bvid:"BV1xtzHYrE88",page:1,cid:""},
-        {t:"花に亡霊",a:"盗作",d:"4:01",bvid:"BV1sK4y1a7aB",page:1,cid:""},
-        // エルマ (2019)
-        {t:"心に穴が空いた",a:"エルマ",d:"4:25",bvid:"",page:0,cid:""},
-        {t:"歩く",a:"エルマ",d:"3:27",bvid:"",page:0,cid:""},
-        {t:"声",a:"エルマ",d:"4:49",bvid:"",page:0,cid:""},
-        {t:"雨晴るる",a:"エルマ",d:"3:43",bvid:"",page:0,cid:""},
-        {t:"神のまねき",a:"エルマ",d:"3:52",bvid:"",page:0,cid:""},
-        {t:"雨とカプチーノ",a:"エルマ",d:"4:30",bvid:"BV1mx4y1t7Ke",page:1,cid:""},
-        {t:"Amy",a:"エルマ",d:"3:33",bvid:"",page:0,cid:""},
-        {t:"ノーチラス",a:"エルマ",d:"4:00",bvid:"",page:0,cid:""},
-        // 辞めた (2019)
-        {t:"だから僕は音楽を辞めた",a:"辞めた",d:"4:03",bvid:"BV1CatSeGE81",page:1,cid:""},
-        {t:"パレード",a:"辞めた",d:"5:00",bvid:"",page:0,cid:""},
-        {t:"藍二乗",a:"辞めた",d:"4:06",bvid:"",page:0,cid:""},
-        {t:"言って。",a:"辞めた",d:"3:44",bvid:"",page:0,cid:""},
-        {t:"夜紛い",a:"辞めた",d:"3:44",bvid:"",page:0,cid:""},
-        {t:"詩書きとコーヒー",a:"辞めた",d:"4:07",bvid:"",page:0,cid:""},
-        // 負け犬 (2018)
-        {t:"ただ君に晴れ",a:"負け犬",d:"4:30",bvid:"BV1iognzcEiQ",page:1,cid:""},
-        {t:"ヒッチコック",a:"負け犬",d:"3:50",bvid:"",page:0,cid:""},
-        {t:"透明エレジー",a:"負け犬",d:"4:20",bvid:"",page:0,cid:""},
-        // 夏草 (2017)
-        {t:"雲と幽霊",a:"夏草",d:"4:15",bvid:"",page:0,cid:""},
-        {t:"深藍",a:"夏草",d:"4:30",bvid:"",page:0,cid:""},
-        {t:"Just a Sunny Day for You",a:"夏草",d:"4:20",bvid:"",page:0,cid:""},
-        // Other / Live
-        {t:"老人と海",a:"Single",d:"4:15",bvid:"BV1pv411N7gN",page:1,cid:""},
-        {t:"猫日",a:"Single",d:"3:50",bvid:"",page:0,cid:""},
-        {t:"灯星",a:"Single",d:"4:10",bvid:"",page:0,cid:""},
-        {t:"紙ひこうき",a:"Single",d:"4:05",bvid:"",page:0,cid:""},
-        {t:"若者のすべて",a:"Single",d:"4:15",bvid:"",page:0,cid:""},
-        {t:"Yu, Sansan",a:"Single",d:"3:30",bvid:"",page:0,cid:""},
-        {t:"昼鳶",a:"Single",d:"4:00",bvid:"",page:0,cid:""},
-        {t:"Bubble",a:"Single",d:"3:40",bvid:"",page:0,cid:""},
-        {t:"Madder",a:"Single",d:"3:30",bvid:"",page:0,cid:""},
-    ];
-
-    // ---- DOM ----
-    const musicToggle = document.getElementById('musicToggle');
-    const musicPlayer = document.getElementById('musicPlayer');
-    const musicClose = document.getElementById('musicClose');
-    const yrkCover = document.getElementById('yrkCover');
-    const yrkTrackTitle = document.getElementById('yrkTrackTitle');
-    const yrkTrackMeta = document.getElementById('yrkTrackMeta');
-    const yrkPlayBtn = document.getElementById('yrkPlayBtn');
-    const yrkPlayIcon = document.getElementById('yrkPlayIcon');
-    const yrkPrevBtn = document.getElementById('yrkPrevBtn');
-    const yrkNextBtn = document.getElementById('yrkNextBtn');
-    const yrkShuffleBtn = document.getElementById('musicShuffleBtn');
-    const yrkLoopBtn = document.getElementById('musicLoopBtn');
-    const yrkProgressBar = document.getElementById('yrkProgressBar');
-    const yrkProgressFill = document.getElementById('yrkProgressFill');
-    const yrkTimeCurrent = document.getElementById('yrkTimeCurrent');
-    const yrkTimeTotal = document.getElementById('yrkTimeTotal');
-    const yrkVolBar = document.getElementById('yrkVolBar');
-    const yrkVolFill = document.getElementById('yrkVolFill');
-    const yrkPlaylist = document.getElementById('yrkPlaylist');
-    const yrkAlbumFilter = document.getElementById('yrkAlbumFilter');
-    const yrkSearchInput = document.getElementById('yrkSearchInput');
-    const yrkSearchBtn = document.getElementById('yrkSearchBtn');
-    const yrkAudioViz = document.getElementById('yrkAudioViz');
-
-    // 纯音频模式: 使用HTML5 audio元素 (无视频画面)
-    const yrkYtWrap = document.getElementById('yrkYtWrap');
-    if (yrkYtWrap) yrkYtWrap.style.display = 'none';
-
-    // 使用DOM中已有的audio元素
-    let audioEl = document.getElementById('yrkAudioEl') || new Audio();
-    audioEl.preload = 'auto';
-    audioEl.volume = 0.7;
-
-    // ---- 状态 ----
-    let idx = 0;
-    let playing = false;
-    let shuffle = false;
-    let loop = true;
-    let list = [...SONGS];
-    let progTimer = null;
-    let curTime = 0;
-    let vol = 70;
-    let hasBvid = s => s.bvid && s.bvid.length > 5;
-
-    // ---- 工具函数 ----
-    const parseT = s => { const p = s.split(':'); return parseInt(p[0])*60 + parseInt(p[1]||0); };
-    const fmtT = s => { const m=Math.floor(s/60),sec=Math.floor(s%60); return `${m}:${sec.toString().padStart(2,'0')}`; };
-    function toast2(msg) {
-        let t = document.getElementById('yrkToast');
-        if (!t) { t = document.createElement('div'); t.id = 'yrkToast'; t.className = 'yrk-toast'; document.body.appendChild(t); }
-        t.textContent = msg; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2500);
-    }
-
-    // ---- 获取B站音频直链 (通过公开API) ----
-    // B站提供了音频流的公开接口，无需登录即可获取
-    async function fetchBiliAudioUrl(s) {
-        try {
-            // Step1: 获取cid (视频的音频流ID)
-            let cid = s.cid;
-            if (!cid) {
-                const infoUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${s.bvid}`;
-                const infoRes = await fetch(infoUrl);
-                const infoData = await infoRes.json();
-                if (infoData.code !== 0) throw new Error('获取视频信息失败');
-
-                const pages = infoData.data.pages;
-                const targetPage = s.page > 1 ? pages.find(p => p.page === s.page) : pages[0];
-                cid = targetPage?.cid;
-                if (!cid) throw new Error('找不到cid');
-            }
-
-            // Step2: 获取音频流URL (仅音频, 不下载视频)
-            const playUrl = `https://api.bilibili.com/x/player/playurl?bvid=${s.bvid}&cid=${cid}&fnval=16&qn=64`;
-            const playRes = await fetch(playUrl);
-            const playData = await playRes.json();
-            if (playData.code !== 0) throw new Error('获取播放地址失败');
-
-            // fnval=16 返回 dash 格式，取 audio 流
-            const dash = playData.data.dash;
-            if (dash && dash.audio && dash.audio.length > 0) {
-                // 选最高码率音频
-                const best = dash.audio.sort((a,b) => b.bandwidth - a.bandwidth)[0];
-                return best.baseUrl || best.base_url;
-            }
-
-            // 兜底: 用flv格式
-            if (playData.data.durl && playData.data.durl[0]) {
-                return playData.data.durl[0].url;
-            }
-
-            throw new Error('无可用音频流');
-        } catch (err) {
-            console.warn('[BiliAudio]', err.message);
-            return null;
-        }
-    }
-
-    // ---- 加载歌曲 ----
-    async function loadSong(i) {
-        if (i < 0 || i >= list.length) return;
-        const s = list[i];
-        idx = i;
-
-        yrkTrackTitle.textContent = '🎵 ' + s.t;
-        yrkTrackMeta.textContent = s.a + ' · ' + s.d + (hasBvid(s) ? '' : ' · 需配置BV号');
-        yrkTimeTotal.textContent = s.d;
-        curTime = 0;
-        yrkProgressFill.style.width = '0%';
-        yrkTimeCurrent.textContent = '0:00';
-
-        if (hasBvid(s)) {
-            yrkTrackTitle.textContent = '⏳ 加载中... ' + s.t;
-            const audioUrl = await fetchBiliAudioUrl(s);
-
-            if (audioUrl) {
-                audioEl.src = audioUrl;
-                audioEl.crossOrigin = 'anonymous';
-                try {
-                    await audioEl.play();
-                    playing = true;
-                    yrkPlayIcon.className = 'fas fa-pause';
-                    yrkCover.classList.add('playing');
-                    musicToggle.classList.add('playing');
-                    yrkAudioViz.classList.add('playing');
-                    yrkTrackTitle.textContent = '🎵 ' + s.t;
-                    startProg();
-                    toast2(`♪ 正在播放: ${s.t}`);
-                } catch (err) {
-                    // 自动播放被拦截，等用户点击
-                    playing = false;
-                    yrkPlayIcon.className = 'fas fa-play';
-                    yrkTrackTitle.textContent = '🎵 ' + s.t + ' (点击播放)';
-                    toast2(`⚠️ 点击播放按钮开始: ${s.t}`);
-                }
-            } else {
-                yrkTrackTitle.textContent = '❌ ' + s.t + ' (获取失败)';
-                toast2(`❌ "${s.t}" 音频获取失败，尝试下一首`);
-                setTimeout(() => nextS(), 2000);
-                return;
-            }
-        } else {
-            yrkTrackTitle.textContent = '🔍 ' + s.t + ' (未配置BV号)';
-            toast2(`🔍 "${s.t}" 暂未配置BV号，跳过`);
-            setTimeout(() => nextS(), 1500);
-            return;
-        }
-
-        renderPlaylist();
-    }
-
-    // ---- 下一首/上一首 ----
-    function nextS() {
-        let n;
-        if (shuffle) { do { n = Math.floor(Math.random()*list.length); } while (n===idx && list.length>1); }
-        else n = (idx+1) % list.length;
-        loadSong(n);
-    }
-    function prevS() {
-        let p;
-        if (shuffle) p = Math.floor(Math.random()*list.length);
-        else p = (idx-1+list.length) % list.length;
-        loadSong(p);
-    }
-
-    // ---- 进度同步 ----
-    function startProg() {
-        stopProg();
-        progTimer = setInterval(() => {
-            if (!playing) return;
-            const tot = parseT(list[idx]?.d || '0:00');
-            // 优先用audio元素真实时间
-            if (audioEl.duration && !isNaN(audioEl.duration)) {
-                curTime = audioEl.currentTime;
-                const pct = Math.min(curTime / audioEl.duration * 100, 100);
-                yrkProgressFill.style.width = pct + '%';
-                yrkTimeCurrent.textContent = fmtT(curTime);
-                if (curTime >= audioEl.duration - 0.5) {
-                    if (loop) nextS();
-                    else { playing = false; yrkPlayIcon.className = 'fas fa-play'; yrkCover.classList.remove('playing'); }
-                }
-            } else if (tot > 0) {
-                // 兜底: 用模拟时间
-                curTime += 0.5;
-                yrkProgressFill.style.width = Math.min(curTime/tot*100,100) + '%';
-                yrkTimeCurrent.textContent = fmtT(curTime);
-                if (curTime >= tot) {
-                    if (loop) nextS();
-                    else { playing = false; yrkPlayIcon.className = 'fas fa-play'; yrkCover.classList.remove('playing'); }
-                }
-            }
-        }, 500);
-    }
-    function stopProg() { if (progTimer) clearInterval(progTimer); }
-
-    // ---- 播放/暂停 ----
-    function playPause() {
-        if (!audioEl.src && hasBvid(list[idx])) {
-            loadSong(idx);
-            return;
-        }
-        if (audioEl.paused) {
-            audioEl.play().then(() => {
-                playing = true;
-                yrkPlayIcon.className = 'fas fa-pause';
-                yrkCover.classList.add('playing');
-                musicToggle.classList.add('playing');
-                yrkAudioViz.classList.add('playing');
-                startProg();
-            }).catch(() => toast2('⚠️ 播放被浏览器拦截，请再点一次'));
-        } else {
-            audioEl.pause();
-            playing = false;
-            yrkPlayIcon.className = 'fas fa-play';
-            yrkCover.classList.remove('playing');
-            musicToggle.classList.remove('playing');
-            yrkAudioViz.classList.remove('playing');
-            stopProg();
-        }
-    }
-
-    // ---- 渲染播放列表 ----
-    function renderPlaylist() {
-        const albums = {};
-        list.forEach((s, i) => {
-            if (!albums[s.a]) albums[s.a] = [];
-            albums[s.a].push({s, i});
-        });
-
-        let h = '';
-        for (const [al, items] of Object.entries(albums)) {
-            h += `<div class="yrk-album-group"><div class="yrk-album-label"><span class="yrk-dot"></span>${al}</div>`;
-            for (const {s, i} of items) {
-                const on = i === idx ? 'on' : '';
-                const miss = !hasBvid(s) ? 'miss' : '';
-                h += `<div class="yrk-pl-item ${on} ${miss}" data-i="${i}">
-                    <span class="yrk-pl-num">${on ? '<i class="fas fa-volume-up"></i>' : String(i+1).padStart(2,'0')}</span>
-                    <span class="yrk-pl-title">${s.t}</span>
-                    <span class="yrk-pl-dur">${s.d}</span>
-                </div>`;
-            }
-            h += '</div>';
-        }
-        yrkPlaylist.innerHTML = h;
-
-        yrkPlaylist.querySelectorAll('.yrk-pl-item').forEach(el => {
-            el.addEventListener('click', () => {
-                const i = parseInt(el.dataset.i);
-                loadSong(i);
-            });
-        });
-
-        const a = yrkPlaylist.querySelector('.yrk-pl-item.on');
-        if (a) a.scrollIntoView({block:'nearest', behavior:'smooth'});
-    }
-
-    // ---- 专辑筛选 ----
-    function renderAlbumFilter() {
-        const albs = ['全部', ...new Set(SONGS.map(s => s.a))];
-        yrkAlbumFilter.innerHTML = albs.map((a, i) =>
-            `<button class="yrk-filter-btn ${i===0?'active':''}" data-a="${a}">${a}</button>`
-        ).join('');
-
-        yrkAlbumFilter.querySelectorAll('.yrk-filter-btn').forEach(b => {
-            b.addEventListener('click', () => {
-                yrkAlbumFilter.querySelectorAll('.yrk-filter-btn').forEach(x => x.classList.remove('active'));
-                b.classList.add('active');
-                const a = b.dataset.a;
-                list = a === '全部' ? [...SONGS] : SONGS.filter(s => s.a === a);
-                renderPlaylist();
-            });
-        });
-    }
-
-    // ---- 搜索 ----
-    function doSearch() {
-        const q = yrkSearchInput.value.trim();
-        if (!q) return;
-
-        const found = SONGS.findIndex(s => s.t.toLowerCase().includes(q.toLowerCase()));
-        if (found >= 0) {
-            list = [...SONGS];
-            renderAlbumFilter();
-            renderPlaylist();
-            loadSong(found);
-            toast2(`✅ 找到 "${SONGS[found].t}"`);
-        } else {
-            toast2(`🔍 "${q}" 不在本地歌单中`);
-        }
-    }
-    yrkSearchBtn.addEventListener('click', doSearch);
-    yrkSearchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
-
-    // ---- 控制按钮 ----
-    yrkPlayBtn.addEventListener('click', playPause);
-    yrkNextBtn.addEventListener('click', nextS);
-    yrkPrevBtn.addEventListener('click', prevS);
-
-    yrkShuffleBtn.addEventListener('click', function() {
-        shuffle = !shuffle;
-        this.classList.toggle('active', shuffle);
-        toast2(shuffle ? '🔀 随机播放' : '🔀 顺序播放');
-    });
-    yrkLoopBtn.addEventListener('click', function() {
-        loop = !loop;
-        this.classList.toggle('active', loop);
-        toast2(loop ? '🔁 循环播放' : '🔁 播完即止');
-    });
-
-    // ---- 进度条点击 ----
-    yrkProgressBar.addEventListener('click', e => {
-        const r = yrkProgressBar.getBoundingClientRect();
-        const pct = (e.clientX - r.left) / r.width;
-        if (audioEl.duration && !isNaN(audioEl.duration)) {
-            audioEl.currentTime = pct * audioEl.duration;
-            curTime = audioEl.currentTime;
-            yrkProgressFill.style.width = pct * 100 + '%';
-            yrkTimeCurrent.textContent = fmtT(curTime);
-        }
-    });
-
-    // ---- 音量 ----
-    yrkVolFill.style.width = vol + '%';
-    yrkVolBar.addEventListener('click', e => {
-        const r = yrkVolBar.getBoundingClientRect();
-        vol = Math.max(0, Math.min(100, Math.round((e.clientX - r.left) / r.width * 100)));
-        yrkVolFill.style.width = vol + '%';
-        audioEl.volume = vol / 100;
-    });
-    audioEl.volume = vol / 100;
-
-    // ---- audio事件监听 ----
-    audioEl.addEventListener('ended', () => {
-        if (loop) nextS();
-        else { playing = false; yrkPlayIcon.className = 'fas fa-play'; yrkCover.classList.remove('playing'); yrkAudioViz.classList.remove('playing'); }
-    });
-    audioEl.addEventListener('error', () => {
-        yrkAudioViz.classList.remove('playing');
-        toast2(`❌ 音频加载失败，跳下一首`);
-        setTimeout(() => nextS(), 1500);
-    });
-    audioEl.addEventListener('waiting', () => {
-        yrkTrackTitle.textContent = '⏳ 缓冲中...';
-    });
-    audioEl.addEventListener('canplay', () => {
-        yrkTrackTitle.textContent = '🎵 ' + list[idx]?.t;
-    });
-
-    // ---- 键盘快捷键 ----
-    document.addEventListener('keydown', e => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        if (!musicPlayer.classList.contains('active') && e.key !== ' ') return;
-        switch(e.key) {
-            case ' ': e.preventDefault(); playPause(); break;
-            case 'ArrowRight': nextS(); break;
-            case 'ArrowLeft': prevS(); break;
-            case 'ArrowUp':
-                e.preventDefault();
-                vol = Math.min(100, vol + 10);
-                yrkVolFill.style.width = vol + '%';
-                audioEl.volume = vol / 100;
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                vol = Math.max(0, vol - 10);
-                yrkVolFill.style.width = vol + '%';
-                audioEl.volume = vol / 100;
-                break;
-        }
-    });
-
-    // ---- 初始化 ----
-    renderAlbumFilter();
-    renderPlaylist();
-
-    // 自动加载第一首有BV号的歌
-    const firstValid = SONGS.findIndex(hasBvid);
-    if (firstValid >= 0) {
-        // 不自动播放(浏览器策略)，只加载标题
-        yrkTrackTitle.textContent = '🎵 ' + SONGS[firstValid].t + ' (点击播放)';
-        yrkTrackMeta.textContent = SONGS[firstValid].a + ' · ' + SONGS[firstValid].d;
-        yrkTimeTotal.textContent = SONGS[firstValid].d;
-    }
-
-    toast2('🦌 ヨルシカ 纯音频播放器就绪 · 点击播放按钮开始');
-
-    // 暴露给全局
-    window.yorushikaPlayer = { SONGS, loadSong, nextS, prevS, playPause, fetchBiliAudioUrl };
-})();
