@@ -487,7 +487,7 @@
         </div>
     </section>
 
-    <!-- ヨルシカ 全曲播放器 (YouTube) -->
+    <!-- ヨルシカ 全曲播放器 (B站纯音频) -->
     <div class="music-player yorushika-player" id="musicPlayer">
         <div class="music-player-header">
             <div class="music-player-title">
@@ -524,6 +524,14 @@
             </div>
         </div>
 
+        <!-- 纯音频可视化器 (替代视频画面) -->
+        <div class="yrk-audio-viz" id="yrkAudioViz">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+
         <!-- 进度条 -->
         <div class="yrk-progress-row">
             <span class="yrk-time" id="yrkTimeCurrent">0:00</span>
@@ -548,10 +556,8 @@
             </div>
         </div>
 
-        <!-- YouTube 容器 -->
-        <div class="yrk-yt-wrap" id="yrkYtWrap">
-            <iframe id="yrkYtFrame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
+        <!-- 纯音频模式: 隐藏的HTML5 audio元素 (无视频画面) -->
+        <audio id="yrkAudioEl" preload="auto" crossorigin="anonymous" style="display:none;"></audio>
 
         <!-- 专辑筛选 -->
         <div class="yrk-album-filter" id="yrkAlbumFilter"></div>
@@ -561,7 +567,7 @@
 
         <!-- 底部提示 -->
         <div class="yrk-footer">
-            音源来自 <a href="https://space.bilibili.com/3493092202122065" target="_blank">Bilibili ヨルシカ 搬运合集</a> · 国内直连 🇨🇳
+            🎵 纯音频模式 · 音源来自 <a href="https://space.bilibili.com/3493092202122065" target="_blank">Bilibili</a> · 国内直连 🇨🇳
         </div>
     </div>
 

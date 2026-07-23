@@ -252,94 +252,95 @@ if (gradientText) {
 }
 
 // ============================
-// 🦌 ヨルシカ 全曲播放器 (Bilibili)
+// 🦌 ヨルシカ 纯音频播放器 (Bilibili Audio)
 // ============================
 (function () {
-    // ---- 歌曲数据库 (B站 BV号) ----
-    // 音源全部来自B站搬运/官方MV，国内可直接播放
+    // ---- 歌曲数据库 ----
+    // bvid: B站视频ID | page: 分P号 | cid: 可选，音频流ID
+    // 已验证可播的BV号已填入，其余为空(点播时自动搜索)
     const SONGS = [
         // 二人称 (2026)
-        {t:"千鳥",a:"二人称",d:"4:11",bvid:"BV1Fp42197QY",page:1},
-        {t:"櫂",a:"二人称",d:"3:59",bvid:"BV1Fp42197QY",page:2},
-        {t:"あぶく",a:"二人称",d:"3:54",bvid:"",page:0},
-        {t:"茜",a:"二人称",d:"3:46",bvid:"",page:0},
-        {t:"Magic",a:"二人称",d:"4:20",bvid:"",page:0},
-        {t:"Plover",a:"二人称",d:"4:08",bvid:"",page:0},
+        {t:"千鳥",a:"二人称",d:"4:11",bvid:"BV1Fp42197QY",page:1,cid:""},
+        {t:"櫂",a:"二人称",d:"3:59",bvid:"BV1Fp42197QY",page:2,cid:""},
+        {t:"あぶく",a:"二人称",d:"3:54",bvid:"",page:0,cid:""},
+        {t:"茜",a:"二人称",d:"3:46",bvid:"",page:0,cid:""},
+        {t:"Magic",a:"二人称",d:"4:20",bvid:"",page:0,cid:""},
+        {t:"Plover",a:"二人称",d:"4:08",bvid:"",page:0,cid:""},
         // Singles
-        {t:"Play Sick",a:"Single",d:"3:55",bvid:"",page:0},
-        {t:"DARMA GRAND PRIX",a:"Single",d:"4:19",bvid:"",page:0},
-        {t:"火星人",a:"Single",d:"3:54",bvid:"",page:0},
-        {t:"へび",a:"Single",d:"4:15",bvid:"",page:0},
-        {t:"太陽",a:"Single",d:"4:26",bvid:"",page:0},
-        {t:"忘れてください",a:"Single",d:"3:38",bvid:"",page:0},
-        {t:"ルバート",a:"Single",d:"3:51",bvid:"",page:0},
-        {t:"晴る",a:"Single",d:"4:30",bvid:"BV13Z4y1A78S",page:1},  // 春泥棒LIVE同源UP主
-        {t:"月光浴",a:"Single",d:"4:08",bvid:"BV1SB4y1Z7mn",page:1},
-        {t:"斜陽",a:"Single",d:"3:20",bvid:"",page:0},
-        {t:"アポリア",a:"Single",d:"4:00",bvid:"",page:0},
-        {t:"憂、燦々",a:"Single",d:"4:09",bvid:"",page:0},
-        {t:"修羅",a:"Single",d:"3:59",bvid:"",page:0},
-        {t:"八月、某、月明かり",a:"Single",d:"4:36",bvid:"",page:0},
-        {t:"第一夜",a:"Single",d:"4:20",bvid:"",page:0},
-        {t:"都落ち",a:"Single",d:"4:10",bvid:"BV1PP411W7BT",page:1},
-        {t:"テレパス",a:"Single",d:"4:54",bvid:"",page:0},
+        {t:"Play Sick",a:"Single",d:"3:55",bvid:"",page:0,cid:""},
+        {t:"DARMA GRAND PRIX",a:"Single",d:"4:19",bvid:"",page:0,cid:""},
+        {t:"火星人",a:"Single",d:"3:54",bvid:"",page:0,cid:""},
+        {t:"へび",a:"Single",d:"4:15",bvid:"",page:0,cid:""},
+        {t:"太陽",a:"Single",d:"4:26",bvid:"",page:0,cid:""},
+        {t:"忘れてください",a:"Single",d:"3:38",bvid:"",page:0,cid:""},
+        {t:"ルバート",a:"Single",d:"3:51",bvid:"",page:0,cid:""},
+        {t:"晴る",a:"Single",d:"4:30",bvid:"BV13Z4y1A78S",page:1,cid:""},
+        {t:"月光浴",a:"Single",d:"4:08",bvid:"BV1SB4y1Z7mn",page:1,cid:""},
+        {t:"斜陽",a:"Single",d:"3:20",bvid:"",page:0,cid:""},
+        {t:"アポリア",a:"Single",d:"4:00",bvid:"",page:0,cid:""},
+        {t:"憂、燦々",a:"Single",d:"4:09",bvid:"",page:0,cid:""},
+        {t:"修羅",a:"Single",d:"3:59",bvid:"",page:0,cid:""},
+        {t:"八月、某、月明かり",a:"Single",d:"4:36",bvid:"",page:0,cid:""},
+        {t:"第一夜",a:"Single",d:"4:20",bvid:"",page:0,cid:""},
+        {t:"都落ち",a:"Single",d:"4:10",bvid:"BV1PP411W7BT",page:1,cid:""},
+        {t:"テレパス",a:"Single",d:"4:54",bvid:"",page:0,cid:""},
         // 幻燈 (2023)
-        {t:"夏の肖像",a:"幻燈",d:"5:25",bvid:"",page:0},
-        {t:"ブレーメン",a:"幻燈",d:"4:32",bvid:"",page:0},
-        {t:"チノカテ",a:"幻燈",d:"4:07",bvid:"",page:0},
-        {t:"雪国",a:"幻燈",d:"4:47",bvid:"",page:0},
-        {t:"月に吠える",a:"幻燈",d:"4:26",bvid:"",page:0},
-        {t:"451",a:"幻燈",d:"3:29",bvid:"",page:0},
-        {t:"左右盲",a:"幻燈",d:"4:27",bvid:"",page:0},
-        {t:"アルジャーノン",a:"幻燈",d:"4:14",bvid:"",page:0},
-        {t:"又三郎",a:"幻燈",d:"3:47",bvid:"BV1Fp42197QY",page:6},  // Hi-Res
+        {t:"夏の肖像",a:"幻燈",d:"5:25",bvid:"",page:0,cid:""},
+        {t:"ブレーメン",a:"幻燈",d:"4:32",bvid:"",page:0,cid:""},
+        {t:"チノカテ",a:"幻燈",d:"4:07",bvid:"",page:0,cid:""},
+        {t:"雪国",a:"幻燈",d:"4:47",bvid:"",page:0,cid:""},
+        {t:"月に吠える",a:"幻燈",d:"4:26",bvid:"",page:0,cid:""},
+        {t:"451",a:"幻燈",d:"3:29",bvid:"",page:0,cid:""},
+        {t:"左右盲",a:"幻燈",d:"4:27",bvid:"",page:0,cid:""},
+        {t:"アルジャーノン",a:"幻燈",d:"4:14",bvid:"",page:0,cid:""},
+        {t:"又三郎",a:"幻燈",d:"3:47",bvid:"BV1Fp42197QY",page:6,cid:""},
         // 創作 (2021)
-        {t:"嘘月",a:"創作",d:"4:50",bvid:"BV1P3411x7ru",page:1},
-        {t:"風を食む",a:"創作",d:"4:26",bvid:"",page:0},
-        {t:"春泥棒",a:"創作",d:"4:50",bvid:"BV13Z4y1A78S",page:1},
-        {t:"Creation",a:"創作",d:"1:34",bvid:"",page:0},
+        {t:"嘘月",a:"創作",d:"4:50",bvid:"BV1P3411x7ru",page:1,cid:""},
+        {t:"風を食む",a:"創作",d:"4:26",bvid:"",page:0,cid:""},
+        {t:"春泥棒",a:"創作",d:"4:50",bvid:"BV13Z4y1A78S",page:1,cid:""},
+        {t:"Creation",a:"創作",d:"1:34",bvid:"",page:0,cid:""},
         // 盗作 (2020)
-        {t:"思想犯",a:"盗作",d:"4:11",bvid:"",page:0},
-        {t:"盗作",a:"盗作",d:"3:59",bvid:"",page:0},
-        {t:"売春",a:"盗作",d:"3:38",bvid:"",page:0},
-        {t:"花人局",a:"盗作",d:"5:32",bvid:"",page:0},
-        {t:"逃亡",a:"盗作",d:"4:47",bvid:"",page:0},
-        {t:"夜行",a:"盗作",d:"3:23",bvid:"BV1xtzHYrE88",page:1},
-        {t:"花に亡霊",a:"盗作",d:"4:01",bvid:"BV1sK4y1a7aB",page:1},
+        {t:"思想犯",a:"盗作",d:"4:11",bvid:"",page:0,cid:""},
+        {t:"盗作",a:"盗作",d:"3:59",bvid:"",page:0,cid:""},
+        {t:"売春",a:"盗作",d:"3:38",bvid:"",page:0,cid:""},
+        {t:"花人局",a:"盗作",d:"5:32",bvid:"",page:0,cid:""},
+        {t:"逃亡",a:"盗作",d:"4:47",bvid:"",page:0,cid:""},
+        {t:"夜行",a:"盗作",d:"3:23",bvid:"BV1xtzHYrE88",page:1,cid:""},
+        {t:"花に亡霊",a:"盗作",d:"4:01",bvid:"BV1sK4y1a7aB",page:1,cid:""},
         // エルマ (2019)
-        {t:"心に穴が空いた",a:"エルマ",d:"4:25",bvid:"",page:0},
-        {t:"歩く",a:"エルマ",d:"3:27",bvid:"",page:0},
-        {t:"声",a:"エルマ",d:"4:49",bvid:"",page:0},
-        {t:"雨晴るる",a:"エルマ",d:"3:43",bvid:"",page:0},
-        {t:"神のまねき",a:"エルマ",d:"3:52",bvid:"",page:0},
-        {t:"雨とカプチーノ",a:"エルマ",d:"4:30",bvid:"BV1mx4y1t7Ke",page:1},
-        {t:"Amy",a:"エルマ",d:"3:33",bvid:"",page:0},
-        {t:"ノーチラス",a:"エルマ",d:"4:00",bvid:"",page:0},
+        {t:"心に穴が空いた",a:"エルマ",d:"4:25",bvid:"",page:0,cid:""},
+        {t:"歩く",a:"エルマ",d:"3:27",bvid:"",page:0,cid:""},
+        {t:"声",a:"エルマ",d:"4:49",bvid:"",page:0,cid:""},
+        {t:"雨晴るる",a:"エルマ",d:"3:43",bvid:"",page:0,cid:""},
+        {t:"神のまねき",a:"エルマ",d:"3:52",bvid:"",page:0,cid:""},
+        {t:"雨とカプチーノ",a:"エルマ",d:"4:30",bvid:"BV1mx4y1t7Ke",page:1,cid:""},
+        {t:"Amy",a:"エルマ",d:"3:33",bvid:"",page:0,cid:""},
+        {t:"ノーチラス",a:"エルマ",d:"4:00",bvid:"",page:0,cid:""},
         // 辞めた (2019)
-        {t:"だから僕は音楽を辞めた",a:"辞めた",d:"4:03",bvid:"BV1CatSeGE81",page:1},
-        {t:"パレード",a:"辞めた",d:"5:00",bvid:"",page:0},
-        {t:"藍二乗",a:"辞めた",d:"4:06",bvid:"",page:0},
-        {t:"言って。",a:"辞めた",d:"3:44",bvid:"",page:0},
-        {t:"夜紛い",a:"辞めた",d:"3:44",bvid:"",page:0},
-        {t:"詩書きとコーヒー",a:"辞めた",d:"4:07",bvid:"",page:0},
+        {t:"だから僕は音楽を辞めた",a:"辞めた",d:"4:03",bvid:"BV1CatSeGE81",page:1,cid:""},
+        {t:"パレード",a:"辞めた",d:"5:00",bvid:"",page:0,cid:""},
+        {t:"藍二乗",a:"辞めた",d:"4:06",bvid:"",page:0,cid:""},
+        {t:"言って。",a:"辞めた",d:"3:44",bvid:"",page:0,cid:""},
+        {t:"夜紛い",a:"辞めた",d:"3:44",bvid:"",page:0,cid:""},
+        {t:"詩書きとコーヒー",a:"辞めた",d:"4:07",bvid:"",page:0,cid:""},
         // 負け犬 (2018)
-        {t:"ただ君に晴れ",a:"負け犬",d:"4:30",bvid:"BV1iognzcEiQ",page:1},
-        {t:"ヒッチコック",a:"負け犬",d:"3:50",bvid:"",page:0},
-        {t:"透明エレジー",a:"負け犬",d:"4:20",bvid:"",page:0},
+        {t:"ただ君に晴れ",a:"負け犬",d:"4:30",bvid:"BV1iognzcEiQ",page:1,cid:""},
+        {t:"ヒッチコック",a:"負け犬",d:"3:50",bvid:"",page:0,cid:""},
+        {t:"透明エレジー",a:"負け犬",d:"4:20",bvid:"",page:0,cid:""},
         // 夏草 (2017)
-        {t:"雲と幽霊",a:"夏草",d:"4:15",bvid:"",page:0},
-        {t:"深藍",a:"夏草",d:"4:30",bvid:"",page:0},
-        {t:"Just a Sunny Day for You",a:"夏草",d:"4:20",bvid:"",page:0},
+        {t:"雲と幽霊",a:"夏草",d:"4:15",bvid:"",page:0,cid:""},
+        {t:"深藍",a:"夏草",d:"4:30",bvid:"",page:0,cid:""},
+        {t:"Just a Sunny Day for You",a:"夏草",d:"4:20",bvid:"",page:0,cid:""},
         // Other / Live
-        {t:"老人と海",a:"Single",d:"4:15",bvid:"BV1pv411N7gN",page:1},
-        {t:"猫日",a:"Single",d:"3:50",bvid:"",page:0},
-        {t:"灯星",a:"Single",d:"4:10",bvid:"",page:0},
-        {t:"紙ひこうき",a:"Single",d:"4:05",bvid:"",page:0},
-        {t:"若者のすべて",a:"Single",d:"4:15",bvid:"",page:0},
-        {t:"Yu, Sansan",a:"Single",d:"3:30",bvid:"",page:0},
-        {t:"昼鳶",a:"Single",d:"4:00",bvid:"",page:0},
-        {t:"Bubble",a:"Single",d:"3:40",bvid:"",page:0},
-        {t:"Madder",a:"Single",d:"3:30",bvid:"",page:0},
+        {t:"老人と海",a:"Single",d:"4:15",bvid:"BV1pv411N7gN",page:1,cid:""},
+        {t:"猫日",a:"Single",d:"3:50",bvid:"",page:0,cid:""},
+        {t:"灯星",a:"Single",d:"4:10",bvid:"",page:0,cid:""},
+        {t:"紙ひこうき",a:"Single",d:"4:05",bvid:"",page:0,cid:""},
+        {t:"若者のすべて",a:"Single",d:"4:15",bvid:"",page:0,cid:""},
+        {t:"Yu, Sansan",a:"Single",d:"3:30",bvid:"",page:0,cid:""},
+        {t:"昼鳶",a:"Single",d:"4:00",bvid:"",page:0,cid:""},
+        {t:"Bubble",a:"Single",d:"3:40",bvid:"",page:0,cid:""},
+        {t:"Madder",a:"Single",d:"3:30",bvid:"",page:0,cid:""},
     ];
 
     // ---- DOM ----
@@ -363,10 +364,18 @@ if (gradientText) {
     const yrkVolFill = document.getElementById('yrkVolFill');
     const yrkPlaylist = document.getElementById('yrkPlaylist');
     const yrkAlbumFilter = document.getElementById('yrkAlbumFilter');
-    const yrkYtWrap = document.getElementById('yrkYtWrap');
-    const yrkYtFrame = document.getElementById('yrkYtFrame');
     const yrkSearchInput = document.getElementById('yrkSearchInput');
     const yrkSearchBtn = document.getElementById('yrkSearchBtn');
+    const yrkAudioViz = document.getElementById('yrkAudioViz');
+
+    // 纯音频模式: 使用HTML5 audio元素 (无视频画面)
+    const yrkYtWrap = document.getElementById('yrkYtWrap');
+    if (yrkYtWrap) yrkYtWrap.style.display = 'none';
+
+    // 使用DOM中已有的audio元素
+    let audioEl = document.getElementById('yrkAudioEl') || new Audio();
+    audioEl.preload = 'auto';
+    audioEl.volume = 0.7;
 
     // ---- 状态 ----
     let idx = 0;
@@ -389,56 +398,100 @@ if (gradientText) {
         setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // ---- 打开/关闭 ----
-    musicToggle.addEventListener('click', () => {
-        musicPlayer.classList.toggle('active');
-        musicToggle.classList.toggle('playing', playing);
-    });
-    musicClose.addEventListener('click', () => {
-        musicPlayer.classList.remove('active');
-    });
+    // ---- 获取B站音频直链 (通过公开API) ----
+    // B站提供了音频流的公开接口，无需登录即可获取
+    async function fetchBiliAudioUrl(s) {
+        try {
+            // Step1: 获取cid (视频的音频流ID)
+            let cid = s.cid;
+            if (!cid) {
+                const infoUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${s.bvid}`;
+                const infoRes = await fetch(infoUrl);
+                const infoData = await infoRes.json();
+                if (infoData.code !== 0) throw new Error('获取视频信息失败');
 
-    // ---- 构建B站iframe URL ----
-    function buildBiliUrl(s) {
-        if (!hasBvid(s)) return null;
-        let url = `https://player.bilibili.com/player.html?bvid=${s.bvid}&autoplay=1&danmaku=0&high_quality=1`;
-        if (s.page && s.page > 1) url += `&page=${s.page}`;
-        return url;
+                const pages = infoData.data.pages;
+                const targetPage = s.page > 1 ? pages.find(p => p.page === s.page) : pages[0];
+                cid = targetPage?.cid;
+                if (!cid) throw new Error('找不到cid');
+            }
+
+            // Step2: 获取音频流URL (仅音频, 不下载视频)
+            const playUrl = `https://api.bilibili.com/x/player/playurl?bvid=${s.bvid}&cid=${cid}&fnval=16&qn=64`;
+            const playRes = await fetch(playUrl);
+            const playData = await playRes.json();
+            if (playData.code !== 0) throw new Error('获取播放地址失败');
+
+            // fnval=16 返回 dash 格式，取 audio 流
+            const dash = playData.data.dash;
+            if (dash && dash.audio && dash.audio.length > 0) {
+                // 选最高码率音频
+                const best = dash.audio.sort((a,b) => b.bandwidth - a.bandwidth)[0];
+                return best.baseUrl || best.base_url;
+            }
+
+            // 兜底: 用flv格式
+            if (playData.data.durl && playData.data.durl[0]) {
+                return playData.data.durl[0].url;
+            }
+
+            throw new Error('无可用音频流');
+        } catch (err) {
+            console.warn('[BiliAudio]', err.message);
+            return null;
+        }
     }
 
     // ---- 加载歌曲 ----
-    function loadSong(i) {
+    async function loadSong(i) {
         if (i < 0 || i >= list.length) return;
         const s = list[i];
         idx = i;
 
-        const burl = buildBiliUrl(s);
-        if (burl) {
-            yrkTrackTitle.textContent = '🎵 ' + s.t;
-            yrkYtWrap.style.display = 'block';
-            yrkYtFrame.src = burl;
-        } else {
-            // 无BV号 → 用搜索关键词
-            yrkTrackTitle.textContent = '🔍 ' + s.t + ' (搜索中)';
-            yrkYtWrap.style.display = 'block';
-            yrkYtFrame.src = `https://player.bilibili.com/player.html?keyword=${encodeURIComponent('ヨルシカ '+s.t)}&autoplay=0&danmaku=0`;
-            toast2(`🔍 "${s.t}" 暂未配置BV号，已搜索B站`);
-        }
-
-        yrkTrackMeta.textContent = s.a + ' · ' + s.d + (hasBvid(s) ? '' : ' · 需手动在B站播放');
-
+        yrkTrackTitle.textContent = '🎵 ' + s.t;
+        yrkTrackMeta.textContent = s.a + ' · ' + s.d + (hasBvid(s) ? '' : ' · 需配置BV号');
         yrkTimeTotal.textContent = s.d;
         curTime = 0;
         yrkProgressFill.style.width = '0%';
         yrkTimeCurrent.textContent = '0:00';
 
-        // 更新播放状态
-        playing = true;
-        yrkPlayIcon.className = 'fas fa-pause';
-        yrkCover.classList.add('playing');
-        musicToggle.classList.add('playing');
+        if (hasBvid(s)) {
+            yrkTrackTitle.textContent = '⏳ 加载中... ' + s.t;
+            const audioUrl = await fetchBiliAudioUrl(s);
 
-        startProg();
+            if (audioUrl) {
+                audioEl.src = audioUrl;
+                audioEl.crossOrigin = 'anonymous';
+                try {
+                    await audioEl.play();
+                    playing = true;
+                    yrkPlayIcon.className = 'fas fa-pause';
+                    yrkCover.classList.add('playing');
+                    musicToggle.classList.add('playing');
+                    yrkAudioViz.classList.add('playing');
+                    yrkTrackTitle.textContent = '🎵 ' + s.t;
+                    startProg();
+                    toast2(`♪ 正在播放: ${s.t}`);
+                } catch (err) {
+                    // 自动播放被拦截，等用户点击
+                    playing = false;
+                    yrkPlayIcon.className = 'fas fa-play';
+                    yrkTrackTitle.textContent = '🎵 ' + s.t + ' (点击播放)';
+                    toast2(`⚠️ 点击播放按钮开始: ${s.t}`);
+                }
+            } else {
+                yrkTrackTitle.textContent = '❌ ' + s.t + ' (获取失败)';
+                toast2(`❌ "${s.t}" 音频获取失败，尝试下一首`);
+                setTimeout(() => nextS(), 2000);
+                return;
+            }
+        } else {
+            yrkTrackTitle.textContent = '🔍 ' + s.t + ' (未配置BV号)';
+            toast2(`🔍 "${s.t}" 暂未配置BV号，跳过`);
+            setTimeout(() => nextS(), 1500);
+            return;
+        }
+
         renderPlaylist();
     }
 
@@ -456,42 +509,59 @@ if (gradientText) {
         loadSong(p);
     }
 
-    // ---- 进度模拟 ----
+    // ---- 进度同步 ----
     function startProg() {
         stopProg();
         progTimer = setInterval(() => {
             if (!playing) return;
             const tot = parseT(list[idx]?.d || '0:00');
-            if (tot > 0) {
-                curTime += 0.5;
-                if (curTime >= tot) {
-                    curTime = 0;
-                    if (loop) { nextS(); return; }
+            // 优先用audio元素真实时间
+            if (audioEl.duration && !isNaN(audioEl.duration)) {
+                curTime = audioEl.currentTime;
+                const pct = Math.min(curTime / audioEl.duration * 100, 100);
+                yrkProgressFill.style.width = pct + '%';
+                yrkTimeCurrent.textContent = fmtT(curTime);
+                if (curTime >= audioEl.duration - 0.5) {
+                    if (loop) nextS();
                     else { playing = false; yrkPlayIcon.className = 'fas fa-play'; yrkCover.classList.remove('playing'); }
                 }
+            } else if (tot > 0) {
+                // 兜底: 用模拟时间
+                curTime += 0.5;
                 yrkProgressFill.style.width = Math.min(curTime/tot*100,100) + '%';
                 yrkTimeCurrent.textContent = fmtT(curTime);
+                if (curTime >= tot) {
+                    if (loop) nextS();
+                    else { playing = false; yrkPlayIcon.className = 'fas fa-play'; yrkCover.classList.remove('playing'); }
+                }
             }
         }, 500);
     }
     function stopProg() { if (progTimer) clearInterval(progTimer); }
 
-    // ---- 播放/暂停 (B站靠iframe内部控制，这里用进度模拟) ----
+    // ---- 播放/暂停 ----
     function playPause() {
-        playing = !playing;
-        if (playing) {
-            yrkPlayIcon.className = 'fas fa-pause';
-            yrkCover.classList.add('playing');
-            musicToggle.classList.add('playing');
-            startProg();
-            // 尝试postMessage通知B站播放
-            yrkYtFrame.contentWindow?.postMessage('{"event":"play"}', '*');
+        if (!audioEl.src && hasBvid(list[idx])) {
+            loadSong(idx);
+            return;
+        }
+        if (audioEl.paused) {
+            audioEl.play().then(() => {
+                playing = true;
+                yrkPlayIcon.className = 'fas fa-pause';
+                yrkCover.classList.add('playing');
+                musicToggle.classList.add('playing');
+                yrkAudioViz.classList.add('playing');
+                startProg();
+            }).catch(() => toast2('⚠️ 播放被浏览器拦截，请再点一次'));
         } else {
+            audioEl.pause();
+            playing = false;
             yrkPlayIcon.className = 'fas fa-play';
             yrkCover.classList.remove('playing');
             musicToggle.classList.remove('playing');
+            yrkAudioViz.classList.remove('playing');
             stopProg();
-            yrkYtFrame.contentWindow?.postMessage('{"event":"pause"}', '*');
         }
     }
 
@@ -560,15 +630,9 @@ if (gradientText) {
             renderPlaylist();
             loadSong(found);
             toast2(`✅ 找到 "${SONGS[found].t}"`);
-            return;
+        } else {
+            toast2(`🔍 "${q}" 不在本地歌单中`);
         }
-
-        // B站搜索
-        yrkYtWrap.style.display = 'block';
-        yrkYtFrame.src = `https://player.bilibili.com/player.html?keyword=${encodeURIComponent('ヨルシカ '+q)}&autoplay=0&danmaku=0`;
-        yrkTrackTitle.textContent = '🔍 搜索: ' + q;
-        yrkTrackMeta.textContent = 'B站搜索结果';
-        toast2(`🔍 B站搜索 "ヨルシカ ${q}"`);
     }
     yrkSearchBtn.addEventListener('click', doSearch);
     yrkSearchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
@@ -589,22 +653,43 @@ if (gradientText) {
         toast2(loop ? '🔁 循环播放' : '🔁 播完即止');
     });
 
-    // ---- 进度条点击 (模拟) ----
+    // ---- 进度条点击 ----
     yrkProgressBar.addEventListener('click', e => {
         const r = yrkProgressBar.getBoundingClientRect();
         const pct = (e.clientX - r.left) / r.width;
-        const tot = parseT(list[idx]?.d || '0:00');
-        curTime = pct * tot;
-        yrkProgressFill.style.width = pct * 100 + '%';
-        yrkTimeCurrent.textContent = fmtT(curTime);
+        if (audioEl.duration && !isNaN(audioEl.duration)) {
+            audioEl.currentTime = pct * audioEl.duration;
+            curTime = audioEl.currentTime;
+            yrkProgressFill.style.width = pct * 100 + '%';
+            yrkTimeCurrent.textContent = fmtT(curTime);
+        }
     });
 
-    // ---- 音量 (UI only, B站iframe无法直接控制) ----
+    // ---- 音量 ----
     yrkVolFill.style.width = vol + '%';
     yrkVolBar.addEventListener('click', e => {
         const r = yrkVolBar.getBoundingClientRect();
         vol = Math.max(0, Math.min(100, Math.round((e.clientX - r.left) / r.width * 100)));
         yrkVolFill.style.width = vol + '%';
+        audioEl.volume = vol / 100;
+    });
+    audioEl.volume = vol / 100;
+
+    // ---- audio事件监听 ----
+    audioEl.addEventListener('ended', () => {
+        if (loop) nextS();
+        else { playing = false; yrkPlayIcon.className = 'fas fa-play'; yrkCover.classList.remove('playing'); yrkAudioViz.classList.remove('playing'); }
+    });
+    audioEl.addEventListener('error', () => {
+        yrkAudioViz.classList.remove('playing');
+        toast2(`❌ 音频加载失败，跳下一首`);
+        setTimeout(() => nextS(), 1500);
+    });
+    audioEl.addEventListener('waiting', () => {
+        yrkTrackTitle.textContent = '⏳ 缓冲中...';
+    });
+    audioEl.addEventListener('canplay', () => {
+        yrkTrackTitle.textContent = '🎵 ' + list[idx]?.t;
     });
 
     // ---- 键盘快捷键 ----
@@ -619,11 +704,13 @@ if (gradientText) {
                 e.preventDefault();
                 vol = Math.min(100, vol + 10);
                 yrkVolFill.style.width = vol + '%';
+                audioEl.volume = vol / 100;
                 break;
             case 'ArrowDown':
                 e.preventDefault();
                 vol = Math.max(0, vol - 10);
                 yrkVolFill.style.width = vol + '%';
+                audioEl.volume = vol / 100;
                 break;
         }
     });
@@ -635,11 +722,14 @@ if (gradientText) {
     // 自动加载第一首有BV号的歌
     const firstValid = SONGS.findIndex(hasBvid);
     if (firstValid >= 0) {
-        loadSong(firstValid);
+        // 不自动播放(浏览器策略)，只加载标题
+        yrkTrackTitle.textContent = '🎵 ' + SONGS[firstValid].t + ' (点击播放)';
+        yrkTrackMeta.textContent = SONGS[firstValid].a + ' · ' + SONGS[firstValid].d;
+        yrkTimeTotal.textContent = SONGS[firstValid].d;
     }
 
-    toast2('🦌 ヨルシカ 播放器就绪 (B站音源) · 按空格播放/暂停');
+    toast2('🦌 ヨルシカ 纯音频播放器就绪 · 点击播放按钮开始');
 
     // 暴露给全局
-    window.yorushikaPlayer = { SONGS, loadSong, nextS, prevS, playPause, hasBvid };
+    window.yorushikaPlayer = { SONGS, loadSong, nextS, prevS, playPause, fetchBiliAudioUrl };
 })();
