@@ -1,588 +1,251 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyGO!!!!! - 个人博客</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>MyGo!!!!!! 个人博客</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 星空/星屑背景 -->
-    <div class="starry-bg" id="starryBg"></div>
-    <div class="aurora-bg"></div>
+    <!-- 背景装饰音符 -->
+    <div class="bg-notes">
+        <span class="note note-1">♪</span>
+        <span class="note note-2">♫</span>
+        <span class="note note-3">♩</span>
+        <span class="note note-4">♬</span>
+        <span class="note note-5">♪</span>
+        <span class="note note-6">♫</span>
+        <span class="note note-7">♩</span>
+        <span class="note note-8">♬</span>
+    </div>
 
     <!-- 导航栏 -->
-    <nav class="navbar" id="navbar">
+    <nav class="navbar">
         <div class="nav-container">
-            <a href="#" class="nav-logo">
-                <span class="logo-mark">✦</span>
-                <span class="logo-text">My<span class="accent">GO</span>!!!!!</span>
-            </a>
-            <div class="nav-menu" id="navMenu">
-                <a href="#home" class="nav-link active">首页</a>
-                <a href="#about" class="nav-link">迷子</a>
-                <a href="#lyrics" class="nav-link">歌词</a>
-                <a href="#articles" class="nav-link">记录</a>
-                <a href="#links" class="nav-link">友链</a>
-                <a href="#contact" class="nav-link">信号</a>
+            <div class="logo">
+                <span class="logo-text">MyGo!!!!!!</span>
+                <span class="logo-sub">个人博客</span>
             </div>
-            <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle" title="切换世界線">
-                    <i class="fas fa-sun"></i>
-                </button>
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#">文章</a></li>
+                <li><a href="#">关于我</a></li>
+                <li><a href="#">作品</a></li>
+                <li><a href="#">联系方式</a></li>
+            </ul>
+            <div class="nav-date">2026.07</div>
         </div>
     </nav>
 
-    <!-- Hero 区域 -->
-    <section class="hero" id="home">
-        <div class="hero-bg-elements">
-            <div class="compass-logo"></div>
-            <div class="starfield"></div>
-        </div>
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="status-dot"></span>
-                    <span>迷子でもいい、前へ進め</span>
+    <!-- Banner 区域 -->
+    <section class="banner">
+        <div class="banner-container">
+            <div class="banner-illustration">
+                <div class="character-silhouette">
+                    <div class="char-body">
+                        <div class="char-head">
+                            <div class="char-hair"></div>
+                            <div class="char-glasses"></div>
+                            <div class="char-face"></div>
+                        </div>
+                        <div class="char-torso">
+                            <div class="drumstick-left"></div>
+                            <div class="drumstick-right"></div>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="hero-title">
-                    <span class="line1">即使<span class="gradient-text">迷茫</span></span>
-                    <span class="line2">也要<span class="gradient-text">前行</span></span>
+                <!-- 鼓组 -->
+                <div class="drum-set">
+                    <div class="drum drum-1"></div>
+                    <div class="drum drum-2"></div>
+                    <div class="drum drum-3"></div>
+                    <div class="cymbal cymbal-1"></div>
+                    <div class="cymbal cymbal-2"></div>
+                </div>
+                <!-- 漂浮音符 -->
+                <span class="float-note fn-1">♪</span>
+                <span class="float-note fn-2">♫</span>
+                <span class="float-note fn-3">♩</span>
+                <span class="float-note fn-4">♬</span>
+            </div>
+            <div class="banner-text">
+                <h1 class="banner-title">
+                    MyGo!!!!!!<br>
+                    <span class="banner-title-sub">与我的日常乐队日记</span>
                 </h1>
-                <p class="hero-subtitle">
-                    这里是我的个人空间<br>
-                    记录迷茫、思考、和那些说不出口的话
-                </p>
-                <div class="hero-actions">
-                    <a href="#lyrics" class="btn btn-primary">
-                        <i class="fas fa-microphone"></i>
-                        迷星叫
-                    </a>
-                    <a href="#articles" class="btn btn-outline">
-                        <i class="fas fa-book-open"></i>
-                        読んでください
-                    </a>
-                </div>
-                <div class="hero-meta">
-                    <span><i class="fas fa-map-pin"></i> 池袋 / 丰岛区</span>
-                    <span><i class="fas fa-star"></i> 5人組バンド</span>
-                    <span><i class="fas fa-compass"></i> 北极星のように</span>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="vinyl-record" id="vinylRecord">
-                    <div class="vinyl-inner">
-                        <div class="vinyl-label">
-                            <span class="vinyl-title">迷星叫</span>
-                            <span class="vinyl-sub">MyGO!!!!!</span>
-                        </div>
-                        <div class="vinyl-grooves">
-                            <div class="groove g1"></div>
-                            <div class="groove g2"></div>
-                            <div class="groove g3"></div>
-                            <div class="groove g4"></div>
-                        </div>
-                    </div>
-                    <div class="vinyl-shine"></div>
-                </div>
-                <div class="hero-deco">
-                    <span class="deco-text">"壱雫空"</span>
-                    <span class="deco-text">"碧天伴走"</span>
-                    <span class="deco-text">"影色舞"</span>
-                    <span class="deco-text">"潜在表明"</span>
-                    <span class="deco-text">"音一会"</span>
-                </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <div class="mouse">
-                <div class="wheel"></div>
-            </div>
-            <span>下へ進む</span>
-        </div>
-    </section>
-
-    <!-- 关于我（迷子セクション） -->
-    <section class="section about" id="about">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-compass"></i> 迷子について</span>
-                <h2 class="section-title">关于这个迷茫的人</h2>
-                <p class="section-desc">迷子でもいい、迷子でも進め</p>
-            </div>
-            <div class="about-grid">
-                <div class="about-card member-card" style="--member-color: #3388BB;">
-                    <div class="member-avatar" style="background: linear-gradient(135deg, #3388BB, #5BAFD9);">
-                        <span>灯</span>
-                    </div>
-                    <h3>高松灯</h3>
-                    <p class="member-role">Vo. 主唱</p>
-                    <p>内向而敏感，却在笔记本上写下不绝的话语。喜欢观察星空，把心情化成诗句。即使在迷茫中，也会抓紧那颗跳动的心。</p>
-                    <div class="member-trait">
-                        <span>✏️ 写诗</span>
-                        <span>🌌 观星</span>
-                        <span>📓 笔记本</span>
-                    </div>
-                </div>
-                <div class="about-card member-card" style="--member-color: #FF6B9D;">
-                    <div class="member-avatar" style="background: linear-gradient(135deg, #FF6B9D, #FF8FB1);">
-                        <span>音</span>
-                    </div>
-                    <h3>千早爱音</h3>
-                    <p class="member-role">Gt. 吉他</p>
-                    <p>充满活力的吉他手，虽然有时候爱出风头，但正是她的存在让灯能够向前走。相信「迷子でもいい、前へ進め」。</p>
-                    <div class="member-trait">
-                        <span>🎸 吉他</span>
-                        <span>✨ 活力</span>
-                        <span>🏫 交友</span>
-                    </div>
-                </div>
-                <div class="about-card member-card" style="--member-color: #FFD93D;">
-                    <div class="member-avatar" style="background: linear-gradient(135deg, #FFD93D, #FFE889);">
-                        <span>奈</span>
-                    </div>
-                    <h3>要乐奈</h3>
-                    <p class="member-role">Gt. 吉他</p>
-                    <p>随心所欲的吉他手，一下「有趣」一下「无趣」。除了抹茶和荞麦面，对什么都能保持若即若离。但音乐响起时，她比谁都认真。</p>
-                    <div class="member-trait">
-                        <span>🐱 猫</span>
-                        <span>🍵 抹茶</span>
-                        <span>🎵 即兴</span>
-                    </div>
-                </div>
-                <div class="about-card member-card" style="--member-color: #F5A623;">
-                    <div class="member-avatar" style="background: linear-gradient(135deg, #F5A623, #F7C56E);">
-                        <span>世</span>
-                    </div>
-                    <h3>长崎素世</h3>
-                    <p class="member-role">Ba. 贝斯</p>
-                    <p>曾经属于 CRYCHIC 的贝斯手，温柔的外表下有着不为人知的执念。池袋塔楼里的少女，用自己的方式守护着重要的东西。</p>
-                    <div class="member-trait">
-                        <span>🐚 贝斯</span>
-                        <span>🌊 深海</span>
-                        <span>🎻 CRYCHIC</span>
-                    </div>
-                </div>
-                <div class="about-card member-card" style="--member-color: #9B59B6;">
-                    <div class="member-avatar" style="background: linear-gradient(135deg, #9B59B6, #C39BD3);">
-                        <span>希</span>
-                    </div>
-                    <h3>椎名立希</h3>
-                    <p class="member-role">Dr. 鼓手</p>
-                    <p>最像「普通人」的鼓手，却背负着最重的责任感。她对乐队既严格又珍惜，是推动所有人前进的引擎。最想听「春日影」的人。</p>
-                    <div class="member-trait">
-                        <span>🥁 鼓</span>
-                        <span>💪 热血</span>
-                        <span>📋 认真</span>
-                    </div>
-                </div>
-                <div class="about-card member-card" style="--member-color: #00D4AA;">
-                    <div class="member-avatar" style="background: linear-gradient(135deg, #00D4AA, #5EF0C8);">
-                        <span>私</span>
-                    </div>
-                    <h3>关于我自己</h3>
-                    <p class="member-role">???</p>
-                    <p>一个还在寻找方向的人。写代码、写文字、弹吉他（偶尔）。在这个 blog 里记录下那些说不出口的心情，就像灯在笔记本上写下的诗句。</p>
-                    <div class="member-trait">
-                        <span>💻 开发</span>
-                        <span>📝 写作</span>
-                        <span>🎧 聆听</span>
-                    </div>
+                <p class="banner-subtitle">鼓棒、歌声、练习记录，和一点点成长的故事</p>
+                <p class="banner-welcome">欢迎来到我的音乐小窝 ✦</p>
+                <div class="banner-tags">
+                    <span class="tag tag-pink">#日常</span>
+                    <span class="tag tag-green">#乐队</span>
+                    <span class="tag tag-blue">#练习</span>
+                    <span class="tag tag-yellow">#音乐</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 歌词/语录区域 -->
-    <section class="section lyrics" id="lyrics">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-quote-left"></i> 迷跡波</span>
-                <h2 class="section-title">一些说不出口的话</h2>
-                <p class="section-desc">潜在表明 — 那些藏在心里的词句</p>
-            </div>
-            <div class="lyrics-grid">
-                <div class="lyric-card">
-                    <div class="lyric-mark">"</div>
-                    <p class="lyric-text">即使迷茫也没关系<br>即使迷茫着也要前进</p>
-                    <p class="lyric-source">— 迷星叫</p>
-                </div>
-                <div class="lyric-card">
-                    <div class="lyric-mark">"</div>
-                    <p class="lyric-text">一瞬の積み重ねが<br>一生になる</p>
-                    <p class="lyric-source">— 碧天伴走</p>
-                </div>
-                <div class="lyric-card">
-                    <div class="lyric-mark">"</div>
-                    <p class="lyric-text">誰かのために<br>歌いたいわけじゃない<br>歌わずにはいられない</p>
-                    <p class="lyric-source">— 歌いましょう鳴らしましょう</p>
-                </div>
-                <div class="lyric-card">
-                    <div class="lyric-mark">"</div>
-                    <p class="lyric-text">春の陽だまり<br>迷い猫</p>
-                    <p class="lyric-source">— 影色舞</p>
-                </div>
-                <div class="lyric-card">
-                    <div class="lyric-mark">"</div>
-                    <p class="lyric-text">音一会<br>今、ここにいる</p>
-                    <p class="lyric-source">— 音一会</p>
-                </div>
-                <div class="lyric-card personal">
-                    <div class="lyric-mark">"</div>
-                    <p class="lyric-text">写代码的深夜<br>耳机里循环着 MyGO<br>觉得世界也没那么糟</p>
-                    <p class="lyric-source">— 某人的深夜独白</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- 主体内容 -->
+    <main class="main-content">
+        <div class="content-container">
+            <!-- 左侧文章区 -->
+            <div class="articles-section">
+                <h2 class="section-title">
+                    <span class="title-icon">📝</span>
+                    最新文章
+                </h2>
 
-    <!-- 技能 -->
-    <section class="section skills" id="skills">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-bolt"></i> 技術スタック</span>
-                <h2 class="section-title">我的工具箱</h2>
-                <p class="section-desc">就像乐队需要每种乐器，开发也需要每种技能</p>
-            </div>
-            <div class="skills-container">
-                <div class="skill-category">
-                    <h3><i class="fas fa-code"></i> 前端 — 旋律</h3>
-                    <div class="skill-items">
-                        <div class="skill-item" data-level="90">
-                            <span>JavaScript / TypeScript</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 90%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="85">
-                            <span>React / Next.js</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 85%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="88">
-                            <span>HTML / CSS / SCSS</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 88%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="80">
-                            <span>Vue / Nuxt</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 80%"></div></div>
-                        </div>
+                <article class="article-card">
+                    <div class="card-cover cover-1">
+                        <div class="cover-drums"></div>
+                        <span class="cover-note">♪</span>
                     </div>
-                </div>
-                <div class="skill-category">
-                    <h3><i class="fas fa-server"></i> 后端 — 节奏</h3>
-                    <div class="skill-items">
-                        <div class="skill-item" data-level="87">
-                            <span>Python / FastAPI</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 87%"></div></div>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="card-date">📅 2025.06.15</span>
+                            <span class="card-category">#乐队日记</span>
                         </div>
-                        <div class="skill-item" data-level="83">
-                            <span>Node.js / Express</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 83%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="78">
-                            <span>PostgreSQL / Redis</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 78%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="75">
-                            <span>Docker / K8s</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 75%"></div></div>
-                        </div>
+                        <h3 class="card-title">初遇 MyGo!!!!!! 的那天</h3>
+                        <p class="card-excerpt">从一首《迷星のステラ》开始，慢慢懂了她们为什么一直想发出声音。那种笨拙却真诚地想要传达什么的姿态，和我自己练习时的心情莫名重合了……</p>
+                        <a href="#" class="card-readmore">阅读全文 →</a>
                     </div>
-                </div>
-                <div class="skill-category">
-                    <h3><i class="fas fa-heart"></i> 兴趣 — 歌词</h3>
-                    <div class="skill-items">
-                        <div class="skill-item" data-level="85">
-                            <span>吉他</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 85%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="70">
-                            <span>作词 / 写诗</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 70%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="80">
-                            <span>摄影</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 80%"></div></div>
-                        </div>
-                        <div class="skill-item" data-level="65">
-                            <span>动画鉴赏</span>
-                            <div class="skill-bar"><div class="skill-progress" style="--level: 65%"></div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                </article>
 
-    <!-- 文章 -->
-    <section class="section articles" id="articles">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-pen"></i> 記録</span>
-                <h2 class="section-title">记录与思考</h2>
-            </div>
-            <div class="articles-grid">
                 <article class="article-card">
-                    <div class="article-cover" style="background: linear-gradient(135deg, #3388BB, #5BAFD9);">
-                        <span class="article-emoji">🌌</span>
+                    <div class="card-cover cover-2">
+                        <div class="cover-notes"></div>
+                        <span class="cover-note">♫</span>
                     </div>
-                    <div class="article-body">
-                        <span class="article-tag">随笔</span>
-                        <h3>迷子でもいい — 关于迷茫这件事</h3>
-                        <p>看完 MyGO 之后，我不再害怕「不知道自己要什么」这件事了。迷茫本身就是前进的一部分。</p>
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-07-20</span>
-                            <span><i class="far fa-clock"></i> 5 min</span>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="card-date">📅 2025.07.02</span>
+                            <span class="card-category">#鼓手笔记</span>
                         </div>
+                        <h3 class="card-title">鼓手入门笔记</h3>
+                        <p class="card-excerpt">节奏不是完美才成立，而是一次次敲下去才长出来。今天练习了基本的 8beat 和 fill，手指磨出了茧，但听到自己打出还算像样的节奏时，真的很开心。</p>
+                        <a href="#" class="card-readmore">阅读全文 →</a>
                     </div>
                 </article>
+
                 <article class="article-card">
-                    <div class="article-cover" style="background: linear-gradient(135deg, #FF6B9D, #FF8FB1);">
-                        <span class="article-emoji">🎸</span>
+                    <div class="card-cover cover-3">
+                        <div class="cover-window"></div>
+                        <span class="cover-note">♬</span>
                     </div>
-                    <div class="article-body">
-                        <span class="article-tag">技术</span>
-                        <h3>用 React 做一个吉他效果器界面</h3>
-                        <p>把 Web Audio API 和 React 结合起来，做一个可以实时调参的吉他效果器面板。虽然弹得不好，但界面很帅。</p>
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-07-15</span>
-                            <span><i class="far fa-clock"></i> 12 min</span>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="card-date">📅 2025.07.18</span>
+                            <span class="card-category">#练习记录</span>
                         </div>
+                        <h3 class="card-title">练习室里的夏日风</h3>
+                        <p class="card-excerpt">空调很吵，麦克风很近，沙绫的歌声却把房间照亮。今天尝试翻奏《unfinished song》，虽然还不熟练，但那种"还没完成"的感觉本身就很 MyGo。</p>
+                        <a href="#" class="card-readmore">阅读全文 →</a>
                     </div>
                 </article>
+
                 <article class="article-card">
-                    <div class="article-cover" style="background: linear-gradient(135deg, #FFD93D, #FFE889);">
-                        <span class="article-emoji">✨</span>
+                    <div class="card-cover cover-4">
+                        <div class="cover-mic"></div>
+                        <span class="cover-note">♩</span>
                     </div>
-                    <div class="article-body">
-                        <span class="article-tag">灵感</span>
-                        <h3>从「春日影」到代码注释 — 诗意编程</h3>
-                        <p>代码不一定非要冰冷。好的变量名、好的注释，就像一首歌的歌词，能让读代码的人感受到温度。</p>
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-07-08</span>
-                            <span><i class="far fa-clock"></i> 7 min</span>
+                    <div class="card-content">
+                        <div class="card-meta">
+                            <span class="card-date">📅 2025.08.05</span>
+                            <span class="card-category">#翻奏</span>
                         </div>
-                    </div>
-                </article>
-                <article class="article-card">
-                    <div class="article-cover" style="background: linear-gradient(135deg, #9B59B6, #C39BD3);">
-                        <span class="article-emoji">🐈</span>
-                    </div>
-                    <div class="article-body">
-                        <span class="article-tag">日常</span>
-                        <h3>要乐奈式生活哲学 — 有趣和无聊之间</h3>
-                        <p>「有趣」的时候就全力投入，「无趣」的时候就坦然放手。不需要每件事都有意义，活着本身就是意义。</p>
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-07-01</span>
-                            <span><i class="far fa-clock"></i> 4 min</span>
-                        </div>
-                    </div>
-                </article>
-                <article class="article-card">
-                    <div class="article-cover" style="background: linear-gradient(135deg, #00D4AA, #5EF0C8);">
-                        <span class="article-emoji">🌊</span>
-                    </div>
-                    <div class="article-body">
-                        <span class="article-tag">深度</span>
-                        <h3>池袋漫步 — 一个人的城市探险</h3>
-                        <p>沿着太阳城的大阶梯走上去，在星象馆前面坐一会儿，假装自己也是 MyGO 里的某个角色。城市在黄昏时最美。</p>
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-06-25</span>
-                            <span><i class="far fa-clock"></i> 8 min</span>
-                        </div>
-                    </div>
-                </article>
-                <article class="article-card">
-                    <div class="article-cover" style="background: linear-gradient(135deg, #F5A623, #F7C56E);">
-                        <span class="article-emoji">🔥</span>
-                    </div>
-                    <div class="article-body">
-                        <span class="article-tag">成长</span>
-                        <h3>做一支乐队的后端工程师</h3>
-                        <p>就像立希在乐队里承担的角色一样，后端工程师是那个默默保证一切运转的人。没有掌声，但不可或缺。</p>
-                        <div class="article-meta">
-                            <span><i class="far fa-calendar"></i> 2026-06-18</span>
-                            <span><i class="far fa-clock"></i> 6 min</span>
-                        </div>
+                        <h3 class="card-title">第一次在 livehouse 演出</h3>
+                        <p class="card-excerpt">上台前手在抖，鼓棒差点掉了。但灯光亮起来的那一刻，什么都听不到了，只剩下心跳和节奏。演出结束后哭了，不知道是因为紧张还是因为太开心。</p>
+                        <a href="#" class="card-readmore">阅读全文 →</a>
                     </div>
                 </article>
             </div>
-        </div>
-    </section>
 
-    <!-- 统计数据 -->
-    <section class="section stats">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number" data-target="128">0</div>
-                    <div class="stat-label">迷いの記録</div>
+            <!-- 右侧边栏 -->
+            <aside class="sidebar">
+                <!-- 关于我 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">
+                        <span class="widget-icon">🥁</span>
+                        关于 me
+                    </h3>
+                    <p class="widget-text">
+                        喜欢 MyGo!!!!!! 的鼓点与歌声，也喜欢把练习、翻奏和碎碎念写下来。一个普通的乐队爱好者，正在努力成为不那么普通的鼓手。
+                    </p>
+                    <div class="drum-icon">🥁</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="5">0</div>
-                    <div class="stat-label">バンドメンバー</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="13">0</div>
-                    <div class="stat-label">楽曲 (アルバム)</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-target="365">0</div>
-                    <div class="stat-label">Days Survived</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- 友情链接 -->
-    <section class="section links" id="links">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-link"></i> 友達</span>
-                <h2 class="section-title">迷子同士、繋がろう</h2>
-                <p class="section-desc">一些同样在迷茫中前进的朋友们</p>
-            </div>
-            <div class="links-grid">
-                <a href="https://bang-dream.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #3388BB, #5BAFD9);">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>BanG Dream! 官网</h3>
-                        <p>MyGO!!!!! 的官方首页</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://github.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #24292e, #586069);">
-                        <i class="fab fa-github"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>GitHub</h3>
-                        <p>コードの交差点</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.bilibili.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #00A1D6, #00C6FF);">
-                        <i class="fas fa-tv"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>bilibili</h3>
-                        <p>弹幕里都是同频的人</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://music.163.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #C20C0C, #E83C3C);">
-                        <i class="fas fa-music"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>网易云音乐</h3>
-                        <p>「迷星叫」循环了 100 遍</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://www.pixiv.net" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #0096DB, #00BCD4);">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>pixiv</h3>
-                        <p>同人イラスト天国</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener" class="link-card">
-                    <div class="link-avatar" style="background: linear-gradient(135deg, #1DA1F2, #5DB4F5);">
-                        <i class="fab fa-twitter"></i>
-                    </div>
-                    <div class="link-info">
-                        <h3>Twitter / X</h3>
-                        <p>140文字の迷い</p>
-                    </div>
-                    <span class="link-arrow"><i class="fas fa-external-link-alt"></i></span>
-                </a>
-            </div>
-        </div>
-    </section>
+                <!-- 最新作品 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">
+                        <span class="widget-icon">🎵</span>
+                        最新作品
+                    </h3>
+                    <ul class="work-list">
+                        <li>
+                            <span class="work-tag tag-green">翻奏</span>
+                            <span class="work-title">《迷星のステラ》鼓谱+演奏</span>
+                        </li>
+                        <li>
+                            <span class="work-tag tag-pink">翻奏</span>
+                            <span class="work-title">《unfinished song》练习版</span>
+                        </li>
+                        <li>
+                            <span class="work-tag tag-blue">乐谱</span>
+                            <span class="work-title">鼓谱第3页 · 修订版</span>
+                        </li>
+                        <li>
+                            <span class="work-tag tag-yellow">翻奏</span>
+                            <span class="work-title">《声なき魚》初稿</span>
+                        </li>
+                    </ul>
+                </div>
 
-    <!-- 联系我 -->
-    <section class="section contact" id="contact">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-signal"></i> 信号</span>
-                <h2 class="section-title">送ってください</h2>
-                <p class="section-desc">即使微弱的信号，也会有人收到</p>
-            </div>
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <div class="contact-card">
-                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                        <h3>邮箱</h3>
-                        <p>your.email@example.com</p>
-                    </div>
-                    <div class="contact-card">
-                        <div class="contact-icon"><i class="fab fa-github"></i></div>
-                        <h3>GitHub</h3>
-                        <p>github.com/yourusername</p>
-                    </div>
-                    <div class="contact-card">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <h3>位置</h3>
-                        <p>中国 · 黄冈 → 池袋（心の地図）</p>
+                <!-- 标签云 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">
+                        <span class="widget-icon">🏷️</span>
+                        标签
+                    </h3>
+                    <div class="tag-cloud">
+                        <span class="cloud-tag tag-mygopink">#MyGo!!!!!!</span>
+                        <span class="cloud-tag tag-green">#翻奏</span>
+                        <span class="cloud-tag tag-blue">#鼓谱</span>
+                        <span class="cloud-tag tag-yellow">#练习记录</span>
+                        <span class="cloud-tag tag-pink">#BanG Dream!</span>
+                        <span class="cloud-tag">#乐队</span>
+                        <span class="cloud-tag tag-green">#鼓手</span>
+                        <span class="cloud-tag tag-blue">#原创</span>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">名前</label>
-                            <input type="text" id="name" placeholder="你的名字" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">連絡先</label>
-                            <input type="email" id="email" placeholder="邮箱地址" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">件名</label>
-                        <input type="text" id="subject" placeholder="合作 / 交流 / 或者只是想说声你好" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">本文</label>
-                        <textarea id="message" rows="5" placeholder="就像灯在笔记本上写下的那些话..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fas fa-paper-plane"></i>
-                        送信する
-                    </button>
-                </form>
-            </div>
+
+                <!-- 联系方式 -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">
+                        <span class="widget-icon">💌</span>
+                        联系方式
+                    </h3>
+                    <ul class="contact-list">
+                        <li>🐦 Twitter：@mygo_blog</li>
+                        <li>📺 YouTube：mygo_daily</li>
+                        <li>📧 Email：mygo.blog@example.com</li>
+                        <li>🎵 Bilibili：MyGo日记本</li>
+                    </ul>
+                    <p class="thanks-text">感谢支持 MyGo!!!!!!<br>和这个博客！✦</p>
+                </div>
+            </aside>
         </div>
-    </section>
+    </main>
 
     <!-- 页脚 -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <span class="logo-mark">✦</span>
-                    <span>My<span class="accent">GO</span>!!!!!</span>
-                </div>
-                <p class="footer-text">迷子でもいい、前へ進め 🌟</p>
-                <div class="footer-social">
-                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" title="Bilibili"><i class="fas fa-tv"></i></a>
-                    <a href="#" title="网易云"><i class="fas fa-music"></i></a>
-                </div>
-                <p class="footer-copy">© 2026 MyGO!!!!! Blog — It's My Blog!!!!!</p>
-                <p class="footer-credit">Inspired by BanG Dream! MyGO!!!!! — 非官方同人风格</p>
-            </div>
+        <div class="footer-container">
+            <p class="footer-text">
+                © 2026 MyGo!!!!!! 个人博客 · Made with ♥ and drum beats
+            </p>
+            <p class="footer-sub">
+                "声を届けたい" — MyGo!!!!!!
+            </p>
         </div>
     </footer>
 
