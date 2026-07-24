@@ -14,10 +14,8 @@ function initRouter() {
     document.addEventListener('click', handleLinkClick);
     window.addEventListener('popstate', handlePopState);
 
-    // 只在首页时保存快照（防止子页面直接加载时污染快照）
-    if (appMain && (location.pathname === '/' || location.pathname === '/index.html')) {
-        homeSnapshot = appMain.innerHTML;
-    }
+    // 启动时保存首页内容
+    if (appMain) homeSnapshot = appMain.innerHTML;
 }
 
 async function handleLinkClick(e) {
@@ -52,17 +50,12 @@ async function handleLinkClick(e) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             history.pushState({ url: '/' }, '', '/');
             setTimeout(() => appMain.style.opacity = '1', 50);
-        } else {
-            // 没有快照（从子页面直接加载），fetch 首页
-            navigateTo('/');
         }
         return;
     }
 
     e.preventDefault();
-    // 将相对路径转为绝对路径，避免从子页面跳转时路径叠加
-    const absoluteUrl = new URL(href, location.origin + location.pathname).pathname;
-    navigateTo(absoluteUrl);
+    navigateTo(href);
 }
 
 async function navigateTo(url) {
@@ -70,12 +63,10 @@ async function navigateTo(url) {
     isNavigating = true;
     appMain.style.opacity = '0.4';
     try {
-        // 确保 URL 是绝对路径
-        const fetchUrl = url.startsWith('http') ? url : (location.origin + (url.startsWith('/') ? url : '/' + url));
         let html = pageCache.get(url);
         if (!html) {
-            const res = await fetch(fetchUrl, { headers: { 'Accept': 'text/html' } });
-            if (!res.ok) throw new Error(`HTTP ${res.status} for ${fetchUrl}`);
+            const res = await fetch(url, { headers: { 'Accept': 'text/html' } });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             html = await res.text();
             pageCache.set(url, html);
         }
@@ -88,8 +79,6 @@ async function navigateTo(url) {
             observeFadeElements();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             history.pushState({ url }, '', url);
-        } else {
-            console.warn('目标页面缺少 <main> 标签:', url);
         }
     } catch (err) { console.error('页面加载失败:', err); window.location.href = url; }
     finally { appMain.style.opacity = '1'; isNavigating = false; }
@@ -108,21 +97,6 @@ async function handlePopState(e) {
             observeFadeElements();
             bindCardParallax();
             window.scrollTo({ top: 0, behavior: 'instant' });
-        } else {
-            // 没有快照，重新 fetch 首页
-            try {
-                const res = await fetch('/');
-                const html = await res.text();
-                const doc = new DOMParser().parseFromString(html, 'text/html');
-                const newMain = doc.querySelector('main');
-                if (newMain) {
-                    appMain.innerHTML = newMain.innerHTML;
-                    homeSnapshot = newMain.innerHTML;
-                }
-                updateNavForUrl('/');
-                observeFadeElements();
-                bindCardParallax();
-            } catch(e) { window.location.reload(); }
         }
         isNavigating = false;
         return;
@@ -388,12 +362,6 @@ function applyCollapseState() {
 function initPlayer() {
     if (playerInitialized) return;
     playerInitialized = true;
-
-    // 如果当前页面没有 audio 元素（如子页面直接加载），跳过播放器初始化
-    if (!audio) {
-        console.log('当前页面无 audio 元素，播放器将在 SPA 跳转回首页后初始化');
-        return;
-    }
 
     audio.volume = 0.7;
     renderPlaylist();
