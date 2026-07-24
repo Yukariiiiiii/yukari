@@ -19,15 +19,15 @@
     <!-- 导航栏 -->
     <nav class="navbar glass">
         <div class="nav-container">
-            <a href="#" class="nav-logo">
+            <a href="/" class="nav-logo" data-link>
                 <i class="fas fa-feather-alt"></i>
                 <span>Yukariの小站</span>
             </a>
             <div class="nav-links">
-                <a href="#home" class="nav-link active"><i class="fas fa-home"></i> 首页</a>
-                <a href="#articles" class="nav-link"><i class="fas fa-book-open"></i> 文章</a>
-                <a href="#about" class="nav-link"><i class="fas fa-user"></i> 关于</a>
-                <a href="#contact" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+                <a href="#home" class="nav-link active" data-nav="home"><i class="fas fa-home"></i> 首页</a>
+                <a href="#articles" class="nav-link" data-nav="articles"><i class="fas fa-book-open"></i> 文章</a>
+                <a href="#about" class="nav-link" data-nav="about"><i class="fas fa-user"></i> 关于</a>
+                <a href="#contact" class="nav-link" data-nav="contact"><i class="fas fa-envelope"></i> 联系</a>
             </div>
             <div class="nav-actions">
                 <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题">
@@ -43,8 +43,8 @@
         </div>
     </nav>
 
-    <!-- 主内容 -->
-    <main class="main-content">
+    <!-- 主内容（SPA 动态替换区域） -->
+    <main class="main-content" id="app-main">
         <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-card glass fade-in">
@@ -94,7 +94,7 @@
                                 <span class="tag-small">CSS</span>
                                 <span class="tag-small">设计</span>
                             </div>
-                            <a href="articles/css-glassmorphism.html" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                            <a href="articles/css-glassmorphism.html" class="read-more" data-link>阅读 <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </article>
@@ -115,7 +115,7 @@
                                 <span class="tag-small">JavaScript</span>
                                 <span class="tag-small">性能</span>
                             </div>
-                            <a href="articles/js-performance.html" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                            <a href="articles/js-performance.html" class="read-more" data-link>阅读 <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </article>
@@ -136,7 +136,7 @@
                                 <span class="tag-small">设计</span>
                                 <span class="tag-small">CSS</span>
                             </div>
-                            <a href="articles/dark-mode-design.html" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                            <a href="articles/dark-mode-design.html" class="read-more" data-link>阅读 <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </article>
@@ -157,7 +157,7 @@
                                 <span class="tag-small">React</span>
                                 <span class="tag-small">前端</span>
                             </div>
-                            <a href="articles/react19.html" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                            <a href="articles/react19.html" class="read-more" data-link>阅读 <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </article>
@@ -178,7 +178,7 @@
                                 <span class="tag-small">全栈</span>
                                 <span class="tag-small">教程</span>
                             </div>
-                            <a href="articles/build-blog.html" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                            <a href="articles/build-blog.html" class="read-more" data-link>阅读 <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </article>
@@ -199,7 +199,7 @@
                                 <span class="tag-small">AI</span>
                                 <span class="tag-small">工具</span>
                             </div>
-                            <a href="articles/ai-coding.html" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                            <a href="articles/ai-coding.html" class="read-more" data-link>阅读 <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </article>
@@ -263,10 +263,9 @@
         </section>
     </main>
 
-    <!-- 黑胶音乐播放器 -->
+    <!-- 黑胶音乐播放器（始终保留在 DOM 中，不随页面切换销毁） -->
     <div class="vinyl-player" id="vinylPlayer">
         <div class="vinyl-player-inner glass">
-            <!-- 播放器头部 -->
             <div class="player-header">
                 <div class="player-title">
                     <i class="fas fa-record-vinyl"></i>
@@ -277,7 +276,6 @@
                 </button>
             </div>
 
-            <!-- 黑胶唱片区域 -->
             <div class="vinyl-display">
                 <div class="vinyl-record" id="vinylRecord">
                     <div class="vinyl-disc">
@@ -295,13 +293,11 @@
                 </div>
             </div>
 
-            <!-- 歌曲信息 -->
             <div class="track-info">
                 <div class="track-name" id="trackName">选择一首歌曲</div>
                 <div class="track-artist" id="trackArtist">—</div>
             </div>
 
-            <!-- 进度条 -->
             <div class="progress-container">
                 <span class="progress-time" id="currentTime">0:00</span>
                 <div class="progress-bar" id="progressBar">
@@ -311,26 +307,14 @@
                 <span class="progress-time" id="totalTime">0:00</span>
             </div>
 
-            <!-- 控制按钮 -->
             <div class="player-controls">
-                <button class="control-btn" id="shuffleBtn" title="随机播放">
-                    <i class="fas fa-random"></i>
-                </button>
-                <button class="control-btn" id="prevBtn" title="上一首">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button class="control-btn play-btn" id="playBtn" title="播放/暂停">
-                    <i class="fas fa-play" id="playIcon"></i>
-                </button>
-                <button class="control-btn" id="nextBtn" title="下一首">
-                    <i class="fas fa-step-forward"></i>
-                </button>
-                <button class="control-btn" id="repeatBtn" title="循环模式">
-                    <i class="fas fa-redo"></i>
-                </button>
+                <button class="control-btn" id="shuffleBtn" title="随机播放"><i class="fas fa-random"></i></button>
+                <button class="control-btn" id="prevBtn" title="上一首"><i class="fas fa-step-backward"></i></button>
+                <button class="control-btn play-btn" id="playBtn" title="播放/暂停"><i class="fas fa-play" id="playIcon"></i></button>
+                <button class="control-btn" id="nextBtn" title="下一首"><i class="fas fa-step-forward"></i></button>
+                <button class="control-btn" id="repeatBtn" title="循环模式"><i class="fas fa-redo"></i></button>
             </div>
 
-            <!-- 音量控制 -->
             <div class="volume-container">
                 <i class="fas fa-volume-up" id="volumeIcon"></i>
                 <div class="volume-bar" id="volumeBar">
@@ -338,45 +322,31 @@
                 </div>
             </div>
 
-            <!-- 播放列表 -->
             <div class="playlist-toggle" id="playlistToggle">
                 <span>播放列表</span>
                 <i class="fas fa-chevron-up" id="playlistChevron"></i>
             </div>
-            <div class="playlist" id="playlist">
-                <!-- 动态生成 -->
-            </div>
+            <div class="playlist" id="playlist"></div>
         </div>
     </div>
 
-    <!-- 迷你播放条（底部固定） -->
     <div class="mini-player glass" id="miniPlayer">
-        <div class="mini-vinyl" id="miniVinyl">
-            <div class="mini-vinyl-disc"></div>
-        </div>
+        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
         <div class="mini-info">
             <div class="mini-track" id="miniTrack">未播放</div>
             <div class="mini-artist" id="miniArtist">—</div>
         </div>
         <div class="mini-controls">
-            <button class="mini-btn" id="miniPrev" title="上一首">
-                <i class="fas fa-step-backward"></i>
-            </button>
-            <button class="mini-btn mini-play" id="miniPlay" title="播放/暂停">
-                <i class="fas fa-play" id="miniPlayIcon"></i>
-            </button>
-            <button class="mini-btn" id="miniNext" title="下一首">
-                <i class="fas fa-step-forward"></i>
-            </button>
+            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
+            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
+            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
         </div>
     </div>
 
-    <!-- 隐藏的 audio 元素 -->
     <audio id="audioElement" preload="metadata"></audio>
 
-    <!-- 页脚 -->
     <footer class="footer glass">
-        <p>&copy; 2026 MyBlog. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
+        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
     </footer>
 
     <script src="script.js"></script>

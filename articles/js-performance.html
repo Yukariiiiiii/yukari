@@ -8,35 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
-
-    <nav class="navbar glass">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fas fa-feather-alt"></i>
-                <span>Yukariの小站</span>
-            </a>
-            <div class="nav-links">
-                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
-                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
-            </div>
-            <div class="nav-actions">
-                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题"><i class="fas fa-sun"></i></button>
-                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器"><i class="fas fa-music"></i></button>
-                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
-            </div>
-        </div>
-    </nav>
-
     <main class="main-content article-page">
-        <a href="../index.html" class="back-link glass-btn"><i class="fas fa-arrow-left"></i> 返回文章列表</a>
+        <a href="/" class="back-link glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回文章列表</a>
 
         <article class="article-full glass fade-in">
             <div class="article-header">
@@ -215,7 +188,7 @@ els.forEach((el, i) => el.style.width = widths[i] * 2 + 'px');</code></pre>
                 <p>JS 性能优化的本质就是三件事：<strong>少占主线程、少碰 DOM、少加载代码</strong>。掌握事件循环、善用工具测量、遵循"测量→分析→优化→再测量"的循环，你的页面就能丝般顺滑。</p>
 
                 <div class="article-footer-actions">
-                    <a href="../index.html" class="btn btn-outline glass-btn"><i class="fas fa-arrow-left"></i> 返回列表</a>
+                    <a href="/" class="btn btn-outline glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回列表</a>
                     <div class="share-links">
                         <span>分享：</span>
                         <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
@@ -226,57 +199,5 @@ els.forEach((el, i) => el.style.width = widths[i] * 2 + 'px');</code></pre>
             </div>
         </article>
     </main>
-
-    <div class="vinyl-player" id="vinylPlayer">
-        <div class="vinyl-player-inner glass">
-            <div class="player-header">
-                <div class="player-title"><i class="fas fa-record-vinyl"></i><span>音乐播放器</span></div>
-                <button class="player-close" id="playerClose"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="vinyl-display">
-                <div class="vinyl-record" id="vinylRecord">
-                    <div class="vinyl-disc"><div class="vinyl-grooves"></div><div class="vinyl-label"><div class="vinyl-label-text" id="vinylLabel">♪</div></div><div class="vinyl-hole"></div></div>
-                    <div class="vinyl-arm"><div class="vinyl-arm-base"></div><div class="vinyl-arm-stick"></div><div class="vinyl-arm-head"></div></div>
-                </div>
-            </div>
-            <div class="track-info"><div class="track-name" id="trackName">选择一首歌曲</div><div class="track-artist" id="trackArtist">—</div></div>
-            <div class="progress-container">
-                <span class="progress-time" id="currentTime">0:00</span>
-                <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div><div class="progress-thumb" id="progressThumb"></div></div>
-                <span class="progress-time" id="totalTime">0:00</span>
-            </div>
-            <div class="player-controls">
-                <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
-                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play" id="playIcon"></i></button>
-                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-                <button class="control-btn" id="repeatBtn"><i class="fas fa-redo"></i></button>
-            </div>
-            <div class="volume-container">
-                <i class="fas fa-volume-up" id="volumeIcon"></i>
-                <div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div>
-            </div>
-            <div class="playlist-toggle" id="playlistToggle"><span>播放列表</span><i class="fas fa-chevron-up" id="playlistChevron"></i></div>
-            <div class="playlist" id="playlist"></div>
-        </div>
-    </div>
-
-    <div class="mini-player glass" id="miniPlayer">
-        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
-        <div class="mini-info"><div class="mini-track" id="miniTrack">未播放</div><div class="mini-artist" id="miniArtist">—</div></div>
-        <div class="mini-controls">
-            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
-            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
-        </div>
-    </div>
-
-    <audio id="audioElement" preload="metadata"></audio>
-
-    <footer class="footer glass">
-        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
-    </footer>
-
-    <script src="../script.js"></script>
 </body>
 </html>

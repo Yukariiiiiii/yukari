@@ -8,35 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
-
-    <nav class="navbar glass">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fas fa-feather-alt"></i>
-                <span>Yukariの小站</span>
-            </a>
-            <div class="nav-links">
-                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
-                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
-            </div>
-            <div class="nav-actions">
-                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题"><i class="fas fa-sun"></i></button>
-                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器"><i class="fas fa-music"></i></button>
-                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
-            </div>
-        </div>
-    </nav>
-
     <main class="main-content article-page">
-        <a href="../index.html" class="back-link glass-btn"><i class="fas fa-arrow-left"></i> 返回文章列表</a>
+        <a href="/" class="back-link glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回文章列表</a>
 
         <article class="article-full glass fade-in">
             <div class="article-header">
@@ -86,9 +59,9 @@ import { db } from '@/lib/db';
 export default async function Page() {
     const posts = await db.post.findMany(); // 直接在服务器查数据库
     return (
-        <ul>
-            {posts.map(p => <li key={p.id}>{p.title}</li>)}
-        </ul>
+        &lt;ul&gt;
+            {posts.map(p =&gt; &lt;li key={p.id}&gt;{p.title}&lt;/li&gt;)}
+        &lt;/ul&gt;
     );
 }</code></pre>
 
@@ -123,7 +96,6 @@ export default async function Page() {
                 <pre><code>'use server';
 async function submitForm(prevState, formData) {
     const name = formData.get('name');
-    // 直接操作数据库
     await db.user.create({ data: { name } });
     return { ok: true };
 }
@@ -158,9 +130,9 @@ function Form() {
 function Comments({ commentsPromise }) {
     const comments = use(commentsPromise); // 悬念式读取
     return (
-        <ul>
-            {comments.map(c => <li key={c.id}>{c.text}</li>)}
-        </ul>
+        &lt;ul&gt;
+            {comments.map(c =&gt; &lt;li key={c.id}&gt;{c.text}&lt;/li&gt;)}
+        &lt;/ul&gt;
     );
 }</code></pre>
 
@@ -178,17 +150,15 @@ function Comments({ commentsPromise }) {
 
                 <pre><code>// 以前要手动 memo
 const ExpensiveItem = memo(function ExpensiveItem({ data }) {
-    return <div>{heavyCompute(data)}</div>;
+    return &lt;div&gt;{heavyCompute(data)}&lt;/div&gt;;
 });
 
 // React Compiler 自动分析依赖，自动 memoize
 function ExpensiveItem({ data }) {
-    return <div>{heavyCompute(data)}</div>;
+    return &lt;div&gt;{heavyCompute(data)}&lt;/div&gt;;
 }</code></pre>
 
                 <h3>2. 更细粒度的更新调度</h3>
-                <p>19 重写了调度器，支持<strong>优先级中断</strong>——用户输入永远优先于数据渲染：</p>
-
                 <pre><code>import { useTransition } from 'react';
 
 function SearchResults() {
@@ -201,7 +171,6 @@ function SearchResults() {
             setQuery(value); // 低优先级更新
         });
     }
-    // ...
 }</code></pre>
 
                 <h2>五、破坏性变更（迁移注意）</h2>
@@ -224,7 +193,7 @@ function SearchResults() {
                 <p>React 19 的本质是<strong>把数据获取和变更写回组件内部</strong>，借助 Server Components 和 Actions 消除样板代码。配合 Compiler 自动优化，开发者可以专注于业务逻辑而非性能调优。这是 React 向"全栈组件"迈出的最大一步。</p>
 
                 <div class="article-footer-actions">
-                    <a href="../index.html" class="btn btn-outline glass-btn"><i class="fas fa-arrow-left"></i> 返回列表</a>
+                    <a href="/" class="btn btn-outline glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回列表</a>
                     <div class="share-links">
                         <span>分享：</span>
                         <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
@@ -235,42 +204,5 @@ function SearchResults() {
             </div>
         </article>
     </main>
-
-    <div class="vinyl-player" id="vinylPlayer">
-        <div class="vinyl-player-inner glass">
-            <div class="player-header"><div class="player-title"><i class="fas fa-record-vinyl"></i><span>音乐播放器</span></div><button class="player-close" id="playerClose"><i class="fas fa-times"></i></button></div>
-            <div class="vinyl-display"><div class="vinyl-record" id="vinylRecord"><div class="vinyl-disc"><div class="vinyl-grooves"></div><div class="vinyl-label"><div class="vinyl-label-text" id="vinylLabel">♪</div></div><div class="vinyl-hole"></div></div><div class="vinyl-arm"><div class="vinyl-arm-base"></div><div class="vinyl-arm-stick"></div><div class="vinyl-arm-head"></div></div></div></div>
-            <div class="track-info"><div class="track-name" id="trackName">选择一首歌曲</div><div class="track-artist" id="trackArtist">—</div></div>
-            <div class="progress-container"><span class="progress-time" id="currentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div><div class="progress-thumb" id="progressThumb"></div></div><span class="progress-time" id="totalTime">0:00</span></div>
-            <div class="player-controls">
-                <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
-                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play" id="playIcon"></i></button>
-                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-                <button class="control-btn" id="repeatBtn"><i class="fas fa-redo"></i></button>
-            </div>
-            <div class="volume-container"><i class="fas fa-volume-up" id="volumeIcon"></i><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
-            <div class="playlist-toggle" id="playlistToggle"><span>播放列表</span><i class="fas fa-chevron-up" id="playlistChevron"></i></div>
-            <div class="playlist" id="playlist"></div>
-        </div>
-    </div>
-
-    <div class="mini-player glass" id="miniPlayer">
-        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
-        <div class="mini-info"><div class="mini-track" id="miniTrack">未播放</div><div class="mini-artist" id="miniArtist">—</div></div>
-        <div class="mini-controls">
-            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
-            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
-        </div>
-    </div>
-
-    <audio id="audioElement" preload="metadata"></audio>
-
-    <footer class="footer glass">
-        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
-    </footer>
-
-    <script src="../script.js"></script>
 </body>
 </html>
