@@ -1537,8 +1537,6 @@ img {
     font-size: 0.9rem;
     color: var(--text-secondary);
     transition: all 0.3s;
-    cursor: pointer;
-    text-decoration: none;
 }
 
 .back-link:hover {
@@ -1813,18 +1811,4 @@ img {
         flex-direction: column;
         align-items: flex-start;
     }
-}
-
-/* ========== SPA 页面切换过渡 ========== */
-#app-main {
-    transition: opacity 0.3s ease;
-}
-
-#app-main.page-loading {
-    opacity: 0.3;
-}
-
-/* 确保 body 在 SPA 切换时不会闪白 */
-body {
-    transition: background-color 0.5s ease, color 0.3s ease;
 }
