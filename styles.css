@@ -1125,3 +1125,21 @@ img { max-width: 100%; display: block; }
     .compat-table th, .compat-table td { padding: 8px 10px; }
     .article-page { padding: 90px 14px 24px; }
 }
+
+/* ========== 打字机效果 ========== */
+#typed-text {
+    display: inline-block;
+    min-width: 1ch; /* 防止初始为空塌陷 */
+}
+
+.typed-cursor {
+    display: inline-block;
+    color: var(--accent);
+    animation: blink 1s step-end infinite;
+    font-weight: normal;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}

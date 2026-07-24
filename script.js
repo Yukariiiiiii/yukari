@@ -595,6 +595,31 @@ document.addEventListener('keydown', e => {
     }
 });
 
+// ========== 打字机效果：少女乐队，摇滚万岁 ==========
+(function () {
+    const text = '少女乐队，摇滚万岁';
+    const typedText = document.getElementById('typed-text');
+    const cursor = document.querySelector('.typed-cursor');
+
+    if (!typedText) return;
+
+    let index = 0;
+    const speed = 120; // 打字速度（ms），可调整
+    const startDelay = 800; // 页面加载后延迟开始
+
+    function type() {
+        if (index < text.length) {
+            typedText.textContent += text.charAt(index);
+            index++;
+            setTimeout(type, speed);
+        } else {
+            // 打字完成后，可选：让光标持续闪烁
+            cursor.style.animation = 'blink 1s step-end infinite';
+        }
+    }
+
+    setTimeout(type, startDelay);
+})();
 // ========== 启动 ==========
 initRouter();
 initPlayer();
