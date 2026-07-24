@@ -164,7 +164,7 @@ const playlist = [
     {
         name: 'Acoustic Breeze',
         artist: 'Benjamin Tissot',
-        src: 'https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3',
+        src: 'https://aqqmusic.tc.qq.com/M500002pVQc229dcjx.mp3?guid=1907128691&vkey=89C3DE068EB1A82551D31DB3225CE989B73328C74C3B24200105DE52690D65D0DB3106EB78008D009BDB536B197A40A3660A4169009AFDCE__v2ba82194&uin=&fromtag=120042',
         duration: '3:12',
         icon: '🎵'
     },
