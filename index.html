@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alex Chen 的个人博客 — 前端开发、UI 设计与独立开发">
+    <meta name="author" content="Alex Chen">
+    <title>个人博客 | Glassmorphism</title>
+
+    <!-- 外部样式表 -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- 可选：网页图标 -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+    <!-- ============ 动态背景光斑 ============ -->
+    <div class="bg-blobs" aria-hidden="true">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <!-- ============ 导航栏 ============ -->
+    <nav class="navbar">
+        <div class="nav-brand">✦ MyBlog</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">首页</a></li>
+            <li><a href="#">文章</a></li>
+            <li><a href="#">归档</a></li>
+            <li><a href="#">项目</a></li>
+            <li><a href="#">关于</a></li>
+            <li>
+                <button class="theme-toggle" id="themeToggle" title="切换深浅色主题" aria-label="切换主题">
+                    🌙
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- ============ 主内容 ============ -->
+    <main class="container">
+
+        <!-- ===== Hero ===== -->
+        <section class="hero glass-card">
+            <div class="hero-avatar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E" alt="头像">
+            </div>
+            <h1>你好，我是 <span>Alex Chen</span></h1>
+            <p>前端工程师 / UI 设计师 / 独立开发者<br>热爱编程、设计和一切美好事物 ✨</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-num">42</div>
+                    <div class="stat-label">篇文章</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">8.6k</div>
+                    <div class="stat-label">总阅读</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">开源项目</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 内容网格 ===== -->
+        <div class="content-grid">
+
+            <!-- 文章列表 -->
+            <div class="main-content">
+                <h2 class="section-title">最新文章</h2>
+
+                <article class="post-card glass-card">
+                    <div class="post-meta">
+                        <span>📅 2026-07-20</span>
+                        <span>⏱ 8 分钟阅读</span>
+                        <span>💬 12 条评论</span>
+                    </div>
+                    <h3>用 CSS 实现惊艳的毛玻璃效果：从入门到精通</h3>
+                    <p>毛玻璃效果（Glassmorphism）是近年来非常流行的 UI 设计趋势。本文将深入探讨如何利用 backdrop-filter 属性，结合渐变、阴影和动画，打造出层次丰富、视觉惊艳的毛玻璃界面……</p>
+                    <div class="post-tags">
+                        <span class="tag">CSS</span>
+                        <span class="tag">设计</span>
+                        <span class="tag">前端</span>
+                    </div>
+                </article>
+
+                <article class="post-card glass-card">
+                    <div class="post-meta">
+                        <span>📅 2026-07-15</span>
+                        <span>⏱ 12 分钟阅读</span>
+                        <span>💬 28 条评论</span>
+                    </div>
+                    <h3>Web Audio API 实战：打造一个在线音乐播放器</h3>
+                    <p>本文将带你从零开始，使用 Web Audio API 构建一个功能完整的网页音乐播放器。涵盖音频解码、频谱可视化、播放控制、播放列表管理等核心功能……</p>
+                    <div class="post-tags">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Web Audio</span>
+                        <span class="tag">项目实战</span>
+                    </div>
+                </article>
+
+                <article class="post-card glass-card">
+                    <div class="post-meta">
+                        <span>📅 2026-07-10</span>
+                        <span>⏱ 6 分钟阅读</span>
+                        <span>💬 5 条评论</span>
+                    </div>
+                    <h3>深色模式设计指南：不只是反转颜色</h3>
+                    <p>深色模式不是简单地把白色背景换成黑色。本文分享了深色模式设计的核心原则：色彩层级、对比度控制、阴影运用、以及如何在明暗主题间优雅切换……</p>
+                    <div class="post-tags">
+                        <span class="tag">设计</span>
+                        <span class="tag">深色模式</span>
+                        <span class="tag">用户体验</span>
+                    </div>
+                </article>
+
+                <article class="post-card glass-card">
+                    <div class="post-meta">
+                        <span>📅 2026-07-05</span>
+                        <span>⏱ 15 分钟阅读</span>
+                        <span>💬 36 条评论</span>
+                    </div>
+                    <h3>2026 年前端趋势预测与技术选型建议</h3>
+                    <p>回顾上半年前端生态的变化，分析新兴框架和工具的发展态势，给出不同场景下的最佳技术选型建议。涵盖 React、Vue、Svelte 的最新动态……</p>
+                    <div class="post-tags">
+                        <span class="tag">前端</span>
+                        <span class="tag">趋势</span>
+                        <span class="tag">架构</span>
+                    </div>
+                </article>
+            </div>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+
+                <div class="sidebar-card glass-card">
+                    <h4>🏷️ 标签云</h4>
+                    <div class="tag-cloud">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">React</span>
+                        <span class="tag">Vue</span>
+                        <span class="tag">Node.js</span>
+                        <span class="tag">设计</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">WebGL</span>
+                        <span class="tag">动画</span>
+                        <span class="tag">性能优化</span>
+                        <span class="tag">工具</span>
+                        <span class="tag">开源</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-card glass-card">
+                    <h4>📂 文章归档</h4>
+                    <ul class="archive-list">
+                        <li><span>2026年7月</span><span class="count">8</span></li>
+                        <li><span>2026年6月</span><span class="count">12</span></li>
+                        <li><span>2026年5月</span><span class="count">6</span></li>
+                        <li><span>2026年4月</span><span class="count">10</span></li>
+                        <li><span>2026年3月</span><span class="count">4</span></li>
+                        <li><span>更早</span><span class="count">2</span></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-card glass-card">
+                    <h4>👤 关于我</h4>
+                    <p class="about-text">
+                        5年+ 前端开发经验，专注 UI/UX 设计与前端工程化。
+                        喜欢探索新技术，享受创造的过程。
+                    </p>
+                    <div class="social-links">
+                        <a href="#" title="GitHub">🐙</a>
+                        <a href="#" title="Twitter">🐦</a>
+                        <a href="#" title="LinkedIn">💼</a>
+                        <a href="#" title="Email">📧</a>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </main>
+
+    <!-- ============ 页脚 ============ -->
+    <footer class="footer">
+        <p>© 2026 Alex Chen · Built with ❤️ and Glassmorphism</p>
+        <p style="margin-top:6px;font-size:0.8rem;">
+            <a href="#">RSS</a> · <a href="#">Sitemap</a> · <a href="#">友链</a>
+        </p>
+    </footer>
+
+    <!-- ============ 音乐播放器 ============ -->
+    <div class="music-player" id="musicPlayer" role="region" aria-label="音乐播放器">
+        <!-- 折叠态顶部条 -->
+        <div class="player-toggle" id="playerToggle">
+            <div class="album-cover">🎵</div>
+            <div class="track-info">
+                <div class="track-name" id="trackName">Midnight City</div>
+                <div class="track-artist" id="trackArtist">M83</div>
+            </div>
+            <button class="player-btn play-btn" id="playBtn" title="播放 / 暂停">▶</button>
+        </div>
+
+        <!-- 展开主体 -->
+        <div class="player-body">
+            <div class="progress-bar" id="progressBar" title="点击跳转">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="time-info">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">4:03</span>
+            </div>
+
+            <div class="player-controls">
+                <button class="player-btn" id="prevBtn" title="上一首">⏮</button>
+                <button class="player-btn play-btn" id="playBtn2" title="播放 / 暂停">▶</button>
+                <button class="player-btn" id="nextBtn" title="下一首">⏭</button>
+            </div>
+
+            <ul class="playlist" id="playlist"></ul>
+
+            <div class="volume-control">
+                <button class="player-btn" id="muteBtn" title="静音">🔊</button>
+                <div class="volume-slider" id="volumeSlider" title="调节音量">
+                    <div class="volume-fill" id="volumeFill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 外部脚本 -->
+    <script src="app.js"></script>
+</body>
+</html>
