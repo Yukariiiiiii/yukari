@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog — 个人博客</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 动态背景 -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-feather-alt"></i>
+                <span>MyBlog</span>
+            </a>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active"><i class="fas fa-home"></i> 首页</a>
+                <a href="#articles" class="nav-link"><i class="fas fa-book-open"></i> 文章</a>
+                <a href="#about" class="nav-link"><i class="fas fa-user"></i> 关于</a>
+                <a href="#contact" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器">
+                    <i class="fas fa-music"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-card glass fade-in">
+                <div class="hero-avatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4" alt="头像">
+                </div>
+                <h1 class="hero-title">你好，我是 <span class="gradient-text">开发者</span></h1>
+                <p class="hero-subtitle">热爱编程 · 热爱生活 · 记录成长</p>
+                <div class="hero-tags">
+                    <span class="tag">前端开发</span>
+                    <span class="tag">UI/UX 设计</span>
+                    <span class="tag">开源贡献</span>
+                    <span class="tag">技术写作</span>
+                </div>
+                <div class="hero-actions">
+                    <a href="#articles" class="btn btn-primary glass-btn">
+                        <i class="fas fa-arrow-down"></i> 阅读文章
+                    </a>
+                    <a href="#contact" class="btn btn-outline glass-btn">
+                        <i class="fas fa-paper-plane"></i> 联系我
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文章列表 -->
+        <section class="articles" id="articles">
+            <div class="section-header fade-in">
+                <h2><i class="fas fa-pen-fancy"></i> 最新文章</h2>
+                <p>分享技术心得与学习笔记</p>
+            </div>
+
+            <div class="articles-grid">
+                <article class="article-card glass fade-in">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fab fa-css3-alt"></i>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-07-18</span>
+                            <span><i class="far fa-eye"></i> 1.2k 阅读</span>
+                        </div>
+                        <h3>深入解析 CSS 毛玻璃效果</h3>
+                        <p>backdrop-filter 属性在现代 Web 设计中的应用，从原理到实践，带你打造惊艳的视觉效果。</p>
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span class="tag-small">CSS</span>
+                                <span class="tag-small">设计</span>
+                            </div>
+                            <a href="#" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card glass fade-in">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fab fa-js"></i>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-07-12</span>
+                            <span><i class="far fa-eye"></i> 856 阅读</span>
+                        </div>
+                        <h3>JavaScript 性能优化指南</h3>
+                        <p>从事件循环到内存管理，全面梳理前端性能优化的核心要点和实战技巧。</p>
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span class="tag-small">JavaScript</span>
+                                <span class="tag-small">性能</span>
+                            </div>
+                            <a href="#" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card glass fade-in">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-07-05</span>
+                            <span><i class="far fa-eye"></i> 2.3k 阅读</span>
+                        </div>
+                        <h3>深色模式设计的最佳实践</h3>
+                        <p>如何为你的网站实现优雅的深色模式？色彩对比、可读性、用户偏好一网打尽。</p>
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span class="tag-small">设计</span>
+                                <span class="tag-small">CSS</span>
+                            </div>
+                            <a href="#" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card glass fade-in">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <i class="fab fa-react"></i>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-06-28</span>
+                            <span><i class="far fa-eye"></i> 3.1k 阅读</span>
+                        </div>
+                        <h3>React 19 新特性详解</h3>
+                        <p>探索 React 19 带来的全新 Hook、Server Components 改进以及性能提升。</p>
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span class="tag-small">React</span>
+                                <span class="tag-small">前端</span>
+                            </div>
+                            <a href="#" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card glass fade-in">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-06-20</span>
+                            <span><i class="far fa-eye"></i> 968 阅读</span>
+                        </div>
+                        <h3>从零搭建个人博客系统</h3>
+                        <p>使用现代技术栈构建属于自己的博客平台，从架构设计到部署上线全流程。</p>
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span class="tag-small">全栈</span>
+                                <span class="tag-small">教程</span>
+                            </div>
+                            <a href="#" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="article-card glass fade-in">
+                    <div class="article-cover" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="article-body">
+                        <div class="article-meta">
+                            <span><i class="far fa-calendar"></i> 2026-06-15</span>
+                            <span><i class="far fa-eye"></i> 1.5k 阅读</span>
+                        </div>
+                        <h3>AI 辅助编程实战体验</h3>
+                        <p>AI 编程工具如何改变开发者的工作流？分享我的使用心得和效率提升技巧。</p>
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span class="tag-small">AI</span>
+                                <span class="tag-small">工具</span>
+                            </div>
+                            <a href="#" class="read-more">阅读 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 关于我 -->
+        <section class="about" id="about">
+            <div class="about-card glass fade-in">
+                <div class="about-header">
+                    <h2><i class="fas fa-user-circle"></i> 关于我</h2>
+                </div>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>👋 我是一名全栈开发者，拥有 5 年以上的 Web 开发经验。热爱探索新技术，喜欢用代码创造美好的事物。</p>
+                        <p>🎯 目前专注于前端架构设计和用户体验优化，同时也在学习 AI 和机器学习相关知识。</p>
+                        <p>📝 这个博客是我记录学习笔记、分享技术心得的地方，希望对你有所帮助！</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">技术文章</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5年+</div>
+                            <div class="stat-label">开发经验</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">10k+</div>
+                            <div class="stat-label">博客访问</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">学习热情</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系 -->
+        <section class="contact" id="contact">
+            <div class="contact-card glass fade-in">
+                <h2><i class="fas fa-envelope-open-text"></i> 联系我</h2>
+                <p>有任何问题或合作意向，欢迎随时联系！</p>
+                <div class="contact-links">
+                    <a href="mailto:hello@example.com" class="contact-item glass-btn">
+                        <i class="fas fa-envelope"></i> hello@example.com
+                    </a>
+                    <a href="https://github.com" class="contact-item glass-btn" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="https://twitter.com" class="contact-item glass-btn" target="_blank">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="https://linkedin.com" class="contact-item glass-btn" target="_blank">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 黑胶音乐播放器 -->
+    <div class="vinyl-player" id="vinylPlayer">
+        <div class="vinyl-player-inner glass">
+            <!-- 播放器头部 -->
+            <div class="player-header">
+                <div class="player-title">
+                    <i class="fas fa-record-vinyl"></i>
+                    <span>音乐播放器</span>
+                </div>
+                <button class="player-close" id="playerClose" title="关闭播放器">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- 黑胶唱片区域 -->
+            <div class="vinyl-display">
+                <div class="vinyl-record" id="vinylRecord">
+                    <div class="vinyl-disc">
+                        <div class="vinyl-grooves"></div>
+                        <div class="vinyl-label">
+                            <div class="vinyl-label-text" id="vinylLabel">♪</div>
+                        </div>
+                        <div class="vinyl-hole"></div>
+                    </div>
+                    <div class="vinyl-arm">
+                        <div class="vinyl-arm-base"></div>
+                        <div class="vinyl-arm-stick"></div>
+                        <div class="vinyl-arm-head"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 歌曲信息 -->
+            <div class="track-info">
+                <div class="track-name" id="trackName">选择一首歌曲</div>
+                <div class="track-artist" id="trackArtist">—</div>
+            </div>
+
+            <!-- 进度条 -->
+            <div class="progress-container">
+                <span class="progress-time" id="currentTime">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-thumb" id="progressThumb"></div>
+                </div>
+                <span class="progress-time" id="totalTime">0:00</span>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="player-controls">
+                <button class="control-btn" id="shuffleBtn" title="随机播放">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="control-btn" id="prevBtn" title="上一首">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-btn" id="playBtn" title="播放/暂停">
+                    <i class="fas fa-play" id="playIcon"></i>
+                </button>
+                <button class="control-btn" id="nextBtn" title="下一首">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button class="control-btn" id="repeatBtn" title="循环模式">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+
+            <!-- 音量控制 -->
+            <div class="volume-container">
+                <i class="fas fa-volume-up" id="volumeIcon"></i>
+                <div class="volume-bar" id="volumeBar">
+                    <div class="volume-fill" id="volumeFill"></div>
+                </div>
+            </div>
+
+            <!-- 播放列表 -->
+            <div class="playlist-toggle" id="playlistToggle">
+                <span>播放列表</span>
+                <i class="fas fa-chevron-up" id="playlistChevron"></i>
+            </div>
+            <div class="playlist" id="playlist">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 迷你播放条（底部固定） -->
+    <div class="mini-player glass" id="miniPlayer">
+        <div class="mini-vinyl" id="miniVinyl">
+            <div class="mini-vinyl-disc"></div>
+        </div>
+        <div class="mini-info">
+            <div class="mini-track" id="miniTrack">未播放</div>
+            <div class="mini-artist" id="miniArtist">—</div>
+        </div>
+        <div class="mini-controls">
+            <button class="mini-btn" id="miniPrev" title="上一首">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="mini-btn mini-play" id="miniPlay" title="播放/暂停">
+                <i class="fas fa-play" id="miniPlayIcon"></i>
+            </button>
+            <button class="mini-btn" id="miniNext" title="下一首">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 隐藏的 audio 元素 -->
+    <audio id="audioElement" preload="metadata"></audio>
+
+    <!-- 页脚 -->
+    <footer class="footer glass">
+        <p>&copy; 2026 MyBlog. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
