@@ -7,19 +7,53 @@ const appMain = document.getElementById('app-main');
 const pageCache = new Map();
 let isNavigating = false;
 
+// 首页内容快照（用于返回首页时恢复，避免重新请求）
+let homeSnapshot = null;
+
 function initRouter() {
     document.addEventListener('click', handleLinkClick);
     window.addEventListener('popstate', handlePopState);
+
+    // 启动时保存首页内容
+    if (appMain) homeSnapshot = appMain.innerHTML;
 }
 
 async function handleLinkClick(e) {
-    const link = e.target.closest('[data-link]');
+    const link = e.target.closest('a');
     if (!link) return;
+
+    // 必须带 data-link 属性才走 SPA
+    if (!link.hasAttribute('data-link')) return;
+
     const href = link.getAttribute('href');
     if (!href) return;
     if (link.target === '_blank') return;
     if (href.startsWith('mailto:')) return;
     if (href.startsWith('http') || href.startsWith('//')) return;
+    // 忽略纯锚点
+    if (href.startsWith('#') && href.length > 1) {
+        // 首页内的锚点仍用平滑滚动
+        e.preventDefault();
+        const t = document.querySelector(href); if (t) t.scrollIntoView({ behavior:'smooth' });
+        return;
+    }
+    // 首页链接：href="/" 或 href=""
+    if (href === '/' || href === '' || href === '#') {
+        e.preventDefault();
+        // 恢复首页内容
+        if (homeSnapshot) {
+            appMain.style.opacity = '0.4';
+            appMain.innerHTML = homeSnapshot;
+            updateNavForUrl('/');
+            observeFadeElements();
+            bindCardParallax();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            history.pushState({ url: '/' }, '', '/');
+            setTimeout(() => appMain.style.opacity = '1', 50);
+        }
+        return;
+    }
+
     e.preventDefault();
     navigateTo(href);
 }
@@ -42,7 +76,6 @@ async function navigateTo(url) {
             appMain.innerHTML = newMain.innerHTML;
             const t = doc.querySelector('title'); if (t) document.title = t.textContent;
             updateNavForUrl(url);
-            bindArticlePageEvents();
             observeFadeElements();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             history.pushState({ url }, '', url);
@@ -55,6 +88,20 @@ async function handlePopState(e) {
     const url = location.pathname + location.search + location.hash;
     if (isNavigating) return;
     isNavigating = true;
+
+    // 如果是首页，直接恢复快照
+    if (url === '/' || url === '/' + location.search) {
+        if (homeSnapshot) {
+            appMain.innerHTML = homeSnapshot;
+            updateNavForUrl('/');
+            observeFadeElements();
+            bindCardParallax();
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+        isNavigating = false;
+        return;
+    }
+
     try {
         let html = pageCache.get(url);
         if (!html) {
@@ -69,7 +116,6 @@ async function handlePopState(e) {
             appMain.innerHTML = newMain.innerHTML;
             const t = doc.querySelector('title'); if (t) document.title = t.textContent;
             updateNavForUrl(url);
-            bindArticlePageEvents();
             observeFadeElements();
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
@@ -86,34 +132,35 @@ function updateNavForUrl(url) {
     }
 }
 
-function bindArticlePageEvents() {}
-
 function observeFadeElements() {
     const obs = new IntersectionObserver(entries => {
         entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    appMain.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+    if (appMain) appMain.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
 }
 
 // ========== 主题切换 ==========
 const themeToggle = document.getElementById('themeToggle');
 const root = document.documentElement;
-const themeIcon = themeToggle.querySelector('i');
+const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
 const savedTheme = localStorage.getItem('theme') || 'dark';
 root.setAttribute('data-theme', savedTheme);
-updateThemeIcon(savedTheme);
+if (themeIcon) updateThemeIcon(savedTheme);
 
-themeToggle.addEventListener('click', () => {
-    const cur = root.getAttribute('data-theme');
-    const next = cur === 'dark' ? 'light' : 'dark';
-    document.body.classList.add('theme-transition');
-    root.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeIcon(next);
-    setTimeout(() => document.body.classList.remove('theme-transition'), 500);
-});
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const cur = root.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.body.classList.add('theme-transition');
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        if (themeIcon) updateThemeIcon(next);
+        setTimeout(() => document.body.classList.remove('theme-transition'), 500);
+    });
+}
 
 function updateThemeIcon(theme) {
+    if (!themeIcon) return;
     themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     themeToggle.title = theme === 'dark' ? '切换到浅色模式' : '切换到深色模式';
 }
@@ -121,13 +168,16 @@ function updateThemeIcon(theme) {
 // ========== 移动端菜单 ==========
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.querySelector('.nav-links');
-menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
-document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('active')));
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', () => navLinks.classList.remove('active')));
+}
 
-// ========== 导航高亮 ==========
+// ========== 导航高亮（首页内锚点） ==========
 const sections = document.querySelectorAll('section[id]');
 const navItems = document.querySelectorAll('.nav-link');
 window.addEventListener('scroll', () => {
+    if (location.pathname !== '/') return; // 只在首页生效
     const y = window.scrollY + 100;
     sections.forEach(s => {
         if (y >= s.offsetTop && y < s.offsetTop + s.offsetHeight) {
@@ -137,7 +187,7 @@ window.addEventListener('scroll', () => {
     });
 });
 
-// ========== 首页入场动画 ==========
+// ========== 入场动画 ==========
 const homeObs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); homeObs.unobserve(e.target); } });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
@@ -151,7 +201,7 @@ window.addEventListener('load', () => {
 // ========== 平滑滚动 ==========
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', function(e) {
-        const h = this.getAttribute('href'); if (h === '#') return;
+        const h = this.getAttribute('href'); if (h === '#' || h === '#home') return;
         e.preventDefault();
         const t = document.querySelector(h); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
@@ -227,7 +277,7 @@ const playlist = [
     }
 ];
 
-// DOM
+// DOM 引用（页面加载时获取，SPA 切换不会销毁）
 const audio = document.getElementById('audioElement');
 const musicToggle = document.getElementById('musicToggle');
 const vinylPlayer = document.getElementById('vinylPlayer');
@@ -252,7 +302,6 @@ const playlistEl = document.getElementById('playlist');
 const playlistToggle = document.getElementById('playlistToggle');
 const miniPlayer = document.getElementById('miniPlayer');
 
-// 迷你播放器 DOM
 const miniPlay = document.getElementById('miniPlay');
 const miniPlayIcon = document.getElementById('miniPlayIcon');
 const miniPrev = document.getElementById('miniPrev');
@@ -262,12 +311,11 @@ const miniArtist = document.getElementById('miniArtist');
 const miniCoverIcon = document.getElementById('miniCoverIcon');
 const miniRingFill = document.getElementById('miniRingFill');
 const miniCollapseBtn = document.getElementById('miniCollapseBtn');
-const miniCollapseIcon = document.getElementById('miniCollapseIcon');
 const miniExpandBtn = document.getElementById('miniExpandBtn');
 const miniShuffle = document.getElementById('miniShuffle');
 const miniRepeat = document.getElementById('miniRepeat');
 
-// 状态
+// 播放器状态（全局变量，SPA 切换不重置）
 let currentIndex = 0;
 let isPlaying = false;
 let isShuffle = false;
@@ -275,20 +323,22 @@ let repeatMode = 0;
 let isCollapsed = false;
 let playerInitialized = false;
 
-// ========== 环形进度工具 ==========
-const RING_CIRC = 2 * Math.PI * 28; // r=28 → ~175.93
+// 保存播放进度（localStorage），刷新页面后可恢复
+const PROGRESS_KEY = 'audioProgress';
+
+// ========== 环形进度 ==========
+const RING_CIRC = 2 * Math.PI * 28;
 function setRingProgress(pct) {
     if (!miniRingFill) return;
-    const offset = RING_CIRC * (1 - pct);
-    miniRingFill.style.strokeDashoffset = offset;
+    miniRingFill.style.strokeDashoffset = RING_CIRC * (1 - pct);
 }
 
 // ========== 收起 / 展开 ==========
 function initCollapse() {
     isCollapsed = localStorage.getItem('miniPlayerCollapsed') === 'true';
     applyCollapseState();
-    miniCollapseBtn.addEventListener('click', e => { e.stopPropagation(); toggleCollapse(); });
-    miniExpandBtn.addEventListener('click', e => { e.stopPropagation(); toggleCollapse(); });
+    if (miniCollapseBtn) miniCollapseBtn.addEventListener('click', e => { e.stopPropagation(); toggleCollapse(); });
+    if (miniExpandBtn) miniExpandBtn.addEventListener('click', e => { e.stopPropagation(); toggleCollapse(); });
 }
 
 function toggleCollapse() {
@@ -298,16 +348,17 @@ function toggleCollapse() {
 }
 
 function applyCollapseState() {
+    if (!miniPlayer) return;
     if (isCollapsed) {
         miniPlayer.classList.add('collapsed');
-        miniCollapseBtn.title = '展开播放器';
+        if (miniCollapseBtn) miniCollapseBtn.title = '展开播放器';
     } else {
         miniPlayer.classList.remove('collapsed');
-        miniCollapseBtn.title = '收起到侧边';
+        if (miniCollapseBtn) miniCollapseBtn.title = '收起到侧边';
     }
 }
 
-// ========== 播放器初始化（只一次） ==========
+// ========== 播放器初始化（只执行一次） ==========
 function initPlayer() {
     if (playerInitialized) return;
     playerInitialized = true;
@@ -321,16 +372,52 @@ function initPlayer() {
     audio.addEventListener('ended', handleTrackEnd);
     audio.addEventListener('error', handleAudioError);
 
-    // 环形进度初始化
+    // 定期保存播放进度
+    setInterval(saveProgress, 3000);
+
+    // 恢复上次进度
+    restoreProgress();
+
     if (miniRingFill) {
         miniRingFill.style.strokeDasharray = RING_CIRC;
         miniRingFill.style.strokeDashoffset = RING_CIRC;
     }
 
     initCollapse();
+
+    // 首次提示
+    if (!sessionStorage.getItem('miniPlayerShown') && !isPlaying) {
+        setTimeout(() => {
+            if (!isPlaying && miniPlayer) miniPlayer.classList.add('show');
+            sessionStorage.setItem('miniPlayerShown', '1');
+        }, 3000);
+    }
+}
+
+function saveProgress() {
+    if (audio.currentTime > 5 && audio.duration) {
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+            index: currentIndex,
+            time: audio.currentTime,
+            isPlaying: isPlaying
+        }));
+    }
+}
+
+function restoreProgress() {
+    try {
+        const data = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+        if (data && data.time && data.time < 99999) {
+            // 不自动恢复播放（浏览器限制），但恢复进度和曲目
+            currentIndex = data.index || 0;
+            loadTrack(currentIndex);
+            setTimeout(() => { audio.currentTime = data.time; }, 200);
+        }
+    } catch(e) {}
 }
 
 function renderPlaylist() {
+    if (!playlistEl) return;
     playlistEl.innerHTML = playlist.map((t, i) => `
         <div class="playlist-item ${i===currentIndex?'active':''}" data-index="${i}">
             <div class="item-icon">${t.icon}</div>
@@ -348,16 +435,17 @@ function renderPlaylist() {
 function loadTrack(index) {
     currentIndex = index;
     const t = playlist[index];
+    if (!t) return;
     audio.src = t.src;
-    trackName.textContent = t.name;
-    trackArtist.textContent = t.artist;
-    miniTrack.textContent = t.name;
-    miniArtist.textContent = t.artist;
-    vinylLabel.textContent = t.icon;
+    if (trackName) trackName.textContent = t.name;
+    if (trackArtist) trackArtist.textContent = t.artist;
+    if (miniTrack) miniTrack.textContent = t.name;
+    if (miniArtist) miniArtist.textContent = t.artist;
+    if (vinylLabel) vinylLabel.textContent = t.icon;
     if (miniCoverIcon) miniCoverIcon.textContent = t.icon;
-    playlistEl.querySelectorAll('.playlist-item').forEach((el, i) => el.classList.toggle('active', i===index));
-    progressFill.style.width = '0%';
-    currentTimeEl.textContent = '0:00';
+    if (playlistEl) playlistEl.querySelectorAll('.playlist-item').forEach((el, i) => el.classList.toggle('active', i===index));
+    if (progressFill) progressFill.style.width = '0%';
+    if (currentTimeEl) currentTimeEl.textContent = '0:00';
     setRingProgress(0);
 }
 
@@ -365,10 +453,9 @@ function playTrack() {
     audio.play().then(() => {
         isPlaying = true;
         updatePlayIcons();
-        vinylPlayer.classList.add('playing');
-        musicToggle.classList.add('playing');
-        miniPlayer.classList.add('playing');
-        miniPlayer.classList.add('show');
+        if (vinylPlayer) vinylPlayer.classList.add('playing');
+        if (musicToggle) musicToggle.classList.add('playing');
+        if (miniPlayer) { miniPlayer.classList.add('playing'); miniPlayer.classList.add('show'); }
     }).catch(err => { console.warn('播放失败:', err.message); isPlaying = false; updatePlayIcons(); });
 }
 
@@ -376,17 +463,18 @@ function pauseTrack() {
     audio.pause();
     isPlaying = false;
     updatePlayIcons();
-    vinylPlayer.classList.remove('playing');
-    musicToggle.classList.remove('playing');
-    miniPlayer.classList.remove('playing');
+    if (vinylPlayer) vinylPlayer.classList.remove('playing');
+    if (musicToggle) musicToggle.classList.remove('playing');
+    if (miniPlayer) miniPlayer.classList.remove('playing');
 }
 
 function togglePlay() { isPlaying ? pauseTrack() : playTrack(); }
 
 function updatePlayIcons() {
     const ic = isPlaying ? 'fas fa-pause' : 'fas fa-play';
-    playIcon.className = ic; miniPlayIcon.className = ic;
-    isPlaying ? playBtn.classList.add('playing') : playBtn.classList.remove('playing');
+    if (playIcon) playIcon.className = ic;
+    if (miniPlayIcon) miniPlayIcon.className = ic;
+    if (playBtn) { isPlaying ? playBtn.classList.add('playing') : playBtn.classList.remove('playing'); }
 }
 
 function prevTrack() {
@@ -412,8 +500,8 @@ function updateProgress() {
     if (!audio.duration) return;
     requestAnimationFrame(() => {
         const pct = audio.currentTime / audio.duration;
-        progressFill.style.width = `${pct*100}%`;
-        currentTimeEl.textContent = formatTime(audio.currentTime);
+        if (progressFill) progressFill.style.width = `${pct*100}%`;
+        if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime);
         setRingProgress(pct);
     });
 }
@@ -424,59 +512,74 @@ function formatTime(s) {
     return `${m}:${sec.toString().padStart(2,'0')}`;
 }
 
-progressBar.addEventListener('click', e => {
-    if (!audio.duration) return;
-    const r = progressBar.getBoundingClientRect();
-    audio.currentTime = ((e.clientX-r.left)/r.width)*audio.duration;
-});
+if (progressBar) {
+    progressBar.addEventListener('click', e => {
+        if (!audio.duration) return;
+        const r = progressBar.getBoundingClientRect();
+        audio.currentTime = ((e.clientX-r.left)/r.width)*audio.duration;
+    });
+}
 
 // ========== 音量 ==========
-volumeBar.addEventListener('click', e => {
-    const r = volumeBar.getBoundingClientRect();
-    audio.volume = Math.max(0, Math.min(1, (e.clientX-r.left)/r.width));
-    volumeFill.style.width = `${audio.volume*100}%`;
-    updateVolumeIcon();
-});
+if (volumeBar) {
+    volumeBar.addEventListener('click', e => {
+        const r = volumeBar.getBoundingClientRect();
+        audio.volume = Math.max(0, Math.min(1, (e.clientX-r.left)/r.width));
+        if (volumeFill) volumeFill.style.width = `${audio.volume*100}%`;
+        updateVolumeIcon();
+    });
+}
 
 function updateVolumeIcon() {
+    if (!volumeIcon) return;
     const v = audio.volume;
     volumeIcon.className = v===0 ? 'fas fa-volume-mute' : v<0.5 ? 'fas fa-volume-down' : 'fas fa-volume-up';
 }
 
-volumeIcon.addEventListener('click', () => {
-    if (audio.volume>0) { audio.dataset.lv = audio.volume; audio.volume=0; volumeFill.style.width='0%'; }
-    else { audio.volume = +audio.dataset.lv || 0.7; volumeFill.style.width=`${audio.volume*100}%`; }
-    updateVolumeIcon();
-});
+if (volumeIcon) {
+    volumeIcon.addEventListener('click', () => {
+        if (audio.volume>0) { audio.dataset.lv = audio.volume; audio.volume=0; if (volumeFill) volumeFill.style.width='0%'; }
+        else { audio.volume = +audio.dataset.lv || 0.7; if (volumeFill) volumeFill.style.width=`${audio.volume*100}%`; }
+        updateVolumeIcon();
+    });
+}
 
 // ========== 随机 / 循环 ==========
-shuffleBtn.addEventListener('click', () => { isShuffle=!isShuffle; shuffleBtn.classList.toggle('active',isShuffle); miniShuffle.classList.toggle('active',isShuffle); });
-
-repeatBtn.addEventListener('click', () => {
-    repeatMode = (repeatMode+1)%3;
-    repeatBtn.classList.remove('active');
-    [miniRepeat, repeatBtn].forEach(el => {
-        if (!el) return;
-        if (repeatMode===0) el.innerHTML = '<i class="fas fa-redo"></i>';
-        else { el.innerHTML = '<i class="fas fa-redo" style="color:var(--accent)"></i>'; el.classList.add('active'); }
+if (shuffleBtn) {
+    shuffleBtn.addEventListener('click', () => {
+        isShuffle = !isShuffle;
+        shuffleBtn.classList.toggle('active', isShuffle);
+        if (miniShuffle) miniShuffle.classList.toggle('active', isShuffle);
     });
-    if (repeatMode===2) repeatBtn.innerHTML = '<i class="fas fa-redo" style="color:var(--accent)"></i><span style="position:absolute;font-size:0.55rem;top:2px;right:4px;color:var(--accent);font-weight:700;">1</span>';
-});
+}
+
+if (repeatBtn) {
+    repeatBtn.addEventListener('click', () => {
+        repeatMode = (repeatMode+1)%3;
+        repeatBtn.classList.remove('active');
+        [miniRepeat, repeatBtn].forEach(el => {
+            if (!el) return;
+            if (repeatMode===0) el.innerHTML = '<i class="fas fa-redo"></i>';
+            else { el.innerHTML = '<i class="fas fa-redo" style="color:var(--accent)"></i>'; el.classList.add('active'); }
+        });
+        if (repeatMode===2) repeatBtn.innerHTML = '<i class="fas fa-redo" style="color:var(--accent)"></i><span style="position:absolute;font-size:0.55rem;top:2px;right:4px;color:var(--accent);font-weight:700;">1</span>';
+    });
+}
 
 // ========== 面板开关 ==========
-musicToggle.addEventListener('click', () => vinylPlayer.classList.toggle('open'));
-playerClose.addEventListener('click', () => vinylPlayer.classList.remove('open'));
-playlistToggle.addEventListener('click', () => { playlistEl.classList.toggle('open'); playlistToggle.classList.toggle('open'); });
+if (musicToggle) musicToggle.addEventListener('click', () => vinylPlayer && vinylPlayer.classList.toggle('open'));
+if (playerClose) playerClose.addEventListener('click', () => vinylPlayer && vinylPlayer.classList.remove('open'));
+if (playlistToggle) playlistToggle.addEventListener('click', () => { playlistEl.classList.toggle('open'); playlistToggle.classList.toggle('open'); });
 
 // ========== 控制按钮 ==========
-playBtn.addEventListener('click', togglePlay);
-miniPlay.addEventListener('click', togglePlay);
-prevBtn.addEventListener('click', prevTrack);
-nextBtn.addEventListener('click', nextTrack);
-miniPrev.addEventListener('click', prevTrack);
-miniNext.addEventListener('click', nextTrack);
-miniShuffle.addEventListener('click', () => shuffleBtn.click());
-miniRepeat.addEventListener('click', () => repeatBtn.click());
+if (playBtn) playBtn.addEventListener('click', togglePlay);
+if (miniPlay) miniPlay.addEventListener('click', togglePlay);
+if (prevBtn) prevBtn.addEventListener('click', prevTrack);
+if (nextBtn) nextBtn.addEventListener('click', nextTrack);
+if (miniPrev) miniPrev.addEventListener('click', prevTrack);
+if (miniNext) miniNext.addEventListener('click', nextTrack);
+if (miniShuffle) miniShuffle.addEventListener('click', () => shuffleBtn && shuffleBtn.click());
+if (miniRepeat) miniRepeat.addEventListener('click', () => repeatBtn && repeatBtn.click());
 
 // ========== 键盘快捷键 ==========
 document.addEventListener('keydown', e => {
@@ -485,18 +588,13 @@ document.addEventListener('keydown', e => {
         case ' ': e.preventDefault(); togglePlay(); break;
         case 'ArrowRight': nextTrack(); break;
         case 'ArrowLeft': prevTrack(); break;
-        case 'ArrowUp': e.preventDefault(); audio.volume=Math.min(1,audio.volume+0.1); volumeFill.style.width=`${audio.volume*100}%`; updateVolumeIcon(); break;
-        case 'ArrowDown': e.preventDefault(); audio.volume=Math.max(0,audio.volume-0.1); volumeFill.style.width=`${audio.volume*100}%`; updateVolumeIcon(); break;
-        case 'm': volumeIcon.click(); break;
-        case 'Escape': vinylPlayer.classList.remove('open'); break;
+        case 'ArrowUp': e.preventDefault(); audio.volume=Math.min(1,audio.volume+0.1); if (volumeFill) volumeFill.style.width=`${audio.volume*100}%`; updateVolumeIcon(); break;
+        case 'ArrowDown': e.preventDefault(); audio.volume=Math.max(0,audio.volume-0.1); if (volumeFill) volumeFill.style.width=`${audio.volume*100}%`; updateVolumeIcon(); break;
+        case 'm': if (volumeIcon) volumeIcon.click(); break;
+        case 'Escape': if (vinylPlayer) vinylPlayer.classList.remove('open'); break;
     }
 });
 
 // ========== 启动 ==========
 initRouter();
 initPlayer();
-
-// 首次提示
-if (!sessionStorage.getItem('miniPlayerShown') && !isPlaying) {
-    setTimeout(() => { if (!isPlaying) miniPlayer.classList.add('show'); sessionStorage.setItem('miniPlayerShown','1'); }, 3000);
-}

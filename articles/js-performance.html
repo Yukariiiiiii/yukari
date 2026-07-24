@@ -17,265 +17,185 @@
 
     <nav class="navbar glass">
         <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fas fa-feather-alt"></i>
-                <span>Yukariの小站</span>
+            <a href="/" class="nav-logo" data-link>
+                <i class="fas fa-feather-alt"></i><span>Yukariの小站</span>
             </a>
             <div class="nav-links">
-                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
-                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+                <a href="/" class="nav-link" data-link data-nav="home"><i class="fas fa-home"></i> 首页</a>
+                <a href="/#articles" class="nav-link active" data-link data-nav="articles"><i class="fas fa-book-open"></i> 文章</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题"><i class="fas fa-sun"></i></button>
-                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器"><i class="fas fa-music"></i></button>
-                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <button class="theme-toggle glass-btn" id="themeToggle"><i class="fas fa-sun"></i></button>
+                <button class="music-toggle glass-btn" id="musicToggle"><i class="fas fa-music"></i></button>
             </div>
         </div>
     </nav>
 
-    <main class="main-content article-page">
-        <a href="../index.html" class="back-link glass-btn"><i class="fas fa-arrow-left"></i> 返回文章列表</a>
+    <main class="main-content article-page" id="app-main">
+        <a href="/" class="back-btn glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回首页</a>
 
-        <article class="article-full glass fade-in">
-            <div class="article-header">
-                <div class="article-cover-large" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                    <i class="fab fa-js"></i>
-                </div>
+        <article class="article-detail glass fade-in">
+            <header class="article-header">
+                <div class="article-category">JavaScript · 性能</div>
+                <h1>JavaScript 性能优化指南</h1>
                 <div class="article-meta-full">
-                    <h1>JavaScript 性能优化指南</h1>
-                    <div class="article-meta-info">
-                        <span><i class="far fa-calendar"></i> 2026-07-12</span>
-                        <span><i class="far fa-eye"></i> 856 阅读</span>
-                        <span><i class="far fa-clock"></i> 约 12 分钟</span>
-                    </div>
-                    <div class="article-tags-full">
-                        <span class="tag-small">JavaScript</span>
-                        <span class="tag-small">性能</span>
-                        <span class="tag-small">前端</span>
-                    </div>
+                    <span><i class="far fa-calendar"></i> 2026-07-12</span>
+                    <span><i class="far fa-eye"></i> 856 阅读</span>
+                    <span><i class="far fa-clock"></i> 12 分钟</span>
                 </div>
+                <div class="article-tags-header">
+                    <span class="tag-small">JavaScript</span>
+                    <span class="tag-small">性能优化</span>
+                    <span class="tag-small">事件循环</span>
+                </div>
+            </header>
+
+            <div class="article-cover-large" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="fab fa-js"></i>
             </div>
 
-            <div class="article-content">
-                <h2>为什么要关注 JS 性能？</h2>
-                <p>JavaScript 是单线程语言，任何长时间运行的同步代码都会<strong>阻塞主线程</strong>，导致页面卡顿、交互无响应、动画掉帧。用户感知到的"流畅"通常要求主线程单次任务不超过 <strong>16ms</strong>（对应 60fps）。</p>
+            <div class="article-body-full">
+                <p class="lead">前端性能优化是一个系统工程，而 JavaScript 往往是最大的瓶颈所在。本文从事件循环、内存管理、渲染优化三个维度，帮你建立完整的性能优化思维框架。</p>
 
-                <div class="callout">
-                    <i class="fas fa-lightbulb"></i>
-                    <div>
-                        <strong>核心原则：</strong>让主线程保持空闲。把重活儿拆小、延后、或丢给别的线程（Web Worker）。
-                    </div>
+                <h2 id="sec1">理解事件循环</h2>
+                <p>JavaScript 是单线程的，所有异步操作都依赖事件循环（Event Loop）调度。理解它是性能优化的第一步。</p>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// 宏任务 vs 微任务执行顺序
+console.log('1');              // 同步
+setTimeout(() => console.log('2'), 0); // 宏任务
+Promise.resolve().then(() => console.log('3')); // 微任务
+console.log('4');              // 同步
+// 输出: 1 → 4 → 3 → 2</code></pre>
                 </div>
 
-                <h2>一、理解事件循环</h2>
-                <p>JS 运行时靠<strong>事件循环（Event Loop）</strong>调度任务。理解它是优化的前提：</p>
+                <div class="callout tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <div><strong>关键点</strong>：微任务（Promise / queueMicrotask）会在当前宏任务结束后立即执行，优先于下一个宏任务（setTimeout / setInterval）。</div>
+                </div>
 
-                <pre><code>调用栈 (Call Stack)
-   ↓ 空闲时
-从 微任务队列 (Microtask Queue) 取任务 [Promise.then / queueMicrotask]
-   ↓ 清空微任务后
-从 宏任务队列 (Macrotask Queue) 取一个任务 [setTimeout / setInterval / I/O]
-   ↓ 渲染帧（如需要）
-回到循环开头</code></pre>
+                <h2 id="sec2">避免阻塞主线程</h2>
+                <p>长时间运行的 JS 会阻塞渲染，导致页面卡顿。解决方案：</p>
+                <h3>1. 使用 Web Worker</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// 主线程
+const worker = new Worker('heavy-task.js');
+worker.postMessage(largeData);
+worker.onmessage = (e) => {
+    console.log('计算结果:', e.data);
+};
 
-                <p>关键结论：</p>
-                <ul>
-                    <li><code>Promise.then</code> 回调是<strong>微任务</strong>，会在当前同步代码执行完后立即执行</li>
-                    <li><code>setTimeout(fn, 0)</code> 是<strong>宏任务</strong>，至少等一帧</li>
-                    <li>长时间占用调用栈 = 阻塞渲染 = 页面卡死</li>
-                </ul>
-
-                <h2>二、减少主线程阻塞</h2>
-
-                <h3>1. 分解长任务</h3>
-                <p>如果一个函数要循环处理 10 万条数据，别一口气跑完：</p>
-
-                <pre><code>// ❌ 阻塞主线程
-function processAll(items) {
-    items.forEach(item => heavyCompute(item));
-}
-
-// ✅ 用 requestIdleCallback 分片
-function processChunk(items, start = 0) {
-    const CHUNK = 1000;
-    const end = Math.min(start + CHUNK, items.length);
-    for (let i = start; i < end; i++) heavyCompute(items[i]);
-    if (end < items.length) {
-        requestIdleCallback(() => processChunk(items, end));
-    }
-}</code></pre>
-
-                <h3>2. 使用 Web Worker</h3>
-                <p>纯计算任务（排序、加密、压缩）丢给 Worker，完全不占主线程：</p>
-
-                <pre><code>// main.js
-const worker = new Worker('worker.js');
-worker.postMessage(bigData);
-worker.onmessage = e => console.log('结果:', e.data);
-
-// worker.js
-self.onmessage = e => {
-    const result = e.data.sort((a, b) => a - b);
+// heavy-task.js
+self.onmessage = (e) => {
+    const result = e.data.map(item => expensiveCalc(item));
     self.postMessage(result);
 };</code></pre>
-
-                <h3>3. 防抖与节流</h3>
-                <p>高频事件（scroll、resize、input）必须限制触发频率：</p>
-
-                <pre><code>// 防抖：等用户停下来再执行
-function debounce(fn, delay) {
-    let t;
-    return (...args) => {
-        clearTimeout(t);
-        t = setTimeout(() => fn(...args), delay);
-    };
-}
-
-// 节流：每隔固定时间执行一次
-function throttle(fn, interval) {
-    let last = 0;
-    return (...args) => {
-        const now = Date.now();
-        if (now - last >= interval) {
-            last = now;
-            fn(...args);
-        }
-    };
-}</code></pre>
-
-                <h2>三、内存管理</h2>
-
-                <h3>常见内存泄漏场景</h3>
-                <ul>
-                    <li><strong>遗忘的定时器</strong>：<code>setInterval</code> 不清除 → 闭包引用永远存活</li>
-                    <li><strong> detached DOM</strong>：移除节点后仍被 JS 变量引用</li>
-                    <li><strong>事件监听未解绑</strong>：SPA 路由切换后旧组件监听仍在</li>
-                    <li><strong>全局变量累积</strong>：不断往 <code>window</code> 上挂东西</li>
-                </ul>
-
-                <pre><code>// ✅ 组件销毁时清理
-class Component {
-    constructor() {
-        this.onResize = this.handleResize.bind(this);
-        window.addEventListener('resize', this.onResize);
-        this.timer = setInterval(() => this.tick(), 1000);
-    }
-    destroy() {
-        window.removeEventListener('resize', this.onResize);
-        clearInterval(this.timer);
-    }
-}</code></pre>
-
-                <h2>四、渲染性能</h2>
-
-                <h3>1. 避免强制同步布局（Layout Thrashing）</h3>
-                <p>交替读写会触发浏览器反复重排：</p>
-
-                <pre><code>// ❌ 每次循环都触发重排
-for (let i = 0; i < els.length; i++) {
-    const w = els[i].offsetWidth;  // 读
-    els[i].style.width = w * 2 + 'px'; // 写
-}
-
-// ✅ 先读完再写
-const widths = els.map(el => el.offsetWidth);
-els.forEach((el, i) => el.style.width = widths[i] * 2 + 'px');</code></pre>
-
-                <h3>2. 使用 transform 和 opacity</h3>
-                <p>这两个属性走 GPU 合成层，不触发重排/重绘：</p>
-
-                <pre><code>/* ❌ 触发重排 */
-.element { left: 100px; top: 50px; }
-
-/* ✅ GPU 加速 */
-.element {
-    transform: translate(100px, 50px);
-    will-change: transform;
-}</code></pre>
-
-                <h2>五、加载性能</h2>
-                <ul>
-                    <li><code>&lt;script defer&gt;</code>：等 DOM 解析完再执行，不阻塞渲染</li>
-                    <li><code>&lt;script type="module"&gt;</code>：天然 defer + 严格模式</li>
-                    <li>代码分割（Code Splitting）：路由级懒加载</li>
-                    <li>Tree Shaking：只打包实际用到的导出</li>
-                    <li>预加载关键资源：<code>&lt;link rel="preload"&gt;</code></li>
-                </ul>
-
-                <div class="callout warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>
-                        <strong>测量优先于优化：</strong>用 Chrome DevTools 的 Performance 面板录制真实场景，找到瓶颈再动手。盲目优化往往适得其反。
-                    </div>
                 </div>
 
-                <h2>小结</h2>
-                <p>JS 性能优化的本质就是三件事：<strong>少占主线程、少碰 DOM、少加载代码</strong>。掌握事件循环、善用工具测量、遵循"测量→分析→优化→再测量"的循环，你的页面就能丝般顺滑。</p>
+                <h3>2. 任务分片</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// 将大循环拆分为多个微任务
+async function processInChunks(items, chunkSize = 100) {
+    for (let i = 0; i < items.length; i += chunkSize) {
+        const chunk = items.slice(i, i + chunkSize);
+        chunk.forEach(processItem);
+        // 让出主线程
+        await new Promise(r => setTimeout(r, 0));
+    }
+}</code></pre>
+                </div>
 
-                <div class="article-footer-actions">
-                    <a href="../index.html" class="btn btn-outline glass-btn"><i class="fas fa-arrow-left"></i> 返回列表</a>
-                    <div class="share-links">
-                        <span>分享：</span>
-                        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="share-btn"><i class="fab fa-weibo"></i></a>
-                        <a href="#" class="share-btn"><i class="fas fa-link"></i></a>
-                    </div>
+                <h2 id="sec3">内存管理</h2>
+                <h3>常见内存泄漏场景</h3>
+                <table class="compat-table">
+                    <thead><tr><th>场景</th><th>原因</th><th>解决方案</th></tr></thead>
+                    <tbody>
+                        <tr><td>未清理的事件监听</td><td>元素移除后监听仍在</td><td>removeEventListener / AbortController</td></tr>
+                        <tr><td>定时器未清除</td><td>setInterval 持续引用</td><td>组件销毁时 clearInterval</td></tr>
+                        <tr><td>闭包引用</td><td>变量被闭包持有无法 GC</td><td>及时置 null 断开引用</td></tr>
+                        <tr><td>DOM 引用缓存</td><td>已移除元素仍在数组中</td><td>使用 WeakMap / WeakSet</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>使用 WeakMap 避免内存泄漏</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// WeakMap 的 key 是弱引用，DOM 移除后可被 GC
+const elementData = new WeakMap();
+
+elementData.set(domElement, { clicks: 0, lastSeen: Date.now() });
+// 当 domElement 从 DOM 树移除且无其他引用时，数据自动被回收</code></pre>
+                </div>
+
+                <h2 id="sec4">渲染性能</h2>
+                <h3>避免强制同步布局</h3>
+                <p>读写交替会导致浏览器强制重新计算布局：</p>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// ❌ 错误：读 → 写 → 读 → 写（触发多次 reflow）
+items.forEach(item => {
+    const h = item.offsetHeight; // 读
+    item.style.height = h * 2 + 'px'; // 写
+});
+
+// ✅ 正确：先批量读，再批量写
+const heights = items.map(item => item.offsetHeight);
+items.forEach((item, i) => {
+    item.style.height = heights[i] * 2 + 'px';
+});</code></pre>
+                </div>
+
+                <h3>使用 transform 代替 top/left</h3>
+                <p><code>transform</code> 走 GPU 合成层，不会触发 layout 和 paint：</p>
+                <div class="code-block">
+                    <div class="code-header"><span>CSS</span></div>
+                    <pre><code>/* ❌ 触发 layout */
+.element { top: 100px; left: 50px; }
+
+/* ✅ 仅触发 composite */
+.element { transform: translate(50px, 100px); }</code></pre>
+                </div>
+
+                <h2 id="sec5">工具推荐</h2>
+                <ul>
+                    <li><strong>Chrome DevTools Performance</strong>：录制和分析运行时性能</li>
+                    <li><strong>Lighthouse</strong>：自动化性能评分</li>
+                    <li><strong>web-vitals</strong>：在代码中监控 Core Web Vitals</li>
+                    <li><strong>requestIdleCallback</strong>：在空闲时执行非关键任务</li>
+                </ul>
+
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// 空闲时执行低优先级任务
+requestIdleCallback((deadline) => {
+    while (deadline.timeRemaining() > 0 && tasks.length > 0) {
+        processTask(tasks.pop());
+    }
+}, { timeout: 2000 });</code></pre>
+                </div>
+
+                <h2 id="sec6">总结</h2>
+                <p>性能优化的核心原则：</p>
+                <ul>
+                    <li>🔍 <strong>先测量再优化</strong>：用数据说话，不要盲目优化</li>
+                    <li>🧵 <strong>不阻塞主线程</strong>：长任务拆分 / Web Worker</li>
+                    <li>🧹 <strong>及时释放资源</strong>：清理监听、定时器、引用</li>
+                    <li>🎨 <strong>减少重排重绘</strong>：批量读写、用 transform</li>
+                    <li>⏳ <strong>延迟非关键任务</strong>：IntersectionObserver / requestIdleCallback</li>
+                </ul>
+
+                <hr class="article-divider">
+                <div class="article-share">
+                    <span>分享这篇文章：</span>
+                    <a href="#" class="share-btn twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="share-btn weibo"><i class="fab fa-weibo"></i></a>
+                    <a href="#" class="share-btn copy"><i class="fas fa-link"></i></a>
                 </div>
             </div>
         </article>
     </main>
-
-    <div class="vinyl-player" id="vinylPlayer">
-        <div class="vinyl-player-inner glass">
-            <div class="player-header">
-                <div class="player-title"><i class="fas fa-record-vinyl"></i><span>音乐播放器</span></div>
-                <button class="player-close" id="playerClose"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="vinyl-display">
-                <div class="vinyl-record" id="vinylRecord">
-                    <div class="vinyl-disc"><div class="vinyl-grooves"></div><div class="vinyl-label"><div class="vinyl-label-text" id="vinylLabel">♪</div></div><div class="vinyl-hole"></div></div>
-                    <div class="vinyl-arm"><div class="vinyl-arm-base"></div><div class="vinyl-arm-stick"></div><div class="vinyl-arm-head"></div></div>
-                </div>
-            </div>
-            <div class="track-info"><div class="track-name" id="trackName">选择一首歌曲</div><div class="track-artist" id="trackArtist">—</div></div>
-            <div class="progress-container">
-                <span class="progress-time" id="currentTime">0:00</span>
-                <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div><div class="progress-thumb" id="progressThumb"></div></div>
-                <span class="progress-time" id="totalTime">0:00</span>
-            </div>
-            <div class="player-controls">
-                <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
-                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play" id="playIcon"></i></button>
-                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-                <button class="control-btn" id="repeatBtn"><i class="fas fa-redo"></i></button>
-            </div>
-            <div class="volume-container">
-                <i class="fas fa-volume-up" id="volumeIcon"></i>
-                <div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div>
-            </div>
-            <div class="playlist-toggle" id="playlistToggle"><span>播放列表</span><i class="fas fa-chevron-up" id="playlistChevron"></i></div>
-            <div class="playlist" id="playlist"></div>
-        </div>
-    </div>
-
-    <div class="mini-player glass" id="miniPlayer">
-        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
-        <div class="mini-info"><div class="mini-track" id="miniTrack">未播放</div><div class="mini-artist" id="miniArtist">—</div></div>
-        <div class="mini-controls">
-            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
-            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
-        </div>
-    </div>
-
-    <audio id="audioElement" preload="metadata"></audio>
-
-    <footer class="footer glass">
-        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
-    </footer>
 
     <script src="../script.js"></script>
 </body>

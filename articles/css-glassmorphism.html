@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- 动态背景 -->
     <div class="bg-orbs">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
@@ -16,240 +15,160 @@
         <div class="orb orb-4"></div>
     </div>
 
-    <!-- 导航栏 -->
     <nav class="navbar glass">
         <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fas fa-feather-alt"></i>
-                <span>Yukariの小站</span>
+            <a href="/" class="nav-logo" data-link>
+                <i class="fas fa-feather-alt"></i><span>Yukariの小站</span>
             </a>
             <div class="nav-links">
-                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
-                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+                <a href="/" class="nav-link" data-link data-nav="home"><i class="fas fa-home"></i> 首页</a>
+                <a href="/#articles" class="nav-link active" data-link data-nav="articles"><i class="fas fa-book-open"></i> 文章</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题">
-                    <i class="fas fa-sun"></i>
-                </button>
-                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器">
-                    <i class="fas fa-music"></i>
-                </button>
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <button class="theme-toggle glass-btn" id="themeToggle"><i class="fas fa-sun"></i></button>
+                <button class="music-toggle glass-btn" id="musicToggle"><i class="fas fa-music"></i></button>
             </div>
         </div>
     </nav>
 
-    <!-- 主内容 -->
-    <main class="main-content article-page">
-        <a href="../index.html" class="back-link glass-btn">
-            <i class="fas fa-arrow-left"></i> 返回文章列表
-        </a>
+    <main class="main-content article-page" id="app-main">
+        <a href="/" class="back-btn glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回首页</a>
 
-        <article class="article-full glass fade-in">
-            <div class="article-header">
-                <div class="article-cover-large" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <i class="fab fa-css3-alt"></i>
-                </div>
+        <article class="article-detail glass fade-in">
+            <header class="article-header">
+                <div class="article-category">CSS · 设计</div>
+                <h1>深入解析 CSS 毛玻璃效果</h1>
                 <div class="article-meta-full">
-                    <h1>深入解析 CSS 毛玻璃效果</h1>
-                    <div class="article-meta-info">
-                        <span><i class="far fa-calendar"></i> 2026-07-18</span>
-                        <span><i class="far fa-eye"></i> 1.2k 阅读</span>
-                        <span><i class="far fa-clock"></i> 约 8 分钟</span>
-                    </div>
-                    <div class="article-tags-full">
-                        <span class="tag-small">CSS</span>
-                        <span class="tag-small">设计</span>
-                        <span class="tag-small">前端</span>
-                    </div>
+                    <span><i class="far fa-calendar"></i> 2026-07-18</span>
+                    <span><i class="far fa-eye"></i> 1.2k 阅读</span>
+                    <span><i class="far fa-clock"></i> 8 分钟</span>
                 </div>
+                <div class="article-tags-header">
+                    <span class="tag-small">CSS</span>
+                    <span class="tag-small">backdrop-filter</span>
+                    <span class="tag-small">UI设计</span>
+                </div>
+            </header>
+
+            <div class="article-cover-large" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="fab fa-css3-alt"></i>
             </div>
 
-            <div class="article-content">
-                <h2>什么是毛玻璃效果？</h2>
-                <p>毛玻璃效果（Glassmorphism）是近年来 UI 设计中最流行的视觉趋势之一。它的核心特征是：<strong>半透明背景 + 背景模糊 + 微弱的边框</strong>，让元素看起来像磨砂玻璃一样，既通透又有层次感。</p>
+            <div class="article-body-full">
+                <p class="lead">毛玻璃效果（Glassmorphism）是近年来最流行的 UI 设计趋势之一。从 macOS 的菜单栏到 Windows 的 Fluent Design，再到各种现代 Web 应用，模糊半透明的外观给人一种高级、轻盈的视觉感受。本文将深入解析其原理与实战技巧。</p>
 
-                <div class="callout">
-                    <i class="fas fa-lightbulb"></i>
-                    <div>
-                        <strong>关键 CSS 属性：</strong><code>backdrop-filter: blur()</code> 是实现毛玻璃的核心。它会对元素<em>背后的区域</em>施加滤镜效果，而不是元素本身。
-                    </div>
-                </div>
+                <h2 id="sec1">什么是毛玻璃效果？</h2>
+                <p>毛玻璃效果本质上是对背景内容进行<strong>模糊处理</strong>，同时在表面叠加一层半透明的颜色，营造出"透过磨砂玻璃看东西"的视觉效果。它通常包含三个核心要素：</p>
+                <ul>
+                    <li><strong>半透明背景</strong>：让底层内容隐约可见</li>
+                    <li><strong>背景模糊</strong>：使用 <code>backdrop-filter: blur()</code> 实现</li>
+                    <li><strong>细边框</strong>：1px 的半透明白边增强玻璃质感</li>
+                </ul>
 
-                <h2>核心实现</h2>
-                <p>一个标准的毛玻璃卡片，CSS 写法如下：</p>
+                <h2 id="sec2">核心 CSS 属性</h2>
+                <p>实现毛玻璃效果只需要一行关键 CSS：</p>
 
-                <pre><code>.glass-card {
+                <div class="code-block">
+                    <div class="code-header"><span>CSS</span><button class="code-copy"><i class="fas fa-copy"></i></button></div>
+                    <pre><code>.glass {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }</code></pre>
-
-                <p>逐行解读：</p>
-                <ul>
-                    <li><code>background: rgba(255,255,255,0.1)</code> — 10% 透明度的白色底，让背景微微透出来</li>
-                    <li><code>backdrop-filter: blur(16px)</code> — 对背后的内容做 16px 高斯模糊，这是"磨砂感"的来源</li>
-                    <li><code>saturate(180%)</code> — 提高饱和度，让透过来的颜色更鲜艳</li>
-                    <li><code>-webkit-backdrop-filter</code> — Safari 兼容前缀（必须加！）</li>
-                    <li><code>border: 1px solid rgba(255,255,255,0.2)</code> — 半透明白边，模拟玻璃边缘的高光</li>
-                </ul>
-
-                <h2>进阶技巧</h2>
-
-                <h3>1. 动态光晕背景</h3>
-                <p>毛玻璃效果需要有<strong>丰富的背景内容</strong>才能体现质感。纯色背景上看不出模糊效果。搭配动态渐变光球是最佳实践：</p>
-
-                <pre><code>.bg-orbs .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    animation: float 20s ease-in-out infinite;
-}</code></pre>
-
-                <h3>2. 深浅色自适应</h3>
-                <p>通过 CSS 变量 + <code>data-theme</code> 属性，一套代码同时支持深浅色：</p>
-
-                <pre><code>:root[data-theme="dark"] {
-    --bg-glass: rgba(255, 255, 255, 0.05);
-    --border-glass: rgba(255, 255, 255, 0.12);
-}
-:root[data-theme="light"] {
-    --bg-glass: rgba(255, 255, 255, 0.6);
-    --border-glass: rgba(255, 255, 255, 0.5);
-}</code></pre>
-
-                <h3>3. 性能优化</h3>
-                <p><code>backdrop-filter</code> 确实有渲染开销，注意以下几点：</p>
-                <ul>
-                    <li>模糊半径不要超过 <code>20px</code>，否则性能急剧下降</li>
-                    <li>避免对大面积元素使用，限制在卡片/弹窗等小范围</li>
-                    <li>搭配 <code>transform: translateZ(0)</code> 触发 GPU 加速</li>
-                    <li>移动端可降级为纯半透明背景</li>
-                </ul>
-
-                <div class="callout warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>
-                        <strong>浏览器兼容性：</strong>Firefox 需要开启 <code>layout.css.backdrop-filter.enabled</code>（现已默认开启），IE 完全不支持。生产环境务必提供降级方案。
-                    </div>
                 </div>
 
-                <h2>实战：导航栏毛玻璃</h2>
-                <p>本站导航栏就是毛玻璃的经典应用——固定在顶部，背后内容滚动时透出模糊效果：</p>
+                <div class="callout tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <div><strong>小技巧</strong>：<code>saturate(180%)</code> 可以让透过玻璃的颜色更鲜艳，避免模糊后整体发灰。</div>
+                </div>
 
-                <pre><code>.navbar {
-    position: fixed;
-    top: 0;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    background: rgba(15, 14, 23, 0.7);
-    border-bottom: 1px solid var(--border-glass);
+                <h2 id="sec3">浏览器兼容性</h2>
+                <p>目前主流浏览器对 <code>backdrop-filter</code> 的支持情况：</p>
+                <table class="compat-table">
+                    <thead><tr><th>浏览器</th><th>支持版本</th><th>前缀需求</th></tr></thead>
+                    <tbody>
+                        <tr><td>Chrome / Edge</td><td>76+</td><td>无需</td></tr>
+                        <tr><td>Firefox</td><td>103+</td><td>无需</td></tr>
+                        <tr><td>Safari</td><td>9+</td><td>需要 <code>-webkit-</code></td></tr>
+                        <tr><td>iOS Safari</td><td>9+</td><td>需要 <code>-webkit-</code></td></tr>
+                    </tbody>
+                </table>
+
+                <h2 id="sec4">进阶技巧</h2>
+                <h3>1. 多层叠加</h3>
+                <p>通过多层半透明叠加，可以创造出更丰富的深度感：</p>
+                <div class="code-block">
+                    <div class="code-header"><span>CSS</span></div>
+                    <pre><code>.glass-deep {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px) saturate(200%);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 8px 32px rgba(0, 0, 0, 0.3);
 }</code></pre>
+                </div>
 
-                <h2>小结</h2>
-                <p>毛玻璃效果的本质就是<strong>「让背景可见但不可辨」</strong>。掌握 <code>backdrop-filter</code> 这个属性，再配合半透明背景、微边框和动态色彩，就能打造出惊艳的视觉层次。本博客的整体设计就是这一理念的完整实践。</p>
+                <h3>2. 动态光晕配合</h3>
+                <p>毛玻璃 + 背景光晕是绝配。在元素背后放置模糊的渐变色块，透过玻璃后会形成非常梦幻的效果（本博客就是这么做的）。</p>
 
-                <div class="article-footer-actions">
-                    <a href="../index.html" class="btn btn-outline glass-btn">
-                        <i class="fas fa-arrow-left"></i> 返回列表
-                    </a>
-                    <div class="share-links">
-                        <span>分享：</span>
-                        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="share-btn"><i class="fab fa-weibo"></i></a>
-                        <a href="#" class="share-btn"><i class="fas fa-link"></i></a>
-                    </div>
+                <h3>3. 性能优化</h3>
+                <ul>
+                    <li>避免在滚动元素上使用大面积的 <code>backdrop-filter</code></li>
+                    <li>优先使用 <code>transform</code> 和 <code>opacity</code> 做动画</li>
+                    <li>必要时用 <code>will-change: backdrop-filter</code> 提示浏览器</li>
+                </ul>
+
+                <div class="callout warn">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div><strong>注意</strong>：在 Firefox 老版本中 <code>backdrop-filter</code> 默认关闭，可通过 <code>layout.css.backdrop-filter.enabled</code> 开启。生产环境建议提供不依赖模糊的降级方案。</div>
+                </div>
+
+                <h2 id="sec5">完整实战示例</h2>
+                <p>下面是一个完整的毛玻璃卡片组件：</p>
+                <div class="code-block">
+                    <div class="code-header"><span>HTML + CSS</span></div>
+                    <pre><code>&lt;div class="glass-card"&gt;
+    &lt;h3&gt;毛玻璃卡片&lt;/h3&gt;
+    &lt;p&gt;透过我可以隐约看到背后的光晕和色彩流动。&lt;/p&gt;
+&lt;/div&gt;
+
+.glass-card {
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.glass-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+}</code></pre>
+                </div>
+
+                <h2 id="sec6">总结</h2>
+                <p>毛玻璃效果的核心就是 <code>backdrop-filter: blur()</code>，配合半透明背景和细边框就能实现。关键在于：</p>
+                <ul>
+                    <li>背景要有内容/色彩才能让模糊效果显现</li>
+                    <li>饱和度提升让透过玻璃的颜色更鲜活</li>
+                    <li>适当的阴影和边框增强立体感和质感</li>
+                    <li>注意性能，大面积使用要谨慎</li>
+                </ul>
+
+                <hr class="article-divider">
+
+                <div class="article-share">
+                    <span>分享这篇文章：</span>
+                    <a href="#" class="share-btn twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="share-btn weibo"><i class="fab fa-weibo"></i></a>
+                    <a href="#" class="share-btn copy"><i class="fas fa-link"></i></a>
                 </div>
             </div>
         </article>
     </main>
-
-    <!-- 黑胶音乐播放器 (与首页共享) -->
-    <div class="vinyl-player" id="vinylPlayer">
-        <div class="vinyl-player-inner glass">
-            <div class="player-header">
-                <div class="player-title">
-                    <i class="fas fa-record-vinyl"></i>
-                    <span>音乐播放器</span>
-                </div>
-                <button class="player-close" id="playerClose" title="关闭播放器">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="vinyl-display">
-                <div class="vinyl-record" id="vinylRecord">
-                    <div class="vinyl-disc">
-                        <div class="vinyl-grooves"></div>
-                        <div class="vinyl-label">
-                            <div class="vinyl-label-text" id="vinylLabel">♪</div>
-                        </div>
-                        <div class="vinyl-hole"></div>
-                    </div>
-                    <div class="vinyl-arm">
-                        <div class="vinyl-arm-base"></div>
-                        <div class="vinyl-arm-stick"></div>
-                        <div class="vinyl-arm-head"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="track-info">
-                <div class="track-name" id="trackName">选择一首歌曲</div>
-                <div class="track-artist" id="trackArtist">—</div>
-            </div>
-            <div class="progress-container">
-                <span class="progress-time" id="currentTime">0:00</span>
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress-fill" id="progressFill"></div>
-                    <div class="progress-thumb" id="progressThumb"></div>
-                </div>
-                <span class="progress-time" id="totalTime">0:00</span>
-            </div>
-            <div class="player-controls">
-                <button class="control-btn" id="shuffleBtn" title="随机播放"><i class="fas fa-random"></i></button>
-                <button class="control-btn" id="prevBtn" title="上一首"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-btn" id="playBtn" title="播放/暂停"><i class="fas fa-play" id="playIcon"></i></button>
-                <button class="control-btn" id="nextBtn" title="下一首"><i class="fas fa-step-forward"></i></button>
-                <button class="control-btn" id="repeatBtn" title="循环模式"><i class="fas fa-redo"></i></button>
-            </div>
-            <div class="volume-container">
-                <i class="fas fa-volume-up" id="volumeIcon"></i>
-                <div class="volume-bar" id="volumeBar">
-                    <div class="volume-fill" id="volumeFill"></div>
-                </div>
-            </div>
-            <div class="playlist-toggle" id="playlistToggle">
-                <span>播放列表</span>
-                <i class="fas fa-chevron-up" id="playlistChevron"></i>
-            </div>
-            <div class="playlist" id="playlist"></div>
-        </div>
-    </div>
-
-    <div class="mini-player glass" id="miniPlayer">
-        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
-        <div class="mini-info">
-            <div class="mini-track" id="miniTrack">未播放</div>
-            <div class="mini-artist" id="miniArtist">—</div>
-        </div>
-        <div class="mini-controls">
-            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
-            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
-        </div>
-    </div>
-
-    <audio id="audioElement" preload="metadata"></audio>
-
-    <footer class="footer glass">
-        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
-    </footer>
 
     <script src="../script.js"></script>
 </body>

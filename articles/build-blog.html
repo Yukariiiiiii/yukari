@@ -17,369 +17,170 @@
 
     <nav class="navbar glass">
         <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
-                <i class="fas fa-feather-alt"></i>
-                <span>Yukariの小站</span>
+            <a href="/" class="nav-logo" data-link>
+                <i class="fas fa-feather-alt"></i><span>Yukariの小站</span>
             </a>
             <div class="nav-links">
-                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
-                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
-                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+                <a href="/" class="nav-link" data-link data-nav="home"><i class="fas fa-home"></i> 首页</a>
+                <a href="/#articles" class="nav-link active" data-link data-nav="articles"><i class="fas fa-book-open"></i> 文章</a>
             </div>
             <div class="nav-actions">
-                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题"><i class="fas fa-sun"></i></button>
-                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器"><i class="fas fa-music"></i></button>
-                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <button class="theme-toggle glass-btn" id="themeToggle"><i class="fas fa-sun"></i></button>
+                <button class="music-toggle glass-btn" id="musicToggle"><i class="fas fa-music"></i></button>
             </div>
         </div>
     </nav>
 
-    <main class="main-content article-page">
-        <a href="../index.html" class="back-link glass-btn"><i class="fas fa-arrow-left"></i> 返回文章列表</a>
+    <main class="main-content article-page" id="app-main">
+        <a href="/" class="back-btn glass-btn" data-link><i class="fas fa-arrow-left"></i> 返回首页</a>
 
-        <article class="article-full glass fade-in">
-            <div class="article-header">
-                <div class="article-cover-large" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                    <i class="fas fa-database"></i>
-                </div>
+        <article class="article-detail glass fade-in">
+            <header class="article-header">
+                <div class="article-category">全栈 · 教程</div>
+                <h1>从零搭建个人博客系统</h1>
                 <div class="article-meta-full">
-                    <h1>从零搭建个人博客系统</h1>
-                    <div class="article-meta-info">
-                        <span><i class="far fa-calendar"></i> 2026-06-20</span>
-                        <span><i class="far fa-eye"></i> 968 阅读</span>
-                        <span><i class="far fa-clock"></i> 约 18 分钟</span>
-                    </div>
-                    <div class="article-tags-full">
-                        <span class="tag-small">全栈</span>
-                        <span class="tag-small">教程</span>
-                        <span class="tag-small">Node.js</span>
-                    </div>
+                    <span><i class="far fa-calendar"></i> 2026-06-20</span>
+                    <span><i class="far fa-eye"></i> 968 阅读</span>
+                    <span><i class="far fa-clock"></i> 15 分钟</span>
                 </div>
+                <div class="article-tags-header">
+                    <span class="tag-small">全栈</span>
+                    <span class="tag-small">Node.js</span>
+                    <span class="tag-small">部署</span>
+                </div>
+            </header>
+
+            <div class="article-cover-large" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <i class="fas fa-database"></i>
             </div>
 
-            <div class="article-content">
-                <h2>为什么要自己搭博客？</h2>
-                <p>Hexo、Hugo、WordPress……现成方案一大把，为什么还要从零搭建？三个理由：<strong>完全可控、练手全栈、秀出个性</strong>。本文带你用 Node.js + 轻量前端，从空文件夹到线上博客。</p>
+            <div class="article-body-full">
+                <p class="lead">从一行代码到线上部署，完整走一遍个人博客的搭建流程。不依赖 WordPress、不买服务器，用纯静态 + 免费托管实现你的个人写作空间。</p>
 
-                <div class="callout">
-                    <i class="fas fa-lightbulb"></i>
-                    <div>
-                        <strong>技术选型：</strong>Node.js + Express（后端）+ SQLite（数据库）+ 原生 HTML/CSS/JS（前端）。零依赖前端框架，轻量、快、好理解。
-                    </div>
-                </div>
+                <h2 id="sec1">架构选型</h2>
+                <p>个人博客有三种主流方案，各有取舍：</p>
+                <table class="compat-table">
+                    <thead><tr><th>方案</th><th>优点</th><th>缺点</th><th>适合人群</th></tr></thead>
+                    <tbody>
+                        <tr><td>纯静态 (HTML+CSS)</td><td>最快、最便宜、最安全</td><td>无后台、手写 HTML</td><td>极简主义者</td></tr>
+                        <tr><td>静态生成器 (Hexo/Hugo)</td><td>Markdown 写作、主题丰富</td><td>需构建步骤</td><td>技术博主</td></tr>
+                        <tr><td>动态博客 (WordPress/Ghost)</td><td>功能完整、有后台</td><td>需服务器、维护成本</td><td>内容创作者</td></tr>
+                    </tbody>
+                </table>
 
-                <h2>一、项目结构</h2>
-
-                <pre><code>my-blog/
-├── server.js          # 入口
-├── db.js              # 数据库连接
-├── routes/
-│   ├── posts.js       # 文章 CRUD
-│   └── auth.js        # 管理员登录
-├── views/             # 服务端渲染模板
-│   ├── layout.html
-│   ├── home.html
-│   └── post.html
-├── public/            # 静态资源
-│   ├── styles.css
-│   └── script.js
-├── content/           # Markdown 文章
-│   └── hello-world.md
-└── package.json</code></pre>
-
-                <h2>二、初始化项目</h2>
-
-                <pre><code>mkdir my-blog && cd my-blog
-npm init -y
-npm install express better-sqlite3 marked express-session bcrypt</code></pre>
-
-                <p><code>package.json</code> 加上：</p>
-
-                <pre><code>{
-  "name": "my-blog",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  }
-}</code></pre>
-
-                <h2>三、数据库层</h2>
-
-                <pre><code>// db.js
-const Database = require('better-sqlite3');
-const db = new Database('blog.db');
-
-db.exec(`
-    CREATE TABLE IF NOT EXISTS posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        slug TEXT UNIQUE NOT NULL,
-        title TEXT NOT NULL,
-        content TEXT NOT NULL,
-        excerpt TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL
-    );
-`);
-
-module.exports = db;</code></pre>
-
-                <h2>四、服务端核心</h2>
-
-                <pre><code>// server.js
-const express = require('express');
-const session = require('express-session');
-const { marked } = require('marked');
-const db = require('./db');
-const postsRouter = require('./routes/posts');
-
-const app = express();
-
-app.set('view engine', 'html');
-app.engine('html', require('express-file-engine')); // 简单模板引擎
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static('public'));
-app.use(session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: false
-}));
-
-// Markdown → HTML 中间件
-app.use((req, res, next) => {
-    res.locals.marked = marked;
-    next();
-});
-
-app.use('/api/posts', postsRouter);
-
-// 首页
-app.get('/', (req, res) => {
-    const posts = db.prepare('SELECT * FROM posts ORDER BY created_at DESC').all();
-    res.render('home', { posts, user: req.session.user });
-});
-
-// 文章详情
-app.get('/post/:slug', (req, res) => {
-    const post = db.prepare('SELECT * FROM posts WHERE slug = ?').get(req.params.slug);
-    if (!post) return res.status(404).send('Not Found');
-    post.html = marked(post.content);
-    res.render('post', { post, user: req.session.user });
-});
-
-app.listen(3000, () => console.log('Blog running at http://localhost:3000'));</code></pre>
-
-                <h2>五、文章 CRUD 路由</h2>
-
-                <pre><code>// routes/posts.js
-const router = require('express').Router();
-const db = require('../db');
-const bcrypt = require('bcrypt');
-
-// 新建文章（需登录）
-router.post('/', requireAuth, (req, res) => {
-    const { title, content, slug } = req.body;
-    const excerpt = content.slice(0, 150) + '...';
-    db.prepare('INSERT INTO posts (slug, title, content, excerpt) VALUES (?, ?, ?, ?)')
-      .run(slug || title.toLowerCase().replace(/\s+/g, '-'), title, content, excerpt);
-    res.redirect(`/post/${slug}`);
-});
-
-// 更新
-router.put('/:id', requireAuth, (req, res) => {
-    const { title, content } = req.body;
-    db.prepare('UPDATE posts SET title=?, content=?, updated_at=CURRENT_TIMESTAMP WHERE id=?')
-      .run(title, content, req.params.id);
-    res.json({ ok: true });
-});
-
-// 删除
-router.delete('/:id', requireAuth, (req, res) => {
-    db.prepare('DELETE FROM posts WHERE id=?').run(req.params.id);
-    res.json({ ok: true });
-});
-
-function requireAuth(req, res, next) {
-    if (!req.session.user) return res.status(401).json({ error: 'Unauthorized' });
-    next();
-}
-
-module.exports = router;</code></pre>
-
-                <h2>六、前端模板（含毛玻璃风格）</h2>
-
-                <p>复用本博客的毛玻璃 CSS，服务端注入文章内容：</p>
-
-                <pre><code>&lt;!-- views/post.html --&gt;
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;link rel="stylesheet" href="styles.css"&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;nav class="navbar glass"&gt;...&lt;/nav&gt;
-    &lt;main class="main-content"&gt;
-        &lt;article class="article-full glass"&gt;
-            &lt;h1&gt;{{post.title}}&lt;/h1&gt;
-            &lt;div class="article-meta"&gt;
-                &lt;span&gt;{{post.created_at}}&lt;/span&gt;
-            &lt;/div&gt;
-            &lt;div class="markdown-body"&gt;
-                {{post.html}}
-            &lt;/div&gt;
-        &lt;/article&gt;
-    &lt;/main&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-
-                <h2>七、Markdown 写作体验</h2>
-
-                <p>文章用 Markdown 写，发布时转 HTML。本地写作流程：</p>
-
-                <pre><code># 新文章
-在 content/ 下放 .md 文件，格式：
----
-title: 我的第一篇博客
-slug: my-first-post
-date: 2026-07-20
-tags: [生活, 随笔]
----
-
-正文用标准 Markdown 语法...</code></pre>
-
-                <p>写一个导入脚本，把 <code>content/</code> 下的 Markdown 批量导入数据库：</p>
-
-                <pre><code>// scripts/import.js
-const fs = require('fs');
-const path = require('path');
-const db = require('./db');
-const { marked } = require('marked');
-const fm = require('front-matter');
-
-const dir = path.join(__dirname, '../content');
-fs.readdirSync(dir).forEach(file => {
-    if (!file.endsWith('.md')) return;
-    const raw = fs.readFileSync(path.join(dir, file), 'utf8');
-    const { attributes, body } = fm(raw);
-    const slug = attributes.slug || file.replace('.md', '');
-    const excerpt = body.slice(0, 150) + '...';
-    db.prepare(`INSERT OR REPLACE INTO posts (slug, title, content, excerpt) VALUES (?, ?, ?, ?)`)
-      .run(slug, attributes.title, body, excerpt);
-    console.log(`✅ Imported: ${attributes.title}`);
-});</code></pre>
-
-                <h2>八、部署上线</h2>
-
-                <h3>方案 A：Railway（最简单）</h3>
-                <ol>
-                    <li>GitHub 推代码</li>
-                    <li>Railway 关联仓库 → 自动检测 Node.js</li>
-                    <li>添加 Volume 持久化 <code>blog.db</code></li>
-                    <li>自动获得 HTTPS 域名</li>
-                </ol>
-
-                <h3>方案 B：VPS + PM2</h3>
-                <pre><code>ssh root@your-server
-git clone your-repo && cd your-repo
-npm install && npm run build
-npm install -g pm2
-pm2 start server.js --name blog
-pm2 save && pm2 startup</code></pre>
-
-                <p>再配 Nginx 反代 + Let's Encrypt 证书即可。</p>
-
-                <h3>方案 C：Serverless（Vercel / Cloudflare Pages）</h3>
-                <p>把 Express 换成 Vercel 的 Serverless 函数格式，数据库改用 Turso（SQLite 的 Serverless 版）：</p>
-
-                <pre><code>// api/posts.js → Vercel Serverless
-import { Client } from '@libsql/client';
-
-const db = createClient({
-    url: process.env.TURSO_URL,
-    authToken: process.env.TURSO_TOKEN
-});
-
-export default async function handler(req, res) {
-    const posts = await db.execute('SELECT * FROM posts ORDER BY created_at DESC');
-    res.json(posts.rows);
-}</code></pre>
-
-                <div class="callout warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div>
-                        <strong>安全提醒：</strong>SQLite 文件不要暴露到公网；密码用 bcrypt 哈希存储；登录态用 HttpOnly Cookie + CSRF 防护。
-                    </div>
-                </div>
-
-                <h2>九、后续可扩展方向</h2>
+                <p>本文选择 <strong>纯静态 + SPA 模式</strong>，原因：</p>
                 <ul>
-                    <li>🔍 全文搜索（集成 MiniSearch 或 MeiliSearch）</li>
-                    <li>💬 评论系统（Giscus 或自建）</li>
-                    <li>🏷️ 标签/分类归档页</li>
-                    <li>📊 访问统计（Umami，自托管）</li>
-                    <li>🔄 RSS Feed 自动生成</li>
-                    <li>🌙 深浅色主题（参考本博客实现）</li>
-                    <li>🎵 黑胶音乐播放器（参考本博客 😎）</li>
+                    <li>零成本托管（GitHub Pages / Vercel 免费）</li>
+                    <li>加载速度极致（无后端延迟）</li>
+                    <li>完全可控（CSS/JS 随便改）</li>
+                    <li>配合 Git 就是版本管理</li>
                 </ul>
 
-                <h2>小结</h2>
-                <p>从零搭博客听起来吓人，其实核心就三件事：<strong>数据怎么存（SQLite）、请求怎么处理（Express）、页面怎么渲染（模板 + CSS）</strong>。搭好骨架后，每加一个功能都是一次完整的全栈练习。而且——拥有完全属于自己的小天地，那种感觉真的很棒。</p>
+                <h2 id="sec2">项目结构</h2>
+                <div class="code-block">
+                    <div class="code-header"><span>项目目录</span></div>
+                    <pre><code>my-blog/
+├── index.html          ← 首页 + SPA 外壳
+├── styles.css          ← 全局样式
+├── script.js           ← 路由 + 播放器 + 主题
+├── articles/           ← 文章子页面
+│   ├── post-1.html
+│   └── post-2.html
+├── images/             ← 图片资源
+└── README.md</code></pre>
+                </div>
 
-                <div class="article-footer-actions">
-                    <a href="../index.html" class="btn btn-outline glass-btn"><i class="fas fa-arrow-left"></i> 返回列表</a>
-                    <div class="share-links">
-                        <span>分享：</span>
-                        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="share-btn"><i class="fab fa-weibo"></i></a>
-                        <a href="#" class="share-btn"><i class="fas fa-link"></i></a>
-                    </div>
+                <h2 id="sec3">SPA 路由核心</h2>
+                <p>用 History API 实现无刷新跳转，音乐播放器不中断：</p>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>// 拦截所有站内链接
+document.addEventListener('click', async e => {
+    const link = e.target.closest('a[data-link]');
+    if (!link) return;
+    e.preventDefault();
+    const url = link.href;
+
+    // fetch 拉取新页面
+    const html = await fetch(url).then(r => r.text());
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    // 只替换 &lt;main&gt; 内容
+    document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+
+    // 更新 URL（不刷新）
+    history.pushState({}, '', url);
+});</code></pre>
+                </div>
+
+                <div class="callout tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <div><strong>关键</strong>：<code>&lt;audio&gt;</code> 和播放器放在 <code>&lt;main&gt;</code> 外面，SPA 切换时永远不会被销毁，音乐自然不断。</div>
+                </div>
+
+                <h2 id="sec4">写作工作流</h2>
+                <p>用 Markdown 写文章，构建时转为 HTML 插入模板：</p>
+                <div class="code-block">
+                    <div class="code-header"><span>Node.js 构建脚本</span></div>
+                    <pre><code>// build.js
+const fs = require('fs');
+const { marked } = require('marked');
+const template = fs.readFileSync('template.html', 'utf-8');
+
+fs.readdirSync('posts').forEach(file => {
+    const md = fs.readFileSync(`posts/${file}`, 'utf-8');
+    const html = marked(md);
+    const title = md.match(/^#\s+(.+)$/m)?.[1] || 'Untitled';
+    const output = template
+        .replace('{{title}}', title)
+        .replace('{{content}}', html);
+    fs.writeFileSync(`articles/${file.replace('.md', '.html')}`, output);
+});</code></pre>
+                </div>
+
+                <h2 id="sec5">部署上线</h2>
+                <h3>方案 A：GitHub Pages（免费）</h3>
+                <div class="code-block">
+                    <div class="code-header"><span>Bash</span></div>
+                    <pre><code>git init
+git add .
+git commit -m "first blog"
+git remote add origin https://github.com/你的用户名/你的用户名.github.io
+git push -u origin main
+# 在 GitHub Settings → Pages → Source 选 main 分支</code></pre>
+                </div>
+
+                <h3>方案 B：Vercel（自动部署 + HTTPS）</h3>
+                <ol>
+                    <li>把项目推到 GitHub 仓库</li>
+                    <li>登录 vercel.com → Import Project</li>
+                    <li>选仓库 → 点 Deploy</li>
+                    <li>每次 git push 自动更新</li>
+                </ol>
+
+                <h2 id="sec6">进阶功能清单</h2>
+                <ul>
+                    <li>✅ SPA 无刷新路由 + 音乐不中断</li>
+                    <li>✅ 深浅色主题切换 + localStorage 记忆</li>
+                    <li>✅ 毛玻璃 UI + 动态光晕背景</li>
+                    <li>✅ 黑胶唱片音乐播放器</li>
+                    <li>⬜ 评论系统（Giscus / Waline）</li>
+                    <li>⬜ 搜索功能（Fuse.js 客户端搜索）</li>
+                    <li>⬜ RSS 订阅</li>
+                    <li>⬜ 阅读进度条</li>
+                    <li>⬜ SEO 优化（sitemap + meta tags）</li>
+                </ul>
+
+                <hr class="article-divider">
+                <div class="article-share">
+                    <span>分享这篇文章：</span>
+                    <a href="#" class="share-btn twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="share-btn weibo"><i class="fab fa-weibo"></i></a>
+                    <a href="#" class="share-btn copy"><i class="fas fa-link"></i></a>
                 </div>
             </div>
         </article>
     </main>
-
-    <div class="vinyl-player" id="vinylPlayer">
-        <div class="vinyl-player-inner glass">
-            <div class="player-header"><div class="player-title"><i class="fas fa-record-vinyl"></i><span>音乐播放器</span></div><button class="player-close" id="playerClose"><i class="fas fa-times"></i></button></div>
-            <div class="vinyl-display"><div class="vinyl-record" id="vinylRecord"><div class="vinyl-disc"><div class="vinyl-grooves"></div><div class="vinyl-label"><div class="vinyl-label-text" id="vinylLabel">♪</div></div><div class="vinyl-hole"></div></div><div class="vinyl-arm"><div class="vinyl-arm-base"></div><div class="vinyl-arm-stick"></div><div class="vinyl-arm-head"></div></div></div></div>
-            <div class="track-info"><div class="track-name" id="trackName">选择一首歌曲</div><div class="track-artist" id="trackArtist">—</div></div>
-            <div class="progress-container"><span class="progress-time" id="currentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div><div class="progress-thumb" id="progressThumb"></div></div><span class="progress-time" id="totalTime">0:00</span></div>
-            <div class="player-controls">
-                <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
-                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
-                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play" id="playIcon"></i></button>
-                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
-                <button class="control-btn" id="repeatBtn"><i class="fas fa-redo"></i></button>
-            </div>
-            <div class="volume-container"><i class="fas fa-volume-up" id="volumeIcon"></i><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
-            <div class="playlist-toggle" id="playlistToggle"><span>播放列表</span><i class="fas fa-chevron-up" id="playlistChevron"></i></div>
-            <div class="playlist" id="playlist"></div>
-        </div>
-    </div>
-
-    <div class="mini-player glass" id="miniPlayer">
-        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
-        <div class="mini-info"><div class="mini-track" id="miniTrack">未播放</div><div class="mini-artist" id="miniArtist">—</div></div>
-        <div class="mini-controls">
-            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
-            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
-        </div>
-    </div>
-
-    <audio id="audioElement" preload="metadata"></audio>
-
-    <footer class="footer glass">
-        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
-    </footer>
 
     <script src="../script.js"></script>
 </body>
