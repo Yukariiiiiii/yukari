@@ -599,26 +599,44 @@ document.addEventListener('keydown', e => {
 (function () {
     const text = '少女乐队，摇滚万岁';
     const typedText = document.getElementById('typed-text');
-    const cursor = document.querySelector('.typed-cursor');
-
     if (!typedText) return;
 
     let index = 0;
-    const speed = 120; // 打字速度（ms），可调整
-    const startDelay = 800; // 页面加载后延迟开始
+    let isDeleting = false;
 
-    function type() {
-        if (index < text.length) {
-            typedText.textContent += text.charAt(index);
-            index++;
-            setTimeout(type, speed);
+    const typingSpeed = 120;      // 打字速度
+    const deletingSpeed = 60;     // 删除速度（更快一点）
+    const pauseBetween = 1500;    // 打完后的停顿
+    const pauseBeforeRetype = 600;// 删完后的停顿
+
+    function typeLoop() {
+        if (!isDeleting) {
+            // 正在打字
+            typedText.textContent = text.substring(0, index++);
+
+            if (index > text.length) {
+                // 打完，准备删除
+                isDeleting = true;
+                setTimeout(typeLoop, pauseBetween);
+                return;
+            }
+            setTimeout(typeLoop, typingSpeed);
         } else {
-            // 打字完成后，可选：让光标持续闪烁
-            cursor.style.animation = 'blink 1s step-end infinite';
+            // 正在删除
+            typedText.textContent = text.substring(0, index--);
+
+            if (index < 0) {
+                // 删完，准备重新打字
+                isDeleting = false;
+                setTimeout(typeLoop, pauseBeforeRetype);
+                return;
+            }
+            setTimeout(typeLoop, deletingSpeed);
         }
     }
 
-    setTimeout(type, startDelay);
+    // 页面加载后稍微延迟启动
+    setTimeout(typeLoop, 800);
 })();
 // ========== 启动 ==========
 initRouter();
