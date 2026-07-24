@@ -1,104 +1,113 @@
 /* ============================================================
-   app.js — 个人博客交互逻辑
-   - 深浅色主题切换
-   - 音乐播放器（播放/暂停/切歌/进度/音量/快捷键）
-   - 用户自定义添加/删除歌曲（本地文件 + 拖拽 + URL）
-   - 导航高亮 & 卡片视差效果
+   app.js — 黑胶音乐播放器 + 音频可视化 + 博客交互
    ============================================================ */
 
 (function () {
     'use strict';
 
-    /* --------------------------------------------------------
+    /* ============================================================
        1. 主题切换
-       -------------------------------------------------------- */
+       ============================================================ */
     const themeToggle = document.getElementById('themeToggle');
-    const html        = document.documentElement;
+    const html = document.documentElement;
 
     const savedTheme = localStorage.getItem('blog-theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
     themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 
     themeToggle.addEventListener('click', function () {
-        const current = html.getAttribute('data-theme');
-        const next    = current === 'dark' ? 'light' : 'dark';
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', next);
         themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
         localStorage.setItem('blog-theme', next);
     });
 
-    /* --------------------------------------------------------
+    /* ============================================================
        2. 音乐播放器核心
-       -------------------------------------------------------- */
+       ============================================================ */
 
-    // ---- 内置默认曲目 ----
-    const defaultTracks = [
-        { name: 'Midnight City',    artist: 'M83',         duration: 243, icon: '🎵', src: '' },
-        { name: 'Starboy',          artist: 'The Weeknd',   duration: 230, icon: '🎧', src: '' },
-        { name: 'Blinding Lights',  artist: 'The Weeknd',   duration: 200, icon: '🎶', src: '' },
-        { name: 'Levitating',       artist: 'Dua Lipa',     duration: 203, icon: '🎵', src: '' },
-        { name: 'Watermelon Sugar', artist: 'Harry Styles', duration: 174, icon: '🎧', src: '' },
-        { name: 'Stay',             artist: 'The Kid LAROI',duration: 141, icon: '🎶', src: '' }
-    ];
+    // ---- Audio 元素 ----
+    const audio = document.getElementById('audioEl');
 
-    // ---- 从 localStorage 恢复用户添加的曲目 ----
+    // ---- Web Audio API ----
+    let audioCtx = null;
+    let analyser = null;
+    let sourceNode = null;
+    let gainNode = null;
+
+    function initWebAudio() {
+        if (audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 128;
+            analyser.smoothingTimeConstant = 0.85;
+
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = volume;
+
+            sourceNode = audioCtx.createMediaElementSource(audio);
+            sourceNode.connect(analyser);
+            analyser.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+        } catch (e) {
+            console.warn('Web Audio API 不可用:', e);
+        }
+    }
+
+    // ---- 播放列表数据 ----
     let customTracks = [];
     try {
         const stored = localStorage.getItem('blog-custom-tracks');
         if (stored) customTracks = JSON.parse(stored);
     } catch (e) { customTracks = []; }
 
-    // 合并：默认曲目 + 用户自定义曲目
-    let playlistData = defaultTracks.concat(customTracks);
+    let playlistData = customTracks.slice(); // 初始只有用户添加的
 
-    // ---- Audio 对象（真正播放音频） ----
-    const audio = new Audio();
-    audio.preload = 'metadata';
-
-    // 当前曲目如果是用户上传的本地文件，用 objectURL
-    function getCurrentSrc() {
-        const t = playlistData[currentTrack];
-        if (t._objectURL) return t._objectURL;
-        // 演示曲目没有真实音频，用静默 oscillator 模拟（见下方）
-        return null;
-    }
-
-    // 演示模式：当没有真实音频源时，用定时器模拟进度
-    let demoMode = true;
-
-    // ---- DOM 引用 ----
-    const player        = document.getElementById('musicPlayer');
-    const playerToggle  = document.getElementById('playerToggle');
-    const playBtn       = document.getElementById('playBtn');
-    const playBtn2      = document.getElementById('playBtn2');
-    const prevBtn       = document.getElementById('prevBtn');
-    const nextBtn       = document.getElementById('nextBtn');
-    const muteBtn       = document.getElementById('muteBtn');
-    const trackName     = document.getElementById('trackName');
-    const trackArtist   = document.getElementById('trackArtist');
-    const progressFill  = document.getElementById('progressFill');
+    // ---- DOM ----
+    const player = document.getElementById('musicPlayer');
+    const playerToggle = document.getElementById('playerToggle');
+    const playBtn = document.getElementById('playBtn');
+    const playBtn2 = document.getElementById('playBtn2');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const trackName = document.getElementById('trackName');
+    const trackArtist = document.getElementById('trackArtist');
+    const progressFill = document.getElementById('progressFill');
     const currentTimeEl = document.getElementById('currentTime');
-    const totalTimeEl   = document.getElementById('totalTime');
-    const playlistEl    = document.getElementById('playlist');
-    const volumeFill    = document.getElementById('volumeFill');
-    const progressBar   = document.getElementById('progressBar');
-    const volumeSlider  = document.getElementById('volumeSlider');
-    const addBtn        = document.getElementById('addTrackBtn');
-    const addPanel      = document.getElementById('addPanel');
-    const fileInput     = document.getElementById('fileInput');
-    const dropZone      = document.getElementById('dropZone');
-    const urlInput      = document.getElementById('urlInput');
-    const addUrlBtn     = document.getElementById('addUrlBtn');
+    const totalTimeEl = document.getElementById('totalTime');
+    const playlistEl = document.getElementById('playlist');
+    const playlistCount = document.getElementById('playlistCount');
+    const volumeFill = document.getElementById('volumeFill');
+    const progressBar = document.getElementById('progressBar');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const addBtn = document.getElementById('addTrackBtn');
+    const addPanel = document.getElementById('addPanel');
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const urlInput = document.getElementById('urlInput');
+    const addUrlBtn = document.getElementById('addUrlBtn');
+    const visOverlay = document.getElementById('visOverlay');
+
+    // 黑胶标签
+    const miniLabel = document.getElementById('miniLabel');
+    const discLabel = document.getElementById('discLabel');
+
+    // Canvas 可视化
+    const canvas = document.getElementById('visualizer');
+    const ctx2d = canvas.getContext('2d');
+    let visAnimationId = null;
 
     // ---- 状态 ----
     let currentTrack = 0;
-    let isPlaying    = false;
-    let progress     = 0;
-    let tickInterval = null;
-    let volume       = 0.7;
-    let isMuted      = false;
+    let isPlaying = false;
+    let progress = 0;
+    let volume = 0.7;
+    let isMuted = false;
+    let isSeeking = false;
 
-    /* ---------- 工具函数 ---------- */
+    /* ============ 工具函数 ============ */
     function formatTime(sec) {
         sec = Math.max(0, Math.floor(sec));
         const m = Math.floor(sec / 60);
@@ -107,53 +116,7 @@
     }
 
     function saveCustomTracks() {
-        try {
-            localStorage.setItem('blog-custom-tracks', JSON.stringify(customTracks));
-        } catch (e) { /* 忽略配额错误 */ }
-    }
-
-    function refreshPlaylist() {
-        playlistData = defaultTracks.concat(customTracks);
-        if (currentTrack >= playlistData.length) {
-            currentTrack = 0;
-            progress = 0;
-        }
-    }
-
-    /* ---------- 渲染播放列表 ---------- */
-    function renderPlaylist() {
-        const html = playlistData.map(function (track, i) {
-            const isCustom = i >= defaultTracks.length;
-            const icon = (i === currentTrack && isPlaying) ? '🔊' : track.icon;
-            return (
-                '<li class="' + (i === currentTrack ? 'active' : '') + '" data-index="' + i + '">' +
-                    '<span class="pl-icon">' + icon + '</span>' +
-                    '<span class="pl-name">' + escapeHtml(track.name) + '</span>' +
-                    (isCustom
-                        ? '<button class="pl-remove" data-remove="' + i + '" title="删除">✕</button>'
-                        : '') +
-                    '<span class="pl-duration">' + formatTime(track.duration) + '</span>' +
-                '</li>'
-            );
-        }).join('');
-
-        playlistEl.innerHTML = html;
-
-        // 点击切歌
-        playlistEl.querySelectorAll('li').forEach(function (li) {
-            li.addEventListener('click', function (e) {
-                if (e.target.classList.contains('pl-remove')) return;
-                selectTrack(parseInt(li.dataset.index, 10));
-            });
-        });
-
-        // 删除按钮
-        playlistEl.querySelectorAll('.pl-remove').forEach(function (btn) {
-            btn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                removeTrack(parseInt(btn.dataset.remove, 10));
-            });
-        });
+        try { localStorage.setItem('blog-custom-tracks', JSON.stringify(customTracks)); } catch (e) {}
     }
 
     function escapeHtml(str) {
@@ -162,184 +125,198 @@
         return div.innerHTML;
     }
 
-    /* ---------- 选择曲目 ---------- */
+    function emojiForName(name) {
+        const emojis = ['🎵', '🎶', '🎧', '🎤', '🎸', '🎹', '🥁', '🎺', '🎻', '🔊'];
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+        return emojis[hash % emojis.length];
+    }
+
+    /* ============ 渲染播放列表 ============ */
+    function renderPlaylist() {
+        if (playlistData.length === 0) {
+            playlistEl.innerHTML = '<li class="playlist-empty">🎵 暂无歌曲，点击 ➕ 添加</li>';
+        } else {
+            const html = playlistData.map(function (track, i) {
+                const icon = (i === currentTrack && isPlaying) ? '🔊' : (track.icon || '🎵');
+                return (
+                    '<li class="' + (i === currentTrack ? 'active' : '') + '" data-index="' + i + '">' +
+                        '<span class="pl-icon">' + icon + '</span>' +
+                        '<span class="pl-name" title="' + escapeHtml(track.name) + '">' + escapeHtml(track.name) + '</span>' +
+                        '<span class="pl-duration">' + formatTime(track.duration) + '</span>' +
+                        '<button class="pl-remove" data-remove="' + i + '" title="删除">✕</button>' +
+                    '</li>'
+                );
+            }).join('');
+            playlistEl.innerHTML = html;
+        }
+
+        playlistCount.textContent = playlistData.length + ' 首';
+
+        playlistEl.querySelectorAll('li[data-index]').forEach(function (li) {
+            li.addEventListener('click', function (e) {
+                if (e.target.classList.contains('pl-remove')) return;
+                selectTrack(parseInt(li.dataset.index, 10));
+            });
+        });
+
+        playlistEl.querySelectorAll('.pl-remove').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                removeTrack(parseInt(btn.dataset.remove, 10));
+            });
+        });
+    }
+
+    /* ============ 选择 / 加载曲目 ============ */
     function selectTrack(index) {
+        if (index < 0 || index >= playlistData.length) return;
         currentTrack = index;
         progress = 0;
         loadTrack();
         if (isPlaying) {
-            startProgress();
-            playAudio();
+            audio.play().catch(function () {});
+            startVis();
         }
     }
 
-    /* ---------- 加载曲目信息 ---------- */
     function loadTrack() {
         const track = playlistData[currentTrack];
-        trackName.textContent   = track.name;
-        trackArtist.textContent = track.artist;
+        if (!track) return;
+
+        trackName.textContent = track.name;
+        trackArtist.textContent = track.artist || '未知艺术家';
+
+        // 更新黑胶标签 emoji
+        const emoji = track.icon || emojiForName(track.name);
+        if (miniLabel) miniLabel.textContent = emoji;
+        if (discLabel) discLabel.textContent = emoji;
+
         totalTimeEl.textContent = formatTime(track.duration);
         currentTimeEl.textContent = '0:00';
         progressFill.style.width = '0%';
 
         // 设置音频源
-        const src = getCurrentSrc();
-        demoMode = !src;
-        if (src) {
-            audio.src = src;
-        }
-        renderPlaylist();
-    }
-
-    /* ---------- 播放 / 暂停 ---------- */
-    function togglePlay() {
-        isPlaying = !isPlaying;
-        player.classList.toggle('playing', isPlaying);
-
-        const icon = isPlaying ? '⏸' : '▶';
-        playBtn.textContent  = icon;
-        playBtn2.textContent = icon;
-
-        if (isPlaying) {
-            playAudio();
-            startProgress();
+        if (track._objectURL) {
+            audio.src = track._objectURL;
+        } else if (track.src) {
+            audio.src = track.src;
         } else {
-            pauseAudio();
-            stopProgress();
+            audio.removeAttribute('src');
         }
+
         renderPlaylist();
     }
 
-    function playAudio() {
-        const src = getCurrentSrc();
-        if (src) {
-            audio.play().catch(function () { /* 浏览器限制自动播放 */ });
-        }
-    }
-
-    function pauseAudio() {
-        if (audio.src) audio.pause();
-    }
-
-    /* ---------- 进度计时 ---------- */
-    function startProgress() {
-        stopProgress();
-        const track = playlistData[currentTrack];
-
-        // 真实音频模式：监听 timeupdate
-        if (!demoMode && audio.src) {
-            audio.addEventListener('timeupdate', onTimeUpdate);
-            audio.addEventListener('loadedmetadata', onLoadedMeta);
-            audio.addEventListener('ended', onEnded);
-            tickInterval = {}; // 占位，真实模式不靠 setInterval
+    /* ============ 播放 / 暂停 ============ */
+    function togglePlay() {
+        if (playlistData.length === 0) {
+            showToast('请先添加歌曲 ➕');
+            addPanel.classList.add('show');
             return;
         }
 
-        // 演示模式：用 setInterval 模拟
-        tickInterval = setInterval(function () {
-            progress += 0.5;
-            const pct = (progress / track.duration) * 100;
-            progressFill.style.width = Math.min(pct, 100) + '%';
-            currentTimeEl.textContent = formatTime(progress);
-            if (progress >= track.duration) nextTrack();
-        }, 500);
-    }
+        isPlaying = !isPlaying;
+        player.classList.toggle('playing', isPlaying);
+        const icon = isPlaying ? '⏸' : '▶';
+        playBtn.textContent = icon;
+        playBtn2.textContent = icon;
 
-    function stopProgress() {
-        if (tickInterval && tickInterval !== {}) {
-            clearInterval(tickInterval);
+        if (isPlaying) {
+            initWebAudio();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            const playPromise = audio.play();
+            if (playPromise) playPromise.catch(function (err) { console.warn('播放失败:', err); });
+            startVis();
+            player.classList.add('has-audio');
+        } else {
+            audio.pause();
+            stopVis();
         }
-        tickInterval = null;
-        audio.removeEventListener('timeupdate', onTimeUpdate);
-        audio.removeEventListener('loadedmetadata', onLoadedMeta);
-        audio.removeEventListener('ended', onEnded);
+        renderPlaylist();
     }
 
+    /* ============ 进度更新 ============ */
     function onTimeUpdate() {
+        if (isSeeking) return;
         progress = audio.currentTime;
-        const dur = audio.duration || playlistData[currentTrack].duration;
-        const pct = (progress / dur) * 100;
-        progressFill.style.width = Math.min(pct, 100) + '%';
+        const dur = audio.duration || playlistData[currentTrack].duration || 0;
+        if (dur > 0) {
+            const pct = (progress / dur) * 100;
+            progressFill.style.width = Math.min(pct, 100) + '%';
+        }
         currentTimeEl.textContent = formatTime(progress);
     }
 
     function onLoadedMeta() {
         const track = playlistData[currentTrack];
-        track.duration = Math.floor(audio.duration) || track.duration;
-        totalTimeEl.textContent = formatTime(track.duration);
-    }
-
-    function onEnded() {
-        nextTrack();
-    }
-
-    /* ---------- 上一首 / 下一首 ---------- */
-    function nextTrack() {
-        currentTrack = (currentTrack + 1) % playlistData.length;
-        progress = 0;
-        loadTrack();
-        if (isPlaying) playAudio();
-        startProgressIfNeeded();
-    }
-
-    function prevTrack() {
-        currentTrack = (currentTrack - 1 + playlistData.length) % playlistData.length;
-        progress = 0;
-        loadTrack();
-        if (isPlaying) playAudio();
-        startProgressIfNeeded();
-    }
-
-    function startProgressIfNeeded() {
-        if (isPlaying) {
-            startProgress();
-        } else {
-            const pct = 0;
-            progressFill.style.width = '0%';
-            currentTimeEl.textContent = '0:00';
+        if (track && audio.duration && isFinite(audio.duration)) {
+            track.duration = Math.floor(audio.duration);
+            totalTimeEl.textContent = formatTime(track.duration);
         }
     }
 
-    /* ---------- 展开 / 收起播放器 ---------- */
+    function onEnded() { nextTrack(); }
+
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('loadedmetadata', onLoadedMeta);
+    audio.addEventListener('ended', onEnded);
+
+    /* ============ 切歌 ============ */
+    function nextTrack() {
+        if (playlistData.length === 0) return;
+        currentTrack = (currentTrack + 1) % playlistData.length;
+        progress = 0;
+        loadTrack();
+        if (isPlaying) audio.play().catch(function () {});
+    }
+
+    function prevTrack() {
+        if (playlistData.length === 0) return;
+        currentTrack = (currentTrack - 1 + playlistData.length) % playlistData.length;
+        progress = 0;
+        loadTrack();
+        if (isPlaying) audio.play().catch(function () {});
+    }
+
+    /* ============ 展开 / 收起 ============ */
     playerToggle.addEventListener('click', function () {
         player.classList.toggle('expanded');
         playerToggle.classList.toggle('expanded-margin');
     });
 
-    /* ---------- 按钮事件 ---------- */
-    playBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        togglePlay();
-    });
+    /* ============ 按钮事件 ============ */
+    playBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePlay(); });
     playBtn2.addEventListener('click', togglePlay);
     nextBtn.addEventListener('click', nextTrack);
     prevBtn.addEventListener('click', prevTrack);
 
-    /* ---------- 进度条点击 ---------- */
+    /* ============ 进度条拖动 ============ */
     progressBar.addEventListener('click', function (e) {
+        if (!audio.duration) return;
         const rect = progressBar.getBoundingClientRect();
-        const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const track = playlistData[currentTrack];
-        progress = pct * (audio.duration || track.duration);
+        const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        audio.currentTime = pct * audio.duration;
+        progress = audio.currentTime;
         progressFill.style.width = (pct * 100) + '%';
         currentTimeEl.textContent = formatTime(progress);
-        if (!demoMode && audio.src) audio.currentTime = progress;
     });
 
-    /* ---------- 静音 ---------- */
+    /* ============ 音量 ============ */
     muteBtn.addEventListener('click', function () {
         isMuted = !isMuted;
         muteBtn.textContent = isMuted ? '🔇' : '🔊';
         volumeFill.style.width = isMuted ? '0%' : (volume * 100) + '%';
         audio.muted = isMuted;
+        if (gainNode) gainNode.gain.value = isMuted ? 0 : volume;
     });
 
-    /* ---------- 音量 ---------- */
     volumeSlider.addEventListener('click', function (e) {
         const rect = volumeSlider.getBoundingClientRect();
         volume = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
         volumeFill.style.width = (volume * 100) + '%';
         audio.volume = volume;
+        if (gainNode) gainNode.gain.value = volume;
         if (isMuted && volume > 0) {
             isMuted = false;
             muteBtn.textContent = '🔊';
@@ -347,26 +324,22 @@
         }
     });
 
-    // 初始化音量
     audio.volume = volume;
 
-    /* ---------- 键盘快捷键 ---------- */
+    /* ============ 键盘快捷键 ============ */
     document.addEventListener('keydown', function (e) {
         const tag = e.target.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-
         switch (e.code) {
-            case 'Space':
-                e.preventDefault();
-                togglePlay();
-                break;
+            case 'Space': e.preventDefault(); togglePlay(); break;
             case 'ArrowRight': nextTrack(); break;
-            case 'ArrowLeft':  prevTrack(); break;
+            case 'ArrowLeft': prevTrack(); break;
             case 'ArrowUp':
                 e.preventDefault();
                 volume = Math.min(1, volume + 0.05);
                 volumeFill.style.width = (volume * 100) + '%';
                 audio.volume = volume;
+                if (gainNode) gainNode.gain.value = volume;
                 if (isMuted && volume > 0) { isMuted = false; muteBtn.textContent = '🔊'; audio.muted = false; }
                 break;
             case 'ArrowDown':
@@ -374,67 +347,166 @@
                 volume = Math.max(0, volume - 0.05);
                 volumeFill.style.width = (volume * 100) + '%';
                 audio.volume = volume;
+                if (gainNode) gainNode.gain.value = volume;
                 if (volume === 0) { isMuted = true; muteBtn.textContent = '🔇'; audio.muted = true; }
                 break;
         }
     });
 
     /* ============================================================
-       3. 添加歌曲功能
+       3. 音频可视化 (Canvas)
+       ============================================================ */
+    function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+    }
+
+    function startVis() {
+        resizeCanvas();
+        if (visAnimationId) cancelAnimationFrame(visAnimationId);
+        drawVis();
+    }
+
+    function stopVis() {
+        if (visAnimationId) {
+            cancelAnimationFrame(visAnimationId);
+            visAnimationId = null;
+        }
+        // 清空画布
+        ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawVis() {
+        visAnimationId = requestAnimationFrame(drawVis);
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const bufLen = analyser ? analyser.frequencyBinCount : 0;
+
+        // 半透明清屏（拖尾效果）
+        ctx2d.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx2d.fillRect(0, 0, w, h);
+
+        if (!analyser || bufLen === 0) {
+            // 无音频时画柔和波形
+            drawIdleWave(w, h);
+            return;
+        }
+
+        const data = new Uint8Array(bufLen);
+        analyser.getByteFrequencyData(data);
+
+        const barCount = 48;
+        const barWidth = w / barCount;
+        const gradient = ctx2d.createLinearGradient(0, h, 0, 0);
+        gradient.addColorStop(0, getCSS('--vis-color-1)' || '#6366f1');
+        gradient.addColorStop(0.5, getCSS('--vis-color-2)' || '#ec4899');
+        gradient.addColorStop(1, getCSS('--vis-color-3)' || '#06b6d4');
+
+        ctx2d.fillStyle = gradient;
+
+        for (let i = 0; i < barCount; i++) {
+            const idx = Math.floor(i * bufLen / barCount);
+            const val = data[idx] / 255;
+            const barH = Math.max(2, val * h * 0.9);
+            const x = i * barWidth + 1;
+            const y = h - barH;
+
+            // 圆角矩形
+            const r = Math.min(barWidth * 0.3, 4);
+            ctx2d.beginPath();
+            ctx2d.moveTo(x + r, y);
+            ctx2d.lineTo(x + barWidth - r - 1, y);
+            ctx2d.arcTo(x + barWidth - 1, y, x + barWidth - 1, y + r, r);
+            ctx2d.lineTo(x + barWidth - 1, y + barH);
+            ctx2d.lineTo(x, y + barH);
+            ctx2d.lineTo(x, y + r);
+            ctx2d.arcTo(x, y, x + r, y, r);
+            ctx2d.closePath();
+            ctx2d.fill();
+        }
+
+        // 顶部发光效果
+        ctx2d.shadowBlur = 10;
+        ctx2d.shadowColor = getCSS('--vis-color-1)' || '#6366f1';
+        ctx2d.fillStyle = gradient;
+        for (let i = 0; i < barCount; i += 6) {
+            const idx = Math.floor(i * bufLen / barCount);
+            const val = data[idx] / 255;
+            if (val > 0.3) {
+                const x = i * barWidth + barWidth / 2;
+                const y = h - val * h * 0.9 - 2;
+                ctx2d.beginPath();
+                ctx2d.arc(x, y, 2, 0, Math.PI * 2);
+                ctx2d.fill();
+            }
+        }
+        ctx2d.shadowBlur = 0;
+    }
+
+    function drawIdleWave(w, h) {
+        const t = Date.now() / 1000;
+        ctx2d.strokeStyle = getCSS('--vis-color-1)') || '#6366f1';
+        ctx2d.lineWidth = 2;
+        ctx2d.globalAlpha = 0.4;
+        ctx2d.beginPath();
+        for (let x = 0; x < w; x += 3) {
+            const y = h / 2 + Math.sin(x * 0.05 + t * 2) * 12 * Math.sin(x * 0.01 + t);
+            if (x === 0) ctx2d.moveTo(x, y);
+            else ctx2d.lineTo(x, y);
+        }
+        ctx2d.stroke();
+        ctx2d.globalAlpha = 1;
+    }
+
+    function getCSS(varName) {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+
+    // 窗口缩放时重设 canvas
+    window.addEventListener('resize', function () {
+        if (isPlaying) resizeCanvas();
+    });
+
+    /* ============================================================
+       4. 添加歌曲
        ============================================================ */
 
-    // ---- 展开/收起添加面板 ----
     addBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         addPanel.classList.toggle('show');
     });
 
-    // 点击面板内不收起
-    addPanel.addEventListener('click', function (e) {
-        e.stopPropagation();
-    });
+    addPanel.addEventListener('click', function (e) { e.stopPropagation(); });
 
-    // 点击外部收起面板
-    document.addEventListener('click', function () {
-        addPanel.classList.remove('show');
-    });
+    document.addEventListener('click', function () { addPanel.classList.remove('show'); });
 
-    /* ---- 方式1：文件选择 ---- */
+    // 文件选择
     fileInput.addEventListener('change', function (e) {
-        const files = e.target.files;
-        if (!files.length) return;
-        handleFiles(files);
-        fileInput.value = '';
-        addPanel.classList.remove('show');
+        if (e.target.files.length) {
+            handleFiles(e.target.files);
+            fileInput.value = '';
+            addPanel.classList.remove('show');
+        }
     });
 
-    /* ---- 方式2：拖拽上传 ---- */
-    dropZone.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', function () {
-        dropZone.classList.remove('dragover');
-    });
-
+    // 拖拽到 dropZone
+    dropZone.addEventListener('dragover', function (e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', function () { dropZone.classList.remove('dragover'); });
     dropZone.addEventListener('drop', function (e) {
         e.preventDefault();
         dropZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length) handleFiles(files);
+        if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
     });
 
-    // 支持整个播放器区域拖入文件
+    // 全局拖拽
     document.addEventListener('dragover', function (e) { e.preventDefault(); });
     document.addEventListener('drop', function (e) {
-        // 只在非输入框区域处理
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         e.preventDefault();
-        const files = e.dataTransfer.files;
-        if (files && files.length) {
-            // 过滤音频文件
-            const audioFiles = Array.from(files).filter(function (f) {
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+            const audioFiles = Array.from(e.dataTransfer.files).filter(function (f) {
                 return f.type.startsWith('audio/') || /\.(mp3|wav|ogg|flac|aac|m4a)$/i.test(f.name);
             });
             if (audioFiles.length) {
@@ -447,48 +519,47 @@
     });
 
     function handleFiles(files) {
+        let added = 0;
         Array.from(files).forEach(function (file) {
             const objectURL = URL.createObjectURL(file);
             const track = {
-                name: file.name.replace(/\.[^/.]+$/, ''),  // 去掉扩展名
+                name: file.name.replace(/\.[^/.]+$/, ''),
                 artist: '本地文件',
                 duration: 0,
-                icon: '🎵',
-                src: '',
+                icon: emojiForName(file.name),
                 _objectURL: objectURL,
                 _isCustom: true
             };
             customTracks.push(track);
 
-            // 尝试获取真实时长
-            const tmpAudio = new Audio(objectURL);
-            tmpAudio.addEventListener('loadedmetadata', function () {
-                track.duration = Math.floor(tmpAudio.duration) || 0;
+            // 获取时长
+            const tmp = new Audio(objectURL);
+            tmp.addEventListener('loadedmetadata', function () {
+                track.duration = Math.floor(tmp.duration) || 0;
                 if (playlistData.indexOf(track) !== -1) {
                     const idx = playlistData.indexOf(track);
                     if (idx === currentTrack) totalTimeEl.textContent = formatTime(track.duration);
                 }
                 renderPlaylist();
             });
+            added++;
         });
 
         saveCustomTracks();
-        refreshPlaylist();
+        playlistData = customTracks.slice();
         renderPlaylist();
 
-        // 自动切到新添加的最后一首
         const lastIdx = playlistData.length - 1;
         selectTrack(lastIdx);
-        // 展开播放器以便用户看到
         player.classList.add('expanded');
         playerToggle.classList.add('expanded-margin');
+        showToast('已添加 ' + added + ' 首歌曲 🎶');
     }
 
-    /* ---- 方式3：URL 添加 ---- */
+    // URL 添加
     addUrlBtn.addEventListener('click', function () {
         const url = urlInput.value.trim();
         if (!url) { showToast('请输入音频链接地址'); return; }
-
         const name = prompt('为这首歌命名：', url.split('/').pop().replace(/\.[^/.]+$/, '') || '网络音频') || '网络音频';
         const artist = prompt('演唱者：', '') || '未知';
 
@@ -503,7 +574,7 @@
 
         customTracks.push(track);
         saveCustomTracks();
-        refreshPlaylist();
+        playlistData = customTracks.slice();
         renderPlaylist();
 
         urlInput.value = '';
@@ -513,108 +584,90 @@
         selectTrack(lastIdx);
         player.classList.add('expanded');
         playerToggle.classList.add('expanded-margin');
-
         showToast('已添加 "' + name + '" 🎶');
     });
 
-    /* ---- 删除曲目 ---- */
+    /* ============ 删除曲目 ============ */
     function removeTrack(index) {
-        if (index < defaultTracks.length) {
-            showToast('内置曲目不可删除');
-            return;
-        }
         const track = playlistData[index];
-        if (track._objectURL) {
-            URL.revokeObjectURL(track._objectURL); // 释放内存
-        }
-        const customIdx = index - defaultTracks.length;
-        customTracks.splice(customIdx, 1);
-        saveCustomTracks();
-        refreshPlaylist();
+        if (!track) return;
 
-        if (isPlaying) {
-            pauseAudio();
+        if (track._objectURL) URL.revokeObjectURL(track._objectURL);
+
+        const customIdx = customTracks.indexOf(track);
+        if (customIdx !== -1) customTracks.splice(customIdx, 1);
+        saveCustomTracks();
+
+        playlistData = customTracks.slice();
+
+        if (isPlaying && currentTrack === index) {
+            audio.pause();
             isPlaying = false;
             player.classList.remove('playing');
+            player.classList.remove('has-audio');
             playBtn.textContent = '▶';
             playBtn2.textContent = '▶';
+            stopVis();
         }
+
+        if (currentTrack >= playlistData.length) currentTrack = 0;
         progress = 0;
         loadTrack();
         renderPlaylist();
         showToast('已删除 "' + track.name + '"');
     }
 
-    /* ---- Toast 提示 ---- */
+    /* ============ Toast ============ */
     let toastTimer = null;
     function showToast(msg) {
         let toast = document.getElementById('toast');
         if (!toast) {
             toast = document.createElement('div');
             toast.id = 'toast';
-            toast.style.cssText = [
-                'position:fixed', 'bottom:90px', 'right:24px', 'z-index:9999',
-                'padding:12px 20px', 'border-radius:14px',
-                'background:var(--player-bg)', 'backdrop-filter:blur(20px)',
-                '-webkit-backdrop-filter:blur(20px)',
-                'border:1px solid var(--glass-border)',
-                'color:var(--text-primary)', 'font-size:0.88rem',
-                'box-shadow:0 8px 32px var(--glass-shadow)',
-                'transform:translateY(20px)', 'opacity:0',
-                'transition:all 0.4s ease', 'pointer-events:none'
-            ].join(';');
             document.body.appendChild(toast);
         }
         toast.textContent = msg;
-        // 强制重排后动画
-        requestAnimationFrame(function () {
-            toast.style.transform = 'translateY(0)';
-            toast.style.opacity = '1';
-        });
+        requestAnimationFrame(function () { toast.classList.add('show'); });
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-            toast.style.transform = 'translateY(20px)';
-            toast.style.opacity = '0';
-        }, 2500);
+        toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2500);
     }
 
-    /* --------------------------------------------------------
-       4. 初始化
-       -------------------------------------------------------- */
-    loadTrack();
-    renderPlaylist();
-
-    /* --------------------------------------------------------
+    /* ============================================================
        5. 导航高亮
-       -------------------------------------------------------- */
-    const navLinks = document.querySelectorAll('.nav-links a');
-    navLinks.forEach(function (link) {
+       ============================================================ */
+    document.querySelectorAll('.nav-links a').forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
-            navLinks.forEach(function (l) { l.classList.remove('active'); });
+            document.querySelectorAll('.nav-links a').forEach(function (l) { l.classList.remove('active'); });
             link.classList.add('active');
         });
     });
 
-    /* --------------------------------------------------------
+    /* ============================================================
        6. 卡片 3D 视差
-       -------------------------------------------------------- */
-    const cards = document.querySelectorAll('.glass-card');
-    cards.forEach(function (card) {
+       ============================================================ */
+    document.querySelectorAll('.glass-card').forEach(function (card) {
         card.addEventListener('mousemove', function (e) {
-            const rect    = card.getBoundingClientRect();
-            const x       = e.clientX - rect.left;
-            const y       = e.clientY - rect.top;
-            const centerX = rect.width  / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 30;
-            const rotateY = (centerX - x) / 30;
-            card.style.transform =
-                'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-4px)';
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            card.style.transform = 'perspective(1000px) rotateX(' + (y - cy) / 30 + 'deg) rotateY(' + (cx - x) / 30 + 'deg) translateY(-4px)';
         });
-        card.addEventListener('mouseleave', function () {
-            card.style.transform = '';
-        });
+        card.addEventListener('mouseleave', function () { card.style.transform = ''; });
     });
+
+    /* ============================================================
+       7. 初始化
+       ============================================================ */
+    renderPlaylist();
+    if (playlistData.length > 0) {
+        loadTrack();
+    } else {
+        trackName.textContent = '点击 ➕ 添加歌曲';
+        trackArtist.textContent = '暂无播放内容';
+        playlistCount.textContent = '0 首';
+    }
 
 })();

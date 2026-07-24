@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Alex Chen 的个人博客 — 前端开发、UI 设计与独立开发">
     <meta name="author" content="Alex Chen">
-    <title>个人博客 | Glassmorphism</title>
-
-    <!-- 外部样式表 -->
+    <title>个人博客 | Glassmorphism · Vinyl Player</title>
     <link rel="stylesheet" href="styles.css">
-
-    <!-- 可选：网页图标 -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%AA%3C/text%3E%3C/svg%3E">
 </head>
 <body>
     <!-- ============ 动态背景光斑 ============ -->
@@ -191,56 +187,100 @@
             <a href="#">RSS</a> · <a href="#">Sitemap</a> · <a href="#">友链</a>
         </p>
         <p style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);">
-            💡 提示：可将本地音频文件直接<strong>拖拽到页面任意位置</strong>添加歌曲 ·
-            点击播放器 ➕ 按钮也可添加
+            ♬ 将本地音频文件<strong>拖拽到页面任意位置</strong>即可添加到播放器 · 支持 mp3/wav/ogg/flac
         </p>
     </footer>
 
-    <!-- ============ 音乐播放器 ============ -->
-    <div class="music-player" id="musicPlayer" role="region" aria-label="音乐播放器">
+    <!-- ============ 黑胶音乐播放器 ============ -->
+    <div class="vinyl-player" id="musicPlayer" role="region" aria-label="黑胶音乐播放器">
+
         <!-- 折叠态顶部条 -->
         <div class="player-toggle" id="playerToggle">
-            <div class="album-cover">🎵</div>
-            <div class="track-info">
-                <div class="track-name" id="trackName">Midnight City</div>
-                <div class="track-artist" id="trackArtist">M83</div>
+            <!-- 迷你黑胶 -->
+            <div class="vinyl-mini" id="vinylMini">
+                <div class="vinyl-record">
+                    <div class="vinyl-grooves"></div>
+                    <div class="vinyl-label">
+                        <span class="vinyl-label-text" id="miniLabel">♪</span>
+                    </div>
+                    <div class="vinyl-hole"></div>
+                </div>
+                <div class="vinyl-arm-mini"></div>
             </div>
+
+            <div class="track-info">
+                <div class="track-name" id="trackName">点击 ➕ 添加歌曲</div>
+                <div class="track-artist" id="trackArtist">暂无播放内容</div>
+            </div>
+
             <button class="player-btn play-btn" id="playBtn" title="播放 / 暂停">▶</button>
             <button class="add-track-btn" id="addTrackBtn" title="添加歌曲">➕</button>
         </div>
 
         <!-- 展开主体 -->
         <div class="player-body">
+
+            <!-- 黑胶唱片区域 -->
+            <div class="turntable">
+                <div class="vinyl-disc" id="vinylDisc">
+                    <div class="vinyl-record large">
+                        <div class="vinyl-grooves"></div>
+                        <div class="vinyl-glow"></div>
+                        <div class="vinyl-label">
+                            <span class="vinyl-label-text" id="discLabel">♪</span>
+                        </div>
+                        <div class="vinyl-hole"></div>
+                    </div>
+                </div>
+                <!-- 唱臂 -->
+                <div class="tone-arm" id="toneArm">
+                    <div class="arm-base"></div>
+                    <div class="arm-rod"></div>
+                    <div class="arm-head"></div>
+                </div>
+            </div>
+
+            <!-- 频谱可视化 Canvas -->
+            <div class="visualizer-wrap">
+                <canvas id="visualizer" class="visualizer"></canvas>
+                <div class="vis-overlay" id="visOverlay">
+                    <span>🔊 播放音乐以查看频谱</span>
+                </div>
+            </div>
+
+            <!-- 进度条 -->
             <div class="progress-bar" id="progressBar" title="点击跳转">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
             <div class="time-info">
                 <span id="currentTime">0:00</span>
-                <span id="totalTime">4:03</span>
+                <span id="totalTime">0:00</span>
             </div>
 
+            <!-- 控制按钮 -->
             <div class="player-controls">
                 <button class="player-btn" id="prevBtn" title="上一首">⏮</button>
-                <button class="player-btn play-btn" id="playBtn2" title="播放 / 暂停">▶</button>
+                <button class="player-btn play-btn main-play" id="playBtn2" title="播放 / 暂停">▶</button>
                 <button class="player-btn" id="nextBtn" title="下一首">⏭</button>
             </div>
 
+            <!-- 播放列表 -->
+            <div class="playlist-header">
+                <span>📋 播放列表</span>
+                <span class="playlist-count" id="playlistCount">0 首</span>
+            </div>
             <ul class="playlist" id="playlist"></ul>
 
             <!-- 添加歌曲面板 -->
             <div class="add-panel" id="addPanel">
                 <div class="add-panel-inner">
                     <div class="add-panel-title">➕ 添加歌曲</div>
-
-                    <!-- 拖拽 / 选择文件 -->
                     <div class="drop-zone" id="dropZone">
                         <input type="file" id="fileInput" accept="audio/*" multiple>
                         <div class="drop-icon">🎶</div>
                         <div class="drop-text">点击选择或拖拽音频文件到此处</div>
                         <div class="drop-hint">支持 mp3 / wav / ogg / flac / aac / m4a</div>
                     </div>
-
-                    <!-- URL 添加 -->
                     <div class="url-input-group">
                         <input type="text" id="urlInput" placeholder="或粘贴音频链接 (https://...)" />
                         <button id="addUrlBtn">添加</button>
@@ -248,16 +288,20 @@
                 </div>
             </div>
 
+            <!-- 音量 -->
             <div class="volume-control">
                 <button class="player-btn" id="muteBtn" title="静音">🔊</button>
                 <div class="volume-slider" id="volumeSlider" title="调节音量">
                     <div class="volume-fill" id="volumeFill"></div>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- 外部脚本 -->
+    <!-- 隐藏的 Audio 元素 -->
+    <audio id="audioEl" preload="metadata"></audio>
+
     <script src="app.js"></script>
 </body>
 </html>
