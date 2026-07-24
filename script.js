@@ -162,38 +162,38 @@ const playlist = [
         icon: '🎸'
     },
     {
-        name: 'Acoustic Breeze',
-        artist: 'Benjamin Tissot',
-        src: 'https://aqqmusic.tc.qq.com/M500002pVQc229dcjx.mp3?guid=1907128691&vkey=89C3DE068EB1A82551D31DB3225CE989B73328C74C3B24200105DE52690D65D0DB3106EB78008D009BDB536B197A40A3660A4169009AFDCE__v2ba82194&uin=&fromtag=120042',
-        duration: '3:12',
+        name: 'ただ君に晴れ',
+        artist: 'ヨルシカ',
+        src: 'https://aqqmusic.tc.qq.com/M500001fEMhM2U483n.mp3?guid=1360403577&vkey=9489CB23DA2A98D5B6080EDA692FC1E1DB29C18715CAC777762840A179B512A907B141D36520FF8BD8D68DEA3582ABA7CD6C14BF4A61A191__v2b9abe71&uin=&fromtag=120042',
+        duration: '3:18',
         icon: '🎵'
     },
     {
-        name: 'Creative Minds',
-        artist: 'Benjamin Tissot',
-        src: 'https://cdn.pixabay.com/audio/2022/03/15/audio_c8e9bb2f65.mp3',
-        duration: '3:30',
+        name: '花に亡霊',
+        artist: 'ヨルシカ',
+        src: 'https://isure6.stream.qqmusic.qq.com/M800002upFb81sU3lN.mp3?guid=cyapi&vkey=121FE7E2F80EAA3108F5603B94E0CA62A59029BF5D993C45F8928AAB41E944B07EA29BAF6525A54E5081692D209EB648F19B2504B611AF4D__v2b9ab542&uin=3319386682&fromtag=myhkw.cn&cache=0724164927',
+        duration: '3:59',
         icon: '🎹'
     },
     {
-        name: 'Deep Relaxation',
-        artist: 'Keys of Moon',
-        src: 'https://cdn.pixabay.com/audio/2024/02/21/audio_91c69f1d10.mp3',
-        duration: '4:05',
+        name: '言って。',
+        artist: 'ヨルシカ',
+        src: 'https://aqqmusic.tc.qq.com/M500002t3G7L1aKEMi.mp3?guid=600670738&vkey=F936F20BA51065A6F4753F516C8BF1A6B88D077E13FDE1E29CB7875AFCBEB61555CDBBF56634D5C1D48CA8921CF7160580DB3ABFC0D0B3F4__v2b9abe71&uin=&fromtag=120042',
+        duration: '4:02',
         icon: '🎻'
     },
     {
-        name: 'Jazz Loop',
-        artist: 'Free Music',
-        src: 'https://cdn.pixabay.com/audio/2022/11/22/audio_febc508520.mp3',
-        duration: '2:58',
+        name: '老人と海',
+        artist: 'ヨルシカ',
+        src: 'https://isure6.stream.qqmusic.qq.com/M800003D7nyJ3FXunp.mp3?guid=cyapi&vkey=CABABFA44D7B760D1708F18597CB4C3D8532BE91D74157BE0A3458584DAC3CF4133E31E3E08757E62A83D6E2B12FB49C919788AD9805237C__v2b9ab541&uin=3248206813&fromtag=myhkw.cn&cache=0724165252',
+        duration: '4:15',
         icon: '🎷'
     },
     {
-        name: 'Lo-fi Study Beats',
-        artist: 'Chillhop',
-        src: 'https://cdn.pixabay.com/audio/2023/03/30/audio_6f8c4c6b2e.mp3',
-        duration: '3:45',
+        name: '千鳥',
+        artist: 'ヨルシカ',
+        src: 'https://isure6.stream.qqmusic.qq.com/M800001Kq5ft3NAF5M.mp3?guid=cyapi&vkey=AFCD8B67237713F9272FCC82C57733CC843354190069997BCCECF9EE56BB7B85C39E88CC169C7C9BEE86BF149743B91DC056DFDA8574138C__v2b9ab6a1&uin=3651897930&fromtag=myhkw.cn&cache=0724165401',
+        duration: '4:12',
         icon: '🎧'
     }
 ];
