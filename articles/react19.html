@@ -4,17 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React 19 新特性详解 - Yukariの小站</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-    </div>
-
     <nav class="navbar glass">
         <div class="nav-container">
             <a href="/" class="nav-logo" data-link>
@@ -41,12 +34,12 @@
                 <div class="article-meta-full">
                     <span><i class="far fa-calendar"></i> 2026-06-28</span>
                     <span><i class="far fa-eye"></i> 3.1k 阅读</span>
-                    <span><i class="far fa-clock"></i> 10 分钟</span>
+                    <span><i class="far fa-clock"></i> 8 分钟</span>
                 </div>
                 <div class="article-tags-header">
                     <span class="tag-small">React</span>
-                    <span class="tag-small">Server Components</span>
-                    <span class="tag-small">Actions</span>
+                    <span class="tag-small">Hooks</span>
+                    <span class="tag-small">RSC</span>
                 </div>
             </header>
 
@@ -55,157 +48,113 @@
             </div>
 
             <div class="article-body-full">
-                <p class="lead">React 19 是近年来最大的一次更新，带来了 Actions、Server Components 正式化、use() Hook、自动资源预加载等一系列重磅特性。本文逐一解析，帮你快速上手。</p>
+                <p class="lead">React 19 带来了近年来最大的 API 变革：Actions、use() Hook、Server Components 正式落地、forwardRef 被废除。本文逐一拆解每个变化的用法和迁移策略。</p>
 
-                <h2 id="sec1">Actions：告别 useState + useEffect 地狱</h2>
-                <p>Actions 是 React 19 最核心的新概念。它让表单提交、数据变更变得极其简洁：</p>
+                <h2 id="sec1">Actions：告别 useState + useEffect 表单地狱</h2>
+                <p>Actions 是 React 19 最核心的新概念。它把"用户操作 → 服务端处理 → 状态更新"这条链路由框架统一管理。</p>
                 <div class="code-block">
                     <div class="code-header"><span>React 19</span></div>
-                    <pre><code>// 旧方式：useState + onSubmit + useEffect
-function OldForm() {
-    const [name, setName] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+                    <pre><code>// 之前：手动管理 pending / error / success
+const [isPending, setIsPending] = useState(false);
+const [error, setError] = useState(null);
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        setLoading(true);
-        try { await saveName(name); }
-        catch (err) { setError(err); }
-        finally { setLoading(false); }
+async function handleSubmit(e) {
+    e.preventDefault();
+    setIsPending(true);
+    try {
+        await saveData(formData);
+    } catch (e) {
+        setError(e);
+    } finally {
+        setIsPending(false);
     }
-    // ... 大量模板代码
 }
 
-// ✅ React 19：useActionState
-import { useActionState } from 'react';
-
-async function updateNameAction(prevState, formData) {
-    const name = formData.get('name');
-    const error = await validateName(name);
-    if (error) return { error };
-    await saveName(name);
-    return { success: true };
-}
-
-function NameForm() {
-    const [state, action, isPending] = useActionState(updateNameAction, {});
-    return (
-        &lt;form action={action}&gt;
-            &lt;input name="name" /&gt;
-            &lt;button disabled={isPending}&gt;{isPending ? '保存中...' : '保存'}&lt;/button&gt;
-            {state.error && &lt;p&gt;{state.error}&lt;/p&gt;}
-        &lt;/form&gt;
-    );
-}</code></pre>
+// React 19：useActionState
+const [state, formAction, isPending] = useActionState(
+    async (prev, formData) => {
+        return await saveData(formData);
+    },
+    null
+);</code></pre>
                 </div>
 
                 <div class="callout tip">
                     <i class="fas fa-lightbulb"></i>
-                    <div><strong>核心优势</strong>：Action 自动处理 pending 状态、错误捕获、乐观更新，代码量减少 60% 以上。</div>
+                    <div><strong>核心收益</strong>：pending 状态、乐观更新、错误处理全部由框架管理，组件代码减少 40%。</div>
                 </div>
 
-                <h2 id="sec2">use() Hook：读取 Promise 和 Context</h2>
-                <p>新 <code>use()</code> Hook 可以在渲染中直接"等待"一个 Promise：</p>
+                <h2 id="sec2">use() Hook：异步数据的新范式</h2>
+                <p>不再需要 useEffect + useState 的 boilerplate，直接在组件内 <code>use()</code> 一个 Promise 或 Context：</p>
                 <div class="code-block">
-                    <div class="code-header"><span>React 19</span></div>
+                    <div class="code-header"><span>JavaScript</span></div>
                     <pre><code>import { use } from 'react';
 
 function Comments({ commentsPromise }) {
-    // 直接读 Promise，自动 Suspense
+    // use() 会暂停组件直到 Promise resolve
     const comments = use(commentsPromise);
-    return comments.map(c => &lt;p key={c.id}&gt;{c.text}&lt;/p&gt;);
+    return comments.map(c => <p key={c.id}>{c.text}</p>);
 }
 
-// 父组件
-&lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
-    &lt;Comments commentsPromise={fetchComments()} /&gt;
-&lt;/Suspense&gt;</code></pre>
+// 也适用于 Context
+const theme = use(ThemeContext);</code></pre>
                 </div>
 
-                <h2 id="sec3">Server Components 正式落地</h2>
-                <p>RSC 让组件可以在服务端渲染，零 JS 发送到客户端：</p>
-                <div class="code-block">
-                    <div class="code-header"><span>React Server Component</span></div>
-                    <pre><code>// app/page.js (服务端)
-import { db } from '@/lib/db';
-import { ClientCounter } from './client-counter';
-
-export default async function Page() {
-    const posts = await db.post.findMany();
-    return (
-        &lt;div&gt;
-            &lt;h1&gt;最新文章&lt;/h1&gt;
-            {/* 服务端直接查数据库，零 API 请求 */}
-            {posts.map(p =&gt; &lt;PostCard key={p.id} post={p} /&gt;)}
-            {/* 需要交互的部分用 'use client' */}
-            &lt;ClientCounter /&gt;
-        &lt;/div&gt;
-    );
-}</code></pre>
-                </div>
-
+                <h2 id="sec3">Server Components 正式稳定</h2>
+                <p>RSC 不再是实验特性。组件文件顶部加 <code>'use server'</code> 或 <code>'use client'</code> 即可声明运行环境。</p>
                 <table class="compat-table">
-                    <thead><tr><th>对比项</th><th>Server Component</th><th>Client Component</th></tr></thead>
+                    <thead><tr><th>指令</th><th>运行环境</th><th>能做什么</th></tr></thead>
                     <tbody>
-                        <tr><td>运行环境</td><td>Node.js 服务端</td><td>浏览器</td></tr>
-                        <tr><td>数据获取</td><td>直接查 DB / 读文件</td><td>需 API 请求</td></tr>
-                        <tr><td>Bundle 大小</td><td>0 KB（不进客户端）</td><td>计入 JS bundle</td></tr>
-                        <tr><td>交互能力</td><td>❌ 无事件/状态</td><td>✅ 完整</td></tr>
-                        <tr><td>适用场景</td><td>静态内容/列表/SEO</td><td>表单/动画/交互</td></tr>
+                        <tr><td><code>'use server'</code></td><td>Node.js / Edge</td><td>数据库查询、文件系统、密钥操作</td></tr>
+                        <tr><td><code>'use client'</code></td><td>浏览器</td><td>事件处理、useState、useEffect</td></tr>
+                        <tr><td>无指令</td><td>两端皆可</td><td>纯渲染组件</td></tr>
                     </tbody>
                 </table>
 
-                <h2 id="sec4">自动资源预加载</h2>
-                <p>React 19 自动处理 <code>&lt;link rel="preload"&gt;</code>，无需手动管理：</p>
+                <h2 id="sec4">forwardRef 废除</h2>
+                <p>React 19 中 <code>forwardRef</code> 不再需要——ref 可以直接作为普通 prop 传递：</p>
                 <div class="code-block">
                     <div class="code-header"><span>React 19</span></div>
-                    <pre><code>// React 自动将 link 提升到 head，并在需要时预加载
-function App() {
-    return (
-        &lt;&gt;
-            &lt;link rel="stylesheet" href="/styles.css" /&gt;
-            &lt;link rel="preload" as="image" href="/hero.png" /&gt;
-            &lt;Main /&gt;
-        &lt;/&gt;
-    );
-}</code></pre>
-                </div>
+                    <pre><code>// 之前
+const Input = forwardRef((props, ref) => (
+    &lt;input ref={ref} {...props} /&gt;
+));
 
-                <h2 id="sec5">其他值得关注的改动</h2>
-                <ul>
-                    <li><strong>useOptimistic</strong>：一行代码实现乐观更新</li>
-                    <li><strong>useFormStatus</strong>：在表单内获取提交状态</li>
-                    <li><strong>ref 作为普通 prop</strong>：不再需要 forwardRef</li>
-                    <li><strong>context 作为 provider</strong>：<code>&lt;Context&gt;</code> 直接当 Provider 用</li>
-                    <li><strong>支持自定义元素</strong>：更好的 Web Components 互操作</li>
-                </ul>
-
-                <div class="code-block">
-                    <div class="code-header"><span>React 19 - 简化 ref</span></div>
-                    <pre><code>// ❌ React 18：需要 forwardRef
-const Input = forwardRef((props, ref) => &lt;input ref={ref} {...props} /&gt;);
-
-// ✅ React 19：ref 就是普通 prop
+// React 19：直接传
 function Input({ ref, ...props }) {
     return &lt;input ref={ref} {...props} /&gt;;
+}
+
+// 使用方式完全不变
+&lt;Input ref={myRef} /&gt;</code></pre>
+                </div>
+
+                <h2 id="sec5">useOptimistic：乐观更新的官方方案</h2>
+                <div class="code-block">
+                    <div class="code-header"><span>JavaScript</span></div>
+                    <pre><code>function LikeButton({ postId, likes }) {
+    const [optimisticLikes, addOptimisticLike] = useOptimistic(
+        likes,
+        (state) => state + 1
+    );
+
+    async function like() {
+        addOptimisticLike(); // 立即 +1
+        await fetch(`/api/like/${postId}`, { method: 'POST' });
+    }
+
+    return &lt;button onClick={like}&gt;❤️ {optimisticLikes}&lt;/button&gt;;
 }</code></pre>
                 </div>
 
-                <h2 id="sec6">升级指南</h2>
-                <div class="code-block">
-                    <div class="code-header"><span>Bash</span></div>
-                    <pre><code># 使用官方 codemod 工具自动迁移
-npx react-codemod@latest react-19/forward-ref
-npx react-codemod@latest react-19/prop-types
-npx react-codemod@latest react-19/react-dom-client</code></pre>
-                </div>
-
-                <p>主要 Breaking Changes：</p>
+                <h2 id="sec6">迁移清单</h2>
                 <ul>
-                    <li><code>react-dom/client</code> 取代旧的 <code>ReactDOM.render</code></li>
-                    <li>移除 <code>findDOMNode</code>、<code>UNSAFE_componentWillMount</code></li>
-                    <li>事件池（event pooling）移除</li>
+                    <li>✅ 升级 React 19 + ReactDOM 19</li>
+                    <li>✅ 移除所有 <code>forwardRef</code> → 改为 ref prop</li>
+                    <li>✅ 移除 <code>React.Fragment</code> 简写以外的用法统一</li>
+                    <li>✅ 用 <code>useActionState</code> 重构表单</li>
+                    <li>✅ 用 <code>useOptimistic</code> 替代手动乐观更新</li>
+                    <li>⬜ 逐步引入 Server Components</li>
                 </ul>
 
                 <hr class="article-divider">
@@ -219,6 +168,6 @@ npx react-codemod@latest react-19/react-dom-client</code></pre>
         </article>
     </main>
 
-    <script src="../script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
