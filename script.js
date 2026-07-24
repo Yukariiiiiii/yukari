@@ -153,13 +153,12 @@ document.querySelectorAll('.article-card').forEach(card => {
 // ========== 🎵 黑胶音乐播放器 ==========
 // ====================================================================
 
-// 使用免费、无版权的音乐（来自 pixabay 等公开资源）
 const playlist = [
     {
-        name: 'Sunny Morning',
-        artist: 'Keys of Moon',
-        src: 'https://cdn.pixabay.com/audio/2022/10/30/audio_347aa9b2a5.mp3',
-        duration: '2:45',
+        name: 'だから僕は音楽を辞めた',
+        artist: 'ヨルシカ',
+        src: 'https://aqqmusic.tc.qq.com/M500002pVQc229dcjx.mp3?guid=1907128691&vkey=89C3DE068EB1A82551D31DB3225CE989B73328C74C3B24200105DE52690D65D0DB3106EB78008D009BDB536B197A40A3660A4169009AFDCE__v2ba82194&uin=&fromtag=120042',
+        duration: '4:02',
         icon: '🎸'
     },
     {
