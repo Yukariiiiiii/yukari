@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深色模式设计的最佳实践 - Yukariの小站</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fas fa-feather-alt"></i>
+                <span>Yukariの小站</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
+                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
+                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
+                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题"><i class="fas fa-sun"></i></button>
+                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器"><i class="fas fa-music"></i></button>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content article-page">
+        <a href="../index.html" class="back-link glass-btn"><i class="fas fa-arrow-left"></i> 返回文章列表</a>
+
+        <article class="article-full glass fade-in">
+            <div class="article-header">
+                <div class="article-cover-large" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div class="article-meta-full">
+                    <h1>深色模式设计的最佳实践</h1>
+                    <div class="article-meta-info">
+                        <span><i class="far fa-calendar"></i> 2026-07-05</span>
+                        <span><i class="far fa-eye"></i> 2.3k 阅读</span>
+                        <span><i class="far fa-clock"></i> 约 10 分钟</span>
+                    </div>
+                    <div class="article-tags-full">
+                        <span class="tag-small">设计</span>
+                        <span class="tag-small">CSS</span>
+                        <span class="tag-small">用户体验</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="article-content">
+                <h2>为什么深色模式不只是"反色"</h2>
+                <p>很多人以为深色模式就是<code>背景变黑、文字变白</code>。如果真这么做，效果往往是<strong>刺眼、廉价、不可读</strong>。好的深色模式需要考虑：亮度层级、色彩饱和度、对比度、材质质感。</p>
+
+                <div class="callout">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>
+                        <strong>核心原则：</strong>深色模式不是"黑底白字"，而是用<strong>低亮度色板 + 微妙的光影层次</strong>营造深度感。
+                    </div>
+                </div>
+
+                <h2>一、色彩系统</h2>
+
+                <h3>不要用纯黑</h3>
+                <p>纯黑（#000）在屏幕上看起来像"洞"，缺乏层次。主流产品的深色背景都在 <strong>#121212 ~ #1e1e2e</strong> 之间：</p>
+
+                <table class="compare-table">
+                    <tr><th>产品</th><th>深色背景</th></tr>
+                    <tr><td>Material Design</td><td>#121212</td></tr>
+                    <tr><td>Apple iOS</td><td>#000000（但叠半透明层提亮）</td></tr>
+                    <tr><td>VS Code Dark+</td><td>#1e1e1e</td></tr>
+                    <tr><td>GitHub Dark</td><td>#0d1117</td></tr>
+                    <tr><td>本博客</td><td>#0f0e17</td></tr>
+                </table>
+
+                <h3>建立亮度层级</h3>
+                <p>至少定义 3 层背景色，用亮度差表达"前后关系"：</p>
+
+                <pre><code>:root[data-theme="dark"] {
+    --bg-base:   #0f0e17;  /* 最底层：页面背景 */
+    --bg-elev-1: #1a1925;  /* 一级浮起：卡片 */
+    --bg-elev-2: #252335;  /* 二级浮起：弹窗、下拉 */
+    --text-high:  #e8e8f0;  /* 主要文字 */
+    --text-mid:   #a0a0b8;  /* 次要文字 */
+    --text-low:   #6c6c80;  /* 辅助文字 */
+}</code></pre>
+
+                <h2>二、对比度与可读性</h2>
+
+                <h3>WCAG 对比度标准</h3>
+                <ul>
+                    <li><strong>AA 级</strong>：正文 ≥ 4.5:1，大字号 ≥ 3:1</li>
+                    <li><strong>AAA 级</strong>：正文 ≥ 7:1，大字号 ≥ 4.5:1</li>
+                </ul>
+
+                <p>常见错误：用高饱和蓝（#2196F3）直接做深色背景上的文字，对比度只有 ~3:1，不达标。</p>
+
+                <div class="callout warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>检测工具：</strong>Chrome DevTools → Rendering → Emulate CSS media → <code>prefers-color-scheme: dark</code>，配合 WebAIM Contrast Checker 验证。
+                    </div>
+                </div>
+
+                <h3>避免"光晕效应"</h3>
+                <p>深色背景上的浅色文字如果太亮（#FFFFFF），周围会出现<strong>光晕</strong>，看起来模糊。建议正文用 <strong>#E0E0E0 ~ #E8E8F0</strong> 而非纯白。</p>
+
+                <h2>三、用 CSS 变量实现一键切换</h2>
+
+                <pre><code>/* 默认深色 */
+:root { --bg: #0f0e17; --text: #e8e8f0; }
+
+/* 浅色覆盖 */
+:root[data-theme="light"] {
+    --bg: #f0f0f5;
+    --text: #1a1a2e;
+}
+
+/* JS 切换 */
+document.documentElement.setAttribute('data-theme', 'light');</code></pre>
+
+                <p>进阶：尊重用户系统偏好：</p>
+
+                <pre><code>@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --bg: #0f0e17;
+        --text: #e8e8f0;
+    }
+}</code></pre>
+
+                <h2>四、图片与媒体的适配</h2>
+
+                <h3>1. 降低亮色图片的刺眼感</h3>
+                <pre><code>@media (prefers-color-scheme: dark) {
+    img, video {
+        filter: brightness(0.85) contrast(1.1);
+    }
+}</code></pre>
+
+                <h3>2. 使用 CSS Mask 适配图标</h3>
+                <p>单色图标用 <code>mask-image</code> 替代背景图，可以直接用 <code>color</code> 控制颜色：</p>
+
+                <pre><code>.icon {
+    width: 24px; height: 24px;
+    background: currentColor;
+    mask-image: url('icon.svg');
+    -webkit-mask-image: url('icon.svg');
+}</code></pre>
+
+                <h2>五、毛玻璃 + 深色 = 绝配</h2>
+                <p>本博客就是典型案例——深色半透明 + backdrop-filter 模糊，既保持暗色基调，又有玻璃般的质感层次：</p>
+
+                <pre><code>.glass {
+    background: rgba(255, 255, 255, 0.05);  /* 微微透出背后色彩 */
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}</code></pre>
+
+                <h2>六、常见踩坑</h2>
+                <ul>
+                    <li><strong>阴影消失</strong>：深色背景上 <code>box-shadow: 0 2px 8px #000</code> 几乎看不见，改用 <code>rgba(0,0,0,0.5)</code> + 提亮边框</li>
+                    <li><strong>焦点环不可见</strong>：<code>:focus-visible</code> 的 outline 要在深色下重新配色</li>
+                    <li><strong>滚动条刺眼</strong>：自定义 <code>::-webkit-scrollbar</code> 配色</li>
+                    <li><strong>模态框无层次</strong>：用半透明遮罩 <code>rgba(0,0,0,0.6)</code> + 模糊背景</li>
+                </ul>
+
+                <h2>小结</h2>
+                <p>深色模式的核心是<strong>建立亮度层级 + 控制对比度 + 尊重用户偏好</strong>。不要简单反色，要用 CSS 变量构建完整的色彩系统，让深浅模式切换如丝般顺滑。本博客的切换体验就是这套方案的实战成果。</p>
+
+                <div class="article-footer-actions">
+                    <a href="../index.html" class="btn btn-outline glass-btn"><i class="fas fa-arrow-left"></i> 返回列表</a>
+                    <div class="share-links">
+                        <span>分享：</span>
+                        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="share-btn"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="share-btn"><i class="fas fa-link"></i></a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <div class="vinyl-player" id="vinylPlayer">
+        <div class="vinyl-player-inner glass">
+            <div class="player-header"><div class="player-title"><i class="fas fa-record-vinyl"></i><span>音乐播放器</span></div><button class="player-close" id="playerClose"><i class="fas fa-times"></i></button></div>
+            <div class="vinyl-display"><div class="vinyl-record" id="vinylRecord"><div class="vinyl-disc"><div class="vinyl-grooves"></div><div class="vinyl-label"><div class="vinyl-label-text" id="vinylLabel">♪</div></div><div class="vinyl-hole"></div></div><div class="vinyl-arm"><div class="vinyl-arm-base"></div><div class="vinyl-arm-stick"></div><div class="vinyl-arm-head"></div></div></div></div>
+            <div class="track-info"><div class="track-name" id="trackName">选择一首歌曲</div><div class="track-artist" id="trackArtist">—</div></div>
+            <div class="progress-container"><span class="progress-time" id="currentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div><div class="progress-thumb" id="progressThumb"></div></div><span class="progress-time" id="totalTime">0:00</span></div>
+            <div class="player-controls">
+                <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
+                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play" id="playIcon"></i></button>
+                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+                <button class="control-btn" id="repeatBtn"><i class="fas fa-redo"></i></button>
+            </div>
+            <div class="volume-container"><i class="fas fa-volume-up" id="volumeIcon"></i><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
+            <div class="playlist-toggle" id="playlistToggle"><span>播放列表</span><i class="fas fa-chevron-up" id="playlistChevron"></i></div>
+            <div class="playlist" id="playlist"></div>
+        </div>
+    </div>
+
+    <div class="mini-player glass" id="miniPlayer">
+        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
+        <div class="mini-info"><div class="mini-track" id="miniTrack">未播放</div><div class="mini-artist" id="miniArtist">—</div></div>
+        <div class="mini-controls">
+            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
+            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
+            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
+        </div>
+    </div>
+
+    <audio id="audioElement" preload="metadata"></audio>
+
+    <footer class="footer glass">
+        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 辅助编程实战体验 - Yukariの小站</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <i class="fas fa-feather-alt"></i>
+                <span>Yukariの小站</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link"><i class="fas fa-home"></i> 首页</a>
+                <a href="../index.html" class="nav-link active"><i class="fas fa-book-open"></i> 文章</a>
+                <a href="../index.html" class="nav-link"><i class="fas fa-user"></i> 关于</a>
+                <a href="../index.html" class="nav-link"><i class="fas fa-envelope"></i> 联系</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle glass-btn" id="themeToggle" title="切换主题"><i class="fas fa-sun"></i></button>
+                <button class="music-toggle glass-btn" id="musicToggle" title="打开音乐播放器"><i class="fas fa-music"></i></button>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content article-page">
+        <a href="../index.html" class="back-link glass-btn"><i class="fas fa-arrow-left"></i> 返回文章列表</a>
+
+        <article class="article-full glass fade-in">
+            <div class="article-header">
+                <div class="article-cover-large" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="article-meta-full">
+                    <h1>AI 辅助编程实战体验</h1>
+                    <div class="article-meta-info">
+                        <span><i class="far fa-calendar"></i> 2026-06-15</span>
+                        <span><i class="far fa-eye"></i> 1.5k 阅读</span>
+                        <span><i class="far fa-clock"></i> 约 10 分钟</span>
+                    </div>
+                    <div class="article-tags-full">
+                        <span class="tag-small">AI</span>
+                        <span class="tag-small">工具</span>
+                        <span class="tag-small">效率</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="article-content">
+                <h2>我用 AI 写代码半年后的真实感受</h2>
+                <p>不吹不黑。AI 编程工具（Copilot、Cursor、Claude Code 等）用了一段时间后，我的工作流发生了<strong>质变</strong>，但不是你想象的那种"全自动写代码"。</p>
+
+                <div class="callout">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>
+                        <strong>核心结论：</strong>AI 不是替代程序员，而是把程序员从"打字员"升级为"架构师 + 审核员"。它会让你写代码的速度翻倍，但<em>思考的占比</em>反而更高了。
+                    </div>
+                </div>
+
+                <h2>一、哪些场景 AI 真的强？</h2>
+
+                <h3>1. 样板代码生成</h3>
+                <p>CRUD 接口、表单校验、单元测试、Dockerfile……这些"有模式可循"的代码，AI 几乎零失误：</p>
+
+                <pre><code>// 你只需要写注释描述需求
+// 创建一个 Express 路由，实现用户注册：
+// 校验 email 格式、密码 ≥ 8 位、bcrypt 哈希后存入 SQLite
+
+// AI 直接生成可运行代码 ↓
+router.post('/register', async (req, res) => {
+    const { email, password } = req.body;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: '邮箱格式无效' });
+    }
+    if (password.length < 8) {
+        return res.status(400).json({ error: '密码至少 8 位' });
+    }
+    const hash = await bcrypt.hash(password, 12);
+    try {
+        const user = db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)').run(email, hash);
+        res.json({ id: user.lastInsertRowid });
+    } catch (e) {
+        res.status(409).json({ error: '邮箱已注册' });
+    }
+});</code></pre>
+
+                <h3>2. 读陌生代码</h3>
+                <p>接手老项目？把代码贴给 AI，让它：</p>
+                <ul>
+                    <li>画出模块依赖关系</li>
+                    <li>解释核心函数的输入输出</li>
+                    <li>指出潜在 Bug 和安全漏洞</li>
+                    <li>生成架构文档初稿</li>
+                </ul>
+
+                <h3>3. 调试 & 报错分析</h3>
+                <p>把报错堆栈 + 相关代码丢给 AI，90% 的情况能直接给出<strong>根因 + 修复方案</strong>，比 Google 搜索快 10 倍。</p>
+
+                <h3>4. 写测试</h3>
+                <p>给一个函数，让 AI 生成边界条件覆盖齐全的单元测试：</p>
+
+                <pre><code>// AI 生成的测试，比你手写更全
+describe('parseQuery', () => {
+    test('正常参数', () => { ... });
+    test('空字符串', () => { ... });
+    test('特殊字符注入', () => { ... });
+    test('超长输入截断', () => { ... });
+    test('非字符串类型', () => { ... });
+    test('Unicode 字符', () => { ... });
+});</code></pre>
+
+                <h2>二、哪些场景 AI 会翻车？</h2>
+
+                <h3>1. 需要"全局视野"的重构</h3>
+                <p>AI 每次只看你给的上下文窗口，<strong>跨文件、跨模块的架构决策</strong>它做不好。比如"把这个单体应用拆成微服务"——它只能给你方向性建议，落地还得你自己来。</p>
+
+                <h3>2. 最新框架/API</h3>
+                <p>训练数据有截止日期。React 19 刚出时，AI 还在用旧 API 写代码。<strong>涉及新版本特性时务必人工核对。</strong></p>
+
+                <h3>3. 性能优化</h3>
+                <p>AI 写的代码通常是"正确但不够优"。它不会帮你做性能分析、不会选最优算法，除非你明确告诉它约束条件。</p>
+
+                <h3>4. 业务逻辑深度耦合</h3>
+                <p>"为什么这个字段要校验两次？"——因为业务上 A 部门先校验、B 部门再校验。这种<strong>领域知识</strong> AI 不可能知道，必须人来把关。</p>
+
+                <div class="callout warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>⚠️ 永远不要无脑接受 AI 的输出。</strong>把它当成"写得很快但不太靠谱的实习生"——代码一定要 review、要跑测试、要理解每一行在干什么。
+                    </div>
+                </div>
+
+                <h2>三、我的实战工作流</h2>
+
+                <h3>Step 1：用自然语言描述需求</h3>
+                <p>先不写代码，用一段话把功能说清楚：用户是谁、输入是什么、输出是什么、边界条件有哪些。</p>
+
+                <h3>Step 2：让 AI 生成初版</h3>
+                <p>把需求描述 + 相关上下文（现有代码结构、依赖版本）一起给 AI，让它出第一版实现。</p>
+
+                <h3>Step 3：人工 Review + 修改</h3>
+                <ul>
+                    <li>逐行看代码，确认逻辑正确</li>
+                    <li>检查错误处理是否完备</li>
+                    <li>确认命名清晰、注释到位</li>
+                    <li>跑一遍测试</li>
+                </ul>
+
+                <h3>Step 4：让 AI 补测试 & 文档</h3>
+                <p>代码定稿后，让 AI 生成单元测试和 API 文档。这一步它做得非常好。</p>
+
+                <h3>效率对比</h3>
+                <table class="compare-table">
+                    <tr><th>任务类型</th><th>纯手工</th><th>AI 辅助</th></tr>
+                    <tr><td>写 CRUD 接口</td><td>30 分钟</td><td>5 分钟</td></tr>
+                    <tr><td>调试报错</td><td>20 分钟</td><td>3 分钟</td></tr>
+                    <tr><td>写单元测试</td><td>25 分钟</td><td>5 分钟</td></tr>
+                    <tr><td>理解陌生代码</td><td>1 小时</td><td>15 分钟</td></tr>
+                    <tr><td>架构设计</td><td>2 小时</td><td>1.5 小时（AI 辅助思考）</td></tr>
+                    <tr><td>复杂 Bug 排查</td><td>1 小时</td><td>40 分钟</td></tr>
+                </table>
+
+                <h2>四、推荐的 AI 编程工具组合</h2>
+
+                <h3>日常编码：Cursor / Copilot</h3>
+                <ul>
+                    <li><strong>Cursor</strong>：IDE 级集成，Cmd+K 改代码、Cmd+L 对话，体验最丝滑</li>
+                    <li><strong>GitHub Copilot</strong>：轻量，补全为主，适合 VSCode 用户</li>
+                    <li><strong>Tabnine</strong>：本地模型，隐私友好</li>
+                </ul>
+
+                <h3>复杂任务：Claude / GPT（对话式）</h3>
+                <ul>
+                    <li>大段代码重构、架构讨论、调试分析</li>
+                    <li>可以上传文件、给截图，上下文更丰富</li>
+                    <li>适合"先想清楚再写"的场景</li>
+                </ul>
+
+                <h3>终端内：Claude Code / Aider</h3>
+                <ul>
+                    <li>直接在终端里操作整个项目</li>
+                    <li>自动读写文件、跑命令、看 git diff</li>
+                    <li>适合"我要做 X 功能，你帮我搞定"的指令式工作</li>
+                </ul>
+
+                <h2>五、一些"过来人"的建议</h2>
+
+                <ul>
+                    <li><strong>描述需求越精确，输出越靠谱。</strong>"写个排序"和"用快速排序对 10 万条用户记录按注册时间降序排列，要求原地排序、O(1) 额外空间"——效果天差地别。</li>
+                    <li><strong>给 AI 看你的代码风格。</strong>先贴一段你写的代码，让它"模仿这个风格"写新的，一致性会好很多。</li>
+                    <li><strong>分而治之。</strong>不要丢一个"帮我写个博客系统"的大需求，拆成"先写数据库层 → 再写 API → 最后写前端"一步步来。</li>
+                    <li><strong>让它解释代码。</strong>如果 AI 生成的代码你自己看不懂，说明它可能在瞎编——这是危险信号。</li>
+                    <li><strong>保持怀疑精神。</strong>AI 会自信地给出错误答案。凡涉及安全、性能、并发的代码，务必人工验证。</li>
+                </ul>
+
+                <h2>小结</h2>
+                <p>AI 辅助编程不是"躺平神器"，而是<strong>放大器</strong>——放大你的能力，也放大你的判断力。用得好，效率翻倍、质量更高；用得差，Bug 翻倍、技术债更重。</p>
+
+                <p>我的心得就一句话：<strong>让 AI 做"写"，让人做"想"和"审"。</strong>掌握这个分工，你就能享受 AI 带来的红利，同时守住代码质量的底线。</p>
+
+                <p>对了，本博客的 6 篇文章子页面，就是我一边和 AI 结对编程、一边写出来的。😄</p>
+
+                <div class="article-footer-actions">
+                    <a href="../index.html" class="btn btn-outline glass-btn"><i class="fas fa-arrow-left"></i> 返回列表</a>
+                    <div class="share-links">
+                        <span>分享：</span>
+                        <a href="#" class="share-btn"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="share-btn"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="share-btn"><i class="fas fa-link"></i></a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <div class="vinyl-player" id="vinylPlayer">
+        <div class="vinyl-player-inner glass">
+            <div class="player-header"><div class="player-title"><i class="fas fa-record-vinyl"></i><span>音乐播放器</span></div><button class="player-close" id="playerClose"><i class="fas fa-times"></i></button></div>
+            <div class="vinyl-display"><div class="vinyl-record" id="vinylRecord"><div class="vinyl-disc"><div class="vinyl-grooves"></div><div class="vinyl-label"><div class="vinyl-label-text" id="vinylLabel">♪</div></div><div class="vinyl-hole"></div></div><div class="vinyl-arm"><div class="vinyl-arm-base"></div><div class="vinyl-arm-stick"></div><div class="vinyl-arm-head"></div></div></div></div>
+            <div class="track-info"><div class="track-name" id="trackName">选择一首歌曲</div><div class="track-artist" id="trackArtist">—</div></div>
+            <div class="progress-container"><span class="progress-time" id="currentTime">0:00</span><div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div><div class="progress-thumb" id="progressThumb"></div></div><span class="progress-time" id="totalTime">0:00</span></div>
+            <div class="player-controls">
+                <button class="control-btn" id="shuffleBtn"><i class="fas fa-random"></i></button>
+                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play" id="playIcon"></i></button>
+                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+                <button class="control-btn" id="repeatBtn"><i class="fas fa-redo"></i></button>
+            </div>
+            <div class="volume-container"><i class="fas fa-volume-up" id="volumeIcon"></i><div class="volume-bar" id="volumeBar"><div class="volume-fill" id="volumeFill"></div></div></div>
+            <div class="playlist-toggle" id="playlistToggle"><span>播放列表</span><i class="fas fa-chevron-up" id="playlistChevron"></i></div>
+            <div class="playlist" id="playlist"></div>
+        </div>
+    </div>
+
+    <div class="mini-player glass" id="miniPlayer">
+        <div class="mini-vinyl" id="miniVinyl"><div class="mini-vinyl-disc"></div></div>
+        <div class="mini-info"><div class="mini-track" id="miniTrack">未播放</div><div class="mini-artist" id="miniArtist">—</div></div>
+        <div class="mini-controls">
+            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
+            <button class="mini-btn mini-play" id="miniPlay"><i class="fas fa-play" id="miniPlayIcon"></i></button>
+            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
+        </div>
+    </div>
+
+    <audio id="audioElement" preload="metadata"></audio>
+
+    <footer class="footer glass">
+        <p>&copy; 2026 Yukariの小站. Made with <i class="fas fa-heart" style="color: var(--accent);"></i> and lots of coffee.</p>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>
